@@ -1,0 +1,925 @@
+<title>ボール台帳</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#F7F5F1; --surface:#FFFFFF; --surface-2:#F1EEE8; --sunk:#EAE6DE;
+  --line:#DFD9CF; --line-strong:#C6BFB2;
+  --ink:#1D1B17; --ink-2:#5B5750; --ink-3:#8B857B;
+  --accent:#1D4E6E; --accent-ink:#FFFFFF; --accent-soft:#E3EDF3; --accent-line:#B9D2E1;
+  --ok:#2E6B4F; --ok-soft:#E2EFE7;
+  --warn:#9A6417; --warn-soft:#F6EBD8;
+  --crit:#A33327; --crit-soft:#F7E4E0;
+  --shadow:0 1px 0 rgba(29,27,23,.04), 0 2px 10px rgba(29,27,23,.05);
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:"Zen Kaku Gothic New",-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+  --serif:"Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#171614; --surface:#1F1E1B; --surface-2:#26241F; --sunk:#141311;
+    --line:#35322C; --line-strong:#4A463E;
+    --ink:#EFEBE3; --ink-2:#A9A296; --ink-3:#7C7568;
+    --accent:#7CB4D6; --accent-ink:#12212B; --accent-soft:#1E3340; --accent-line:#2F4E60;
+    --ok:#6FBE92; --ok-soft:#1C3227;
+    --warn:#DBA04A; --warn-soft:#382C18;
+    --crit:#E3766A; --crit-soft:#3B211D;
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 2px 10px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#171614; --surface:#1F1E1B; --surface-2:#26241F; --sunk:#141311;
+  --line:#35322C; --line-strong:#4A463E;
+  --ink:#EFEBE3; --ink-2:#A9A296; --ink-3:#7C7568;
+  --accent:#7CB4D6; --accent-ink:#12212B; --accent-soft:#1E3340; --accent-line:#2F4E60;
+  --ok:#6FBE92; --ok-soft:#1C3227;
+  --warn:#DBA04A; --warn-soft:#382C18;
+  --crit:#E3766A; --crit-soft:#3B211D;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 2px 10px rgba(0,0,0,.25);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--sans); font-size:15px; line-height:1.7;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:780px; margin:0 auto; padding:0 16px 96px}
+
+/* ---------- masthead ---------- */
+.masthead{padding:26px 0 16px; border-bottom:1px solid var(--line)}
+.masthead h1{
+  font-family:var(--serif); font-weight:700; font-size:26px; line-height:1.25;
+  margin:0; letter-spacing:.04em; text-wrap:balance;
+}
+.masthead p{margin:6px 0 0; color:var(--ink-2); font-size:13px; line-height:1.6}
+
+/* ---------- sticky control bar ---------- */
+.bar{
+  position:sticky; top:0; z-index:20; background:var(--paper);
+  border-bottom:1px solid var(--line); margin:0 -16px; padding:10px 16px 0;
+}
+.bar-row{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+.who{
+  display:inline-flex; align-items:center; gap:8px; background:var(--surface);
+  border:1px solid var(--line-strong); border-radius:2px; padding:5px 10px;
+  font-size:13px; cursor:pointer; color:var(--ink); font-family:var(--sans);
+}
+.who:hover{border-color:var(--accent)}
+.who .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex:none}
+.who .nm{font-weight:700}
+.who .lbl{color:var(--ink-3); font-size:11px; letter-spacing:.08em}
+.spacer{flex:1 1 auto}
+
+.filters{display:flex; gap:4px; overflow-x:auto; padding:10px 0 9px; scrollbar-width:none}
+.filters::-webkit-scrollbar{display:none}
+.fbtn{
+  flex:none; border:1px solid transparent; background:none; color:var(--ink-2);
+  font-family:var(--sans); font-size:13px; padding:4px 10px; border-radius:2px;
+  cursor:pointer; white-space:nowrap; display:inline-flex; align-items:baseline; gap:6px;
+}
+.fbtn:hover{background:var(--surface-2); color:var(--ink)}
+.fbtn[aria-pressed="true"]{background:var(--ink); color:var(--paper); font-weight:500}
+.fbtn .n{font-family:var(--mono); font-size:11px; font-variant-numeric:tabular-nums; opacity:.75}
+
+/* ---------- holder tally ---------- */
+.tally{display:flex; gap:8px; overflow-x:auto; padding:16px 0 4px; margin:0 -16px; padding-left:16px; padding-right:16px; scrollbar-width:none}
+.tally::-webkit-scrollbar{display:none}
+.tallyhead{
+  font-size:11px; letter-spacing:.14em; color:var(--ink-3); text-transform:uppercase;
+  padding:18px 0 0; font-family:var(--mono); font-weight:500;
+}
+.tcard{
+  flex:none; min-width:104px; background:var(--surface); border:1px solid var(--line);
+  border-radius:2px; padding:9px 11px 10px; cursor:pointer; text-align:left;
+  font-family:var(--sans); font-size:13px; line-height:1.5; color:var(--ink); box-shadow:var(--shadow);
+}
+.tcard:hover{border-color:var(--line-strong)}
+.tcard[aria-pressed="true"]{border-color:var(--accent); background:var(--accent-soft)}
+.tcard .tn{font-size:13px; font-weight:700; display:flex; align-items:center; gap:6px}
+.tcard .tn i{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none;display:block}
+.tcard .tc{display:block; font-family:var(--mono); font-size:22px; font-weight:500; line-height:1.2; font-variant-numeric:tabular-nums; margin-top:2px}
+.tcard .tw{display:block; font-size:11px; color:var(--crit); font-weight:500; line-height:1.4}
+.tcard .tw.calm{color:var(--ink-3); font-weight:400}
+
+/* ---------- case cards ---------- */
+.list{display:flex; flex-direction:column; gap:10px; margin-top:14px}
+.case{
+  background:var(--surface); border:1px solid var(--line); border-radius:2px;
+  box-shadow:var(--shadow); overflow:hidden;
+}
+.case.is-done{opacity:.62}
+.case-head{
+  display:grid; grid-template-columns:1fr auto; gap:12px; align-items:start;
+  width:100%; text-align:left; background:none; border:0; padding:14px 15px 13px;
+  cursor:pointer; font-family:var(--sans); color:var(--ink);
+  font-size:15px; line-height:1.7;
+}
+.case-head:hover{background:var(--surface-2)}
+.kind{
+  display:inline-block; font-size:11px; letter-spacing:.06em; padding:1px 7px;
+  border:1px solid var(--line-strong); border-radius:2px; color:var(--ink-2);
+  vertical-align:2px; margin-right:8px;
+}
+.title{font-family:var(--serif); font-weight:600; font-size:19px; line-height:1.4; letter-spacing:.02em}
+.stall{text-align:right; flex:none}
+.stall .v{font-family:var(--mono); font-size:25px; font-weight:500; line-height:1; font-variant-numeric:tabular-nums}
+.stall .u{font-size:11px; color:var(--ink-3); letter-spacing:.06em; display:block; margin-top:3px}
+.stall.calm .v{color:var(--ink-3)}
+.stall.warn .v{color:var(--warn)}
+.stall.crit .v{color:var(--crit)}
+
+.phase{display:flex; align-items:center; gap:9px; margin-top:9px}
+.phase .no{font-family:var(--mono); font-size:11px; color:var(--ink-3); font-variant-numeric:tabular-nums; letter-spacing:.02em}
+.phase .nm{font-size:12px; color:var(--ink-2); white-space:nowrap}
+.ticks{display:flex; gap:2px; flex:1 1 auto; min-width:60px}
+.ticks i{display:block; height:3px; flex:1; background:var(--sunk); border-radius:1px}
+.ticks i.on{background:var(--accent)}
+
+.ball{display:flex; align-items:baseline; gap:8px; margin-top:11px; flex-wrap:wrap}
+.ball .b{
+  display:inline-flex; align-items:center; gap:7px; background:var(--accent);
+  color:var(--accent-ink); border-radius:2px; padding:3px 10px 4px;
+  font-weight:700; font-size:14px;
+}
+.ball .b i{width:8px;height:8px;border-radius:50%;background:currentColor;flex:none;display:block;opacity:.85}
+.ball .sfx{font-size:12px; color:var(--ink-2)}
+.ball.none .b{background:var(--sunk); color:var(--ink-2)}
+.ask{display:block; margin:8px 0 0; font-size:14px; color:var(--ink); line-height:1.65}
+.ask:before{content:"「"; color:var(--ink-3)}
+.ask:after{content:"」"; color:var(--ink-3)}
+.ask.empty{color:var(--ink-3); font-size:13px}
+.ask.empty:before,.ask.empty:after{content:none}
+
+.meta{
+  display:flex; gap:14px; flex-wrap:wrap; margin-top:10px; padding-top:9px;
+  border-top:1px dashed var(--line); font-family:var(--mono); font-size:11px;
+  color:var(--ink-3); font-variant-numeric:tabular-nums; letter-spacing:.01em;
+}
+.meta b{font-weight:500; color:var(--ink-2)}
+.meta .due-over{color:var(--crit); font-weight:600}
+.meta .due-soon{color:var(--warn); font-weight:600}
+
+/* ---------- expanded panel ---------- */
+.panel{border-top:1px solid var(--line); background:var(--surface-2); padding:14px 15px 16px}
+.acts{display:flex; gap:7px; flex-wrap:wrap}
+.btn{
+  font-family:var(--sans); font-size:13px; font-weight:500; padding:7px 13px;
+  border-radius:2px; border:1px solid var(--line-strong); background:var(--surface);
+  color:var(--ink); cursor:pointer;
+}
+.btn:hover{border-color:var(--accent); color:var(--accent)}
+.btn.primary{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
+.btn.primary:hover{opacity:.88; color:var(--accent-ink)}
+.btn.quiet{border-color:transparent; color:var(--ink-3)}
+.btn.quiet:hover{color:var(--crit); border-color:var(--crit)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+
+.form{margin-top:12px; display:flex; flex-direction:column; gap:9px}
+.field{display:flex; flex-direction:column; gap:4px}
+.field > span{font-size:11px; letter-spacing:.1em; color:var(--ink-3); font-family:var(--mono); font-weight:500}
+input[type=text],input[type=date],select,textarea{
+  font-family:var(--sans); font-size:15px; color:var(--ink); background:var(--surface);
+  border:1px solid var(--line-strong); border-radius:2px; padding:8px 10px; width:100%;
+}
+input[type=date]{font-family:var(--mono); font-size:14px}
+textarea{resize:vertical; min-height:66px; line-height:1.6}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{
+  outline:2px solid var(--accent); outline-offset:2px;
+}
+.row2{display:grid; grid-template-columns:1fr 1fr; gap:9px}
+@media (max-width:520px){ .row2{grid-template-columns:1fr} }
+.chips{display:flex; gap:6px; flex-wrap:wrap}
+.chip{
+  font-family:var(--sans); font-size:13px; padding:5px 11px; border-radius:2px;
+  border:1px solid var(--line-strong); background:var(--surface); color:var(--ink); cursor:pointer;
+}
+.chip[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:var(--accent-ink); font-weight:700}
+.chip.add{border-style:dashed; color:var(--ink-3)}
+
+/* ---------- log ---------- */
+.loghead{
+  font-family:var(--mono); font-size:11px; letter-spacing:.14em; color:var(--ink-3);
+  margin:18px 0 8px; font-weight:500;
+}
+.log{list-style:none; margin:0; padding:0; border-left:1px solid var(--line); }
+.log li{position:relative; padding:0 0 13px 16px}
+.log li:last-child{padding-bottom:0}
+.log li:before{
+  content:""; position:absolute; left:-3.5px; top:8px; width:6px; height:6px;
+  border-radius:50%; background:var(--line-strong);
+}
+.log li.pass:before{background:var(--accent)}
+.log li.nudge:before{background:var(--crit)}
+.log li.done:before{background:var(--ok)}
+.log .lh{display:flex; gap:9px; align-items:baseline; flex-wrap:wrap; font-size:13px}
+.log .lw{font-weight:700}
+.log .lk{
+  font-size:11px; padding:0 6px; border-radius:2px; background:var(--sunk); color:var(--ink-2);
+}
+.log li.pass .lk{background:var(--accent-soft); color:var(--accent)}
+.log li.nudge .lk{background:var(--crit-soft); color:var(--crit)}
+.log li.done .lk{background:var(--ok-soft); color:var(--ok)}
+.log .lt{font-family:var(--mono); font-size:11px; color:var(--ink-3); font-variant-numeric:tabular-nums; margin-left:auto}
+.log .lb{display:block; font-size:13px; color:var(--ink-2); line-height:1.65; margin-top:1px; white-space:pre-wrap}
+
+/* ---------- notices / empty ---------- */
+.notice{
+  border:1px solid var(--line); background:var(--surface); border-radius:2px;
+  padding:16px 17px; margin-top:18px; box-shadow:var(--shadow);
+}
+.notice h3{margin:0 0 6px; font-size:15px; font-family:var(--serif); font-weight:600; letter-spacing:.02em}
+.notice p{margin:0; color:var(--ink-2); font-size:13.5px; line-height:1.75}
+.notice.warn{border-color:var(--warn); background:var(--warn-soft)}
+.notice.warn h3,.notice.warn p{color:var(--ink)}
+.empty{text-align:center; padding:44px 20px 40px; color:var(--ink-3)}
+.empty h3{font-family:var(--serif); font-size:18px; color:var(--ink-2); margin:0 0 8px; font-weight:600}
+.empty p{margin:0 auto 18px; max-width:34em; font-size:13.5px; line-height:1.8}
+
+/* ---------- new case fab ---------- */
+.newbar{
+  position:fixed; left:0; right:0; bottom:0; z-index:30; padding:10px 16px 14px;
+  background:linear-gradient(to top, var(--paper) 68%, transparent);
+  display:flex; justify-content:center; pointer-events:none;
+}
+.newbar .btn{pointer-events:auto; box-shadow:var(--shadow); padding:10px 22px; font-size:14px; font-weight:700}
+
+/* ---------- dialog ---------- */
+.scrim{
+  position:fixed; inset:0; z-index:40; background:rgba(20,19,17,.45);
+  display:flex; align-items:flex-end; justify-content:center; padding:0;
+}
+@media (min-width:560px){ .scrim{align-items:center; padding:24px} }
+.sheet{
+  background:var(--surface); border:1px solid var(--line-strong); border-radius:2px;
+  width:100%; max-width:520px; max-height:88vh; overflow:auto; padding:18px 18px 20px;
+}
+.sheet h2{margin:0 0 3px; font-family:var(--serif); font-size:19px; font-weight:600; letter-spacing:.02em}
+.sheet .sub{margin:0 0 14px; font-size:12.5px; color:var(--ink-3); line-height:1.6}
+.sheet .foot{display:flex; gap:8px; justify-content:flex-end; margin-top:16px}
+.err{color:var(--crit); font-size:12.5px; margin:8px 0 0; min-height:1px}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){ *{transition:none!important; animation:none!important} }
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <h1>ボール台帳</h1>
+    <p>いま誰がボールを持っていて、何日止まっているか。全員が書き込み、全員が同じものを見る。</p>
+  </header>
+
+  <div class="bar">
+    <div class="bar-row">
+      <button class="who" id="whoBtn" type="button">
+        <span class="dot"></span>
+        <span class="lbl">あなた</span>
+        <span class="nm" id="whoName">未設定</span>
+      </button>
+      <span class="spacer"></span>
+      <span id="conn" style="font-family:var(--mono);font-size:11px;color:var(--ink-3)"></span>
+    </div>
+    <div class="filters" id="filters"></div>
+  </div>
+
+  <div id="body"></div>
+</div>
+
+<div class="newbar"><button class="btn primary" id="newBtn" type="button">＋ 案件を追加</button></div>
+<div id="modal"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ===== 工程（建売・注文住宅の実際の順序） ===== */
+var PHASES = ["用地・仕入","企画・設計","確認申請","契約","着工","上棟","内装・設備","完了検査","引渡・決済"];
+var KINDS  = ["建売","注文","土地","リフォーム","その他"];
+
+var DAY = 86400000;
+var LOG_KIND = {
+  create:"登録", pass:"引き渡し", note:"進捗", nudge:"催促",
+  phase:"工程", done:"完了", reopen:"再開", edit:"修正"
+};
+
+var db = null, dbState = "loading";
+var state = {
+  me: null, members: [], cases: [], logs: [], openId: null,
+  filter: "all", holderFilter: null, logUnsub: null, err: ""
+};
+
+/* ===== utilities ===== */
+function esc(s){
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+  });
+}
+function nid(p){
+  return p + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8);
+}
+function todayStr(){
+  var d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+}
+function startOfToday(){ var d = new Date(); d.setHours(0,0,0,0); return d.getTime(); }
+function daysSince(ms){
+  if(!ms) return 0;
+  var d = new Date(ms); d.setHours(0,0,0,0);
+  return Math.max(0, Math.round((startOfToday() - d.getTime()) / DAY));
+}
+function daysUntil(dateStr){
+  if(!dateStr) return null;
+  var p = dateStr.split("-");
+  if(p.length !== 3) return null;
+  var d = new Date(+p[0], +p[1]-1, +p[2]); d.setHours(0,0,0,0);
+  return Math.round((d.getTime() - startOfToday()) / DAY);
+}
+function fmtDate(ms){
+  if(!ms) return "—";
+  var d = new Date(ms);
+  return (d.getMonth()+1) + "/" + d.getDate();
+}
+function fmtStamp(ms){
+  var d = new Date(ms);
+  return (d.getMonth()+1) + "/" + d.getDate() + " " +
+    String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
+}
+function stallLevel(c){
+  if(c.status === "done") return "calm";
+  var d = daysSince(c.movedAt);
+  var u = daysUntil(c.due);
+  if(d >= 7 || (u !== null && u < 0)) return "crit";
+  if(d >= 3 || (u !== null && u <= 1)) return "warn";
+  return "calm";
+}
+function needsAttention(c){ return c.status !== "done" && stallLevel(c) !== "calm"; }
+
+/* ===== db plumbing ===== */
+function setConn(txt){ document.getElementById("conn").textContent = txt; }
+
+function fail(e){
+  var code = e && e.code ? e.code : "unavailable";
+  if(code === "quota_exceeded") state.err = "保存できる件数が上限に達しました。古い案件を削除してください。";
+  else if(code === "resource_exhausted") state.err = "書き込みが混み合っています。少し待ってからもう一度。";
+  else if(code === "revoked" || code === "not_granted") state.err = "共有データへの権限がなくなりました。ページを開き直してください。";
+  else state.err = "保存できませんでした。通信を確認してもう一度お試しください。";
+  render();
+}
+
+function boot(){
+  render();
+  if(!window.claude || !window.claude.use){ dbState = "off"; render(); return; }
+  window.claude.use("db").then(function(x){
+    if(!x){ dbState = "off"; render(); return; }
+    db = x; dbState = "on";
+    setConn("同期中");
+    db.doc("meta/members").onSnapshot(function(snap){
+      var d = snap.exists ? snap.data() : null;
+      state.members = (d && Array.isArray(d.list)) ? d.list.slice() : [];
+      render();
+    }, function(){ /* members are optional; the board still works */ });
+    db.collection("cases").onSnapshot(function(snap){
+      state.cases = snap.docs.map(function(s){
+        var v = s.data() || {}; v.id = s.id; return v;
+      });
+      setConn(snap.metadata.fromCache ? "同期中" : "同期済");
+      render();
+    }, function(e){ dbState = "error"; fail(e); });
+  }, function(){ dbState = "off"; render(); });
+}
+
+function watchLog(caseId){
+  if(state.logUnsub){ state.logUnsub(); state.logUnsub = null; }
+  state.logs = [];
+  if(!db || !caseId) return;
+  state.logUnsub = db.collection("cases/" + caseId + "/log")
+    .orderBy("at","desc").limit(40)
+    .onSnapshot(function(snap){
+      state.logs = snap.docs.map(function(s){ var v = s.data() || {}; v.id = s.id; return v; });
+      render();
+    }, function(){ /* log is supplementary; the card still renders */ });
+}
+
+function writeLog(caseId, kind, text, to){
+  if(!db) return Promise.resolve();
+  return db.collection("cases/" + caseId + "/log").doc(nid("l_")).set({
+    at: Date.now(), by: state.me || "不明", kind: kind,
+    text: text || "", to: to || ""
+  });
+}
+
+function rememberMember(name){
+  if(!db || !name) return;
+  db.doc("meta/members").get().then(function(snap){
+    var list = (snap.exists && Array.isArray((snap.data()||{}).list)) ? snap.data().list.slice() : [];
+    if(list.indexOf(name) === -1){ list.push(name); db.doc("meta/members").set({ list: list }); }
+  }).catch(function(){});
+}
+
+/* ===== actions ===== */
+function createCase(v){
+  var id = nid("c_"), now = Date.now();
+  return db.collection("cases").doc(id).set({
+    title: v.title, kind: v.kind, phase: v.phase, holder: v.holder,
+    ask: v.ask, due: v.due, status: "open",
+    movedAt: now, updatedAt: now, createdAt: now, createdBy: state.me
+  }).then(function(){
+    return writeLog(id, "create", v.holder ? (v.holder + " から開始") : "担当未定で登録", v.holder);
+  }).then(function(){ state.openId = id; watchLog(id); });
+}
+
+function passBall(c, to, ask, note){
+  var now = Date.now();
+  return db.collection("cases").doc(c.id).update({
+    holder: to, ask: ask, movedAt: now, updatedAt: now
+  }).then(function(){
+    var body = (note ? note + "\n" : "") + "依頼：" + ask;
+    return writeLog(c.id, "pass", body, to);
+  });
+}
+function addNote(c, note){
+  var now = Date.now();
+  return db.collection("cases").doc(c.id).update({ movedAt: now, updatedAt: now })
+    .then(function(){ return writeLog(c.id, "note", note); });
+}
+function nudge(c, note){
+  return db.collection("cases").doc(c.id).update({ updatedAt: Date.now() })
+    .then(function(){ return writeLog(c.id, "nudge", note || (c.holder + " さんへ確認をお願いします"), c.holder); });
+}
+function setPhase(c, phase){
+  var now = Date.now();
+  return db.collection("cases").doc(c.id).update({ phase: phase, movedAt: now, updatedAt: now })
+    .then(function(){ return writeLog(c.id, "phase", PHASES[phase] + " に進めた"); });
+}
+function finish(c){
+  return db.collection("cases").doc(c.id).update({ status: "done", updatedAt: Date.now() })
+    .then(function(){ return writeLog(c.id, "done", "完了"); });
+}
+function reopen(c){
+  var now = Date.now();
+  return db.collection("cases").doc(c.id).update({ status: "open", movedAt: now, updatedAt: now })
+    .then(function(){ return writeLog(c.id, "reopen", "再開"); });
+}
+function editCase(c, v){
+  return db.collection("cases").doc(c.id).update({
+    title: v.title, kind: v.kind, due: v.due, ask: v.ask, updatedAt: Date.now()
+  }).then(function(){ return writeLog(c.id, "edit", "案件の内容を修正"); });
+}
+
+/* ===== filtering ===== */
+function visibleCases(){
+  var list = state.cases.slice();
+  if(state.filter === "done") list = list.filter(function(c){ return c.status === "done"; });
+  else list = list.filter(function(c){ return c.status !== "done"; });
+  if(state.filter === "mine") list = list.filter(function(c){ return state.me && c.holder === state.me; });
+  if(state.filter === "stuck") list = list.filter(needsAttention);
+  if(state.holderFilter !== null) list = list.filter(function(c){ return (c.holder || "") === state.holderFilter; });
+  list.sort(function(a,b){
+    var r = { crit:0, warn:1, calm:2 };
+    var d = r[stallLevel(a)] - r[stallLevel(b)];
+    if(d) return d;
+    return (a.movedAt || 0) - (b.movedAt || 0);
+  });
+  return list;
+}
+function counts(){
+  var open = state.cases.filter(function(c){ return c.status !== "done"; });
+  return {
+    all: open.length,
+    mine: state.me ? open.filter(function(c){ return c.holder === state.me; }).length : 0,
+    stuck: open.filter(needsAttention).length,
+    done: state.cases.length - open.length
+  };
+}
+function tally(){
+  var open = state.cases.filter(function(c){ return c.status !== "done"; });
+  var map = {}, order = [];
+  open.forEach(function(c){
+    var k = c.holder || "";
+    if(!map[k]){ map[k] = { name: k, n: 0, warn: 0 }; order.push(k); }
+    map[k].n++;
+    if(needsAttention(c)) map[k].warn++;
+  });
+  return order.map(function(k){ return map[k]; })
+    .sort(function(a,b){ return b.warn - a.warn || b.n - a.n; });
+}
+
+/* ===== render ===== */
+function render(){
+  document.getElementById("whoName").textContent = state.me || "未設定";
+  renderFilters();
+  var body = document.getElementById("body");
+
+  if(dbState === "loading"){
+    body.innerHTML = '<div class="empty"><h3>読み込んでいます</h3><p>共有データに接続しています。</p></div>';
+    return;
+  }
+  if(dbState === "off" || dbState === "error"){
+    body.innerHTML =
+      '<div class="notice warn"><h3>共有データにつながっていません</h3>' +
+      '<p>この画面では書き込みを保存できません。claude.ai にサインインした状態で、' +
+      '公開されたページのリンクから開き直してください。</p></div>';
+    return;
+  }
+
+  var html = "";
+  if(state.err){
+    html += '<div class="notice warn"><h3>保存できませんでした</h3><p>' + esc(state.err) + '</p></div>';
+  }
+
+  var t = tally();
+  if(t.length){
+    html += '<div class="tallyhead">ボールの持ち主</div><div class="tally">';
+    t.forEach(function(h){
+      var nm = h.name || "担当未定";
+      var pressed = state.holderFilter === h.name ? "true" : "false";
+      html += '<button class="tcard" type="button" data-holder="' + esc(h.name) + '" aria-pressed="' + pressed + '">' +
+        '<span class="tn"><i></i>' + esc(nm) + '</span>' +
+        '<span class="tc">' + h.n + '</span>' +
+        '<span class="tw' + (h.warn ? "" : " calm") + '">' +
+        (h.warn ? "要対応 " + h.warn + "件" : "遅れなし") + '</span></button>';
+    });
+    html += '</div>';
+  }
+
+  var list = visibleCases();
+  if(!list.length){
+    html += '<div class="empty"><h3>' +
+      (state.cases.length ? "この条件の案件はありません" : "まだ案件がありません") + '</h3><p>' +
+      (state.cases.length
+        ? "絞り込みを外すか、別の担当者を選んでください。"
+        : "物件を1件登録すると、そこからボールの受け渡しが記録されていきます。工事中の物件でも、動きが止まっている案件でも構いません。") +
+      '</p></div>';
+  } else {
+    html += '<div class="list">' + list.map(caseHtml).join("") + '</div>';
+  }
+  body.innerHTML = html;
+}
+
+function renderFilters(){
+  var c = counts();
+  var defs = [
+    { k:"all",   t:"進行中", n:c.all },
+    { k:"mine",  t:"自分のボール", n:c.mine },
+    { k:"stuck", t:"要対応", n:c.stuck },
+    { k:"done",  t:"完了", n:c.done }
+  ];
+  document.getElementById("filters").innerHTML = defs.map(function(d){
+    return '<button class="fbtn" type="button" data-filter="' + d.k + '" aria-pressed="' +
+      (state.filter === d.k ? "true" : "false") + '">' + d.t +
+      '<span class="n">' + d.n + '</span></button>';
+  }).join("");
+}
+
+function caseHtml(c){
+  var open = state.openId === c.id;
+  var lvl = stallLevel(c);
+  var d = daysSince(c.movedAt);
+  var ph = typeof c.phase === "number" ? c.phase : 0;
+  var u = daysUntil(c.due);
+
+  var ticks = "";
+  for(var i = 0; i < PHASES.length; i++) ticks += '<i class="' + (i <= ph ? "on" : "") + '"></i>';
+
+  var dueCls = "", dueTxt = "";
+  if(c.due){
+    dueCls = u < 0 ? "due-over" : (u <= 2 ? "due-soon" : "");
+    dueTxt = c.due.slice(5).replace("-","/") +
+      (u < 0 ? "（" + (-u) + "日超過）" : u === 0 ? "（今日）" : "（あと" + u + "日）");
+  }
+
+  var h = '<article class="case' + (c.status === "done" ? " is-done" : "") + '">' +
+    '<button class="case-head" type="button" data-open="' + esc(c.id) + '" aria-expanded="' + open + '">' +
+      '<span>' +
+        '<span class="kind">' + esc(c.kind || "その他") + '</span>' +
+        '<span class="title">' + esc(c.title) + '</span>' +
+        '<span class="phase"><span class="no">' + String(ph+1).padStart(2,"0") + '/' + PHASES.length + '</span>' +
+          '<span class="nm">' + esc(PHASES[ph] || "—") + '</span>' +
+          '<span class="ticks">' + ticks + '</span></span>' +
+        (c.status === "done"
+          ? '<span class="ball none"><span class="b"><i></i>完了</span></span>'
+          : '<span class="ball' + (c.holder ? "" : " none") + '">' +
+              '<span class="b"><i></i>' + esc(c.holder || "担当未定") + '</span>' +
+              '<span class="sfx">' + (c.holder ? "が持っている" : "＝誰も持っていない") + '</span></span>') +
+        '<span class="ask' + (c.ask ? "" : " empty") + '">' +
+          esc(c.ask || "次にやることが書かれていません") + '</span>' +
+        '<span class="meta">' +
+          (c.due ? '<span class="' + dueCls + '">期限 ' + esc(dueTxt) + '</span>' : '') +
+          '<span>最終更新 <b>' + esc(fmtDate(c.updatedAt)) + '</b></span>' +
+        '</span>' +
+      '</span>' +
+      '<span class="stall ' + lvl + '"><span class="v">' + d + '</span>' +
+        '<span class="u">日停滞</span></span>' +
+    '</button>';
+
+  if(open) h += panelHtml(c);
+  return h + '</article>';
+}
+
+function panelHtml(c){
+  var done = c.status === "done";
+  var h = '<div class="panel"><div class="acts">';
+  if(!done){
+    h += '<button class="btn primary" type="button" data-act="pass" data-id="' + esc(c.id) + '">ボールを渡す</button>' +
+         '<button class="btn" type="button" data-act="note" data-id="' + esc(c.id) + '">進捗を書く</button>' +
+         '<button class="btn" type="button" data-act="nudge" data-id="' + esc(c.id) + '">催促する</button>' +
+         '<button class="btn" type="button" data-act="phase" data-id="' + esc(c.id) + '">工程を進める</button>' +
+         '<button class="btn" type="button" data-act="edit" data-id="' + esc(c.id) + '">編集</button>' +
+         '<button class="btn quiet" type="button" data-act="finish" data-id="' + esc(c.id) + '">完了にする</button>';
+  } else {
+    h += '<button class="btn" type="button" data-act="reopen" data-id="' + esc(c.id) + '">再開する</button>' +
+         '<button class="btn quiet" type="button" data-act="edit" data-id="' + esc(c.id) + '">編集</button>';
+  }
+  h += '</div><div class="loghead">やりとりの記録</div>';
+
+  if(!state.logs.length){
+    h += '<p style="margin:0;color:var(--ink-3);font-size:13px">まだ記録がありません。</p></div>';
+    return h;
+  }
+  h += '<ul class="log">' + state.logs.map(function(l){
+    return '<li class="' + esc(l.kind) + '">' +
+      '<span class="lh"><span class="lw">' + esc(l.by) + '</span>' +
+      '<span class="lk">' + esc(LOG_KIND[l.kind] || l.kind) + '</span>' +
+      (l.to ? '<span style="font-size:12px;color:var(--ink-3)">→ ' + esc(l.to) + '</span>' : '') +
+      '<span class="lt">' + esc(fmtStamp(l.at)) + '</span></span>' +
+      (l.text ? '<span class="lb">' + esc(l.text) + '</span>' : '') +
+      '</li>';
+  }).join("") + '</ul></div>';
+  return h;
+}
+
+/* ===== modal ===== */
+function closeModal(){ document.getElementById("modal").innerHTML = ""; }
+
+function openModal(html, onMount){
+  var m = document.getElementById("modal");
+  m.innerHTML = '<div class="scrim" data-scrim="1"><div class="sheet" role="dialog" aria-modal="true">' + html + '</div></div>';
+  m.querySelector('[data-scrim]').addEventListener("mousedown", function(e){
+    if(e.target === e.currentTarget) closeModal();
+  });
+  if(onMount) onMount(m.querySelector(".sheet"));
+  var f = m.querySelector("input,select,textarea,button");
+  if(f) f.focus();
+}
+
+function memberChips(selected, idPrefix){
+  var names = state.members.slice();
+  if(state.me && names.indexOf(state.me) === -1) names.unshift(state.me);
+  return '<div class="chips" id="' + idPrefix + '">' +
+    names.map(function(n){
+      return '<button class="chip" type="button" data-name="' + esc(n) + '" aria-pressed="' +
+        (n === selected ? "true" : "false") + '">' + esc(n) + '</button>';
+    }).join("") +
+    '<button class="chip add" type="button" data-name="__new">＋ 名前を追加</button></div>';
+}
+
+function bindChips(root, id, onPick){
+  var box = root.querySelector("#" + id);
+  if(!box) return;
+  box.addEventListener("click", function(e){
+    var b = e.target.closest(".chip"); if(!b) return;
+    if(b.dataset.name === "__new"){
+      var v = window.prompt("名前を入力してください");
+      v = v && v.trim();
+      if(!v) return;
+      if(state.members.indexOf(v) === -1) state.members.push(v);
+      rememberMember(v);
+      var nb = document.createElement("button");
+      nb.className = "chip"; nb.type = "button"; nb.dataset.name = v; nb.textContent = v;
+      box.insertBefore(nb, b);
+      b = nb;
+    }
+    Array.prototype.forEach.call(box.querySelectorAll(".chip"), function(x){
+      x.setAttribute("aria-pressed", x === b ? "true" : "false");
+    });
+    onPick(b.dataset.name);
+  });
+}
+
+function whoModal(){
+  openModal(
+    '<h2>あなたは誰ですか</h2>' +
+    '<p class="sub">書き込みにはこの名前が残ります。この端末に記憶され、次からは聞きません。</p>' +
+    memberChips(state.me, "whoChips") +
+    '<div class="foot"><button class="btn" type="button" data-x="1">閉じる</button></div>',
+    function(root){
+      bindChips(root, "whoChips", function(name){
+        state.me = name;
+        try{ localStorage.setItem("ballboard.me", name); }catch(e){}
+        rememberMember(name);
+        closeModal(); render();
+      });
+      root.querySelector('[data-x]').addEventListener("click", closeModal);
+    }
+  );
+}
+
+function requireMe(then){
+  if(state.me) return then();
+  whoModal();
+}
+
+function newCaseModal(){
+  var pick = { holder: state.me || "", phase: 0, kind: "建売" };
+  openModal(
+    '<h2>案件を追加</h2>' +
+    '<p class="sub">物件ごとに1件。あとから何度でも直せます。</p>' +
+    '<div class="form">' +
+      '<label class="field"><span>物件名</span>' +
+        '<input type="text" id="f_title" placeholder="例：新宿 / 大宮2号地" autocomplete="off"></label>' +
+      '<div class="row2">' +
+        '<label class="field"><span>種別</span><select id="f_kind">' +
+          KINDS.map(function(k){ return '<option>' + esc(k) + '</option>'; }).join("") +
+        '</select></label>' +
+        '<label class="field"><span>いまの工程</span><select id="f_phase">' +
+          PHASES.map(function(p,i){ return '<option value="' + i + '">' + String(i+1).padStart(2,"0") + ' ' + esc(p) + '</option>'; }).join("") +
+        '</select></label>' +
+      '</div>' +
+      '<div class="field"><span>いま誰が持っているか</span>' + memberChips(pick.holder, "ncHolder") + '</div>' +
+      '<label class="field"><span>その人が次にやること</span>' +
+        '<textarea id="f_ask" placeholder="例：確認申請の書類を役所に提出する"></textarea></label>' +
+      '<label class="field"><span>期限（任意）</span><input type="date" id="f_due"></label>' +
+    '</div><p class="err" id="f_err"></p>' +
+    '<div class="foot"><button class="btn" type="button" data-x="1">やめる</button>' +
+    '<button class="btn primary" type="button" id="f_ok">登録する</button></div>',
+    function(root){
+      bindChips(root, "ncHolder", function(n){ pick.holder = n; });
+      root.querySelector('[data-x]').addEventListener("click", closeModal);
+      root.querySelector("#f_ok").addEventListener("click", function(){
+        var title = root.querySelector("#f_title").value.trim();
+        if(!title){ root.querySelector("#f_err").textContent = "物件名を入れてください。"; return; }
+        this.disabled = true;
+        createCase({
+          title: title,
+          kind: root.querySelector("#f_kind").value,
+          phase: +root.querySelector("#f_phase").value,
+          holder: pick.holder,
+          ask: root.querySelector("#f_ask").value.trim(),
+          due: root.querySelector("#f_due").value
+        }).then(function(){ closeModal(); render(); }, fail);
+      });
+    }
+  );
+}
+
+function passModal(c){
+  var to = "";
+  openModal(
+    '<h2>ボールを渡す</h2>' +
+    '<p class="sub">' + esc(c.title) + ' ／ いま ' + esc(c.holder || "担当未定") + '</p>' +
+    '<div class="form">' +
+      '<div class="field"><span>誰に渡すか</span>' + memberChips("", "pbTo") + '</div>' +
+      '<label class="field"><span>その人にやってほしいこと</span>' +
+        '<textarea id="p_ask" placeholder="例：施主に色決めの確認を取る"></textarea></label>' +
+      '<label class="field"><span>自分がやったこと（任意）</span>' +
+        '<textarea id="p_note" placeholder="例：図面を修正して見積を出した"></textarea></label>' +
+    '</div><p class="err" id="p_err"></p>' +
+    '<div class="foot"><button class="btn" type="button" data-x="1">やめる</button>' +
+    '<button class="btn primary" type="button" id="p_ok">渡す</button></div>',
+    function(root){
+      bindChips(root, "pbTo", function(n){ to = n; });
+      root.querySelector('[data-x]').addEventListener("click", closeModal);
+      root.querySelector("#p_ok").addEventListener("click", function(){
+        var ask = root.querySelector("#p_ask").value.trim();
+        if(!to){ root.querySelector("#p_err").textContent = "渡す相手を選んでください。"; return; }
+        if(!ask){ root.querySelector("#p_err").textContent = "やってほしいことを書いてください。"; return; }
+        this.disabled = true;
+        passBall(c, to, ask, root.querySelector("#p_note").value.trim())
+          .then(closeModal, fail);
+      });
+    }
+  );
+}
+
+function textModal(title, sub, ph, okLabel, run){
+  openModal(
+    '<h2>' + esc(title) + '</h2><p class="sub">' + esc(sub) + '</p>' +
+    '<div class="form"><label class="field"><span>内容</span>' +
+    '<textarea id="t_v" placeholder="' + esc(ph) + '"></textarea></label></div>' +
+    '<p class="err" id="t_err"></p>' +
+    '<div class="foot"><button class="btn" type="button" data-x="1">やめる</button>' +
+    '<button class="btn primary" type="button" id="t_ok">' + esc(okLabel) + '</button></div>',
+    function(root){
+      root.querySelector('[data-x]').addEventListener("click", closeModal);
+      root.querySelector("#t_ok").addEventListener("click", function(){
+        var v = root.querySelector("#t_v").value.trim();
+        if(!v){ root.querySelector("#t_err").textContent = "内容を書いてください。"; return; }
+        this.disabled = true;
+        run(v).then(closeModal, fail);
+      });
+    }
+  );
+}
+
+function phaseModal(c){
+  var ph = typeof c.phase === "number" ? c.phase : 0;
+  openModal(
+    '<h2>工程を進める</h2><p class="sub">' + esc(c.title) + '</p>' +
+    '<div class="form"><label class="field"><span>いまの工程</span><select id="ph_v">' +
+      PHASES.map(function(p,i){
+        return '<option value="' + i + '"' + (i === ph ? " selected" : "") + '>' +
+          String(i+1).padStart(2,"0") + ' ' + esc(p) + '</option>';
+      }).join("") + '</select></label></div>' +
+    '<div class="foot"><button class="btn" type="button" data-x="1">やめる</button>' +
+    '<button class="btn primary" type="button" id="ph_ok">更新する</button></div>',
+    function(root){
+      root.querySelector('[data-x]').addEventListener("click", closeModal);
+      root.querySelector("#ph_ok").addEventListener("click", function(){
+        this.disabled = true;
+        setPhase(c, +root.querySelector("#ph_v").value).then(closeModal, fail);
+      });
+    }
+  );
+}
+
+function editModal(c){
+  openModal(
+    '<h2>案件を編集</h2><p class="sub">担当や工程は、記録が残るよう専用のボタンから変えてください。</p>' +
+    '<div class="form">' +
+      '<label class="field"><span>物件名</span><input type="text" id="e_title" value="' + esc(c.title) + '"></label>' +
+      '<label class="field"><span>種別</span><select id="e_kind">' +
+        KINDS.map(function(k){ return '<option' + (k === c.kind ? " selected" : "") + '>' + esc(k) + '</option>'; }).join("") +
+      '</select></label>' +
+      '<label class="field"><span>次にやること</span><textarea id="e_ask">' + esc(c.ask || "") + '</textarea></label>' +
+      '<label class="field"><span>期限</span><input type="date" id="e_due" value="' + esc(c.due || "") + '"></label>' +
+    '</div><p class="err" id="e_err"></p>' +
+    '<div class="foot"><button class="btn" type="button" data-x="1">やめる</button>' +
+    '<button class="btn primary" type="button" id="e_ok">保存する</button></div>',
+    function(root){
+      root.querySelector('[data-x]').addEventListener("click", closeModal);
+      root.querySelector("#e_ok").addEventListener("click", function(){
+        var t = root.querySelector("#e_title").value.trim();
+        if(!t){ root.querySelector("#e_err").textContent = "物件名を入れてください。"; return; }
+        this.disabled = true;
+        editCase(c, {
+          title: t,
+          kind: root.querySelector("#e_kind").value,
+          ask: root.querySelector("#e_ask").value.trim(),
+          due: root.querySelector("#e_due").value
+        }).then(closeModal, fail);
+      });
+    }
+  );
+}
+
+/* ===== events ===== */
+function byId(id){ return state.cases.filter(function(c){ return c.id === id; })[0]; }
+
+document.addEventListener("click", function(e){
+  var t;
+  if(state.err){ state.err = ""; setTimeout(render, 0); }
+
+  if(e.target.closest("#whoBtn")){ whoModal(); return; }
+  if(e.target.closest("#newBtn")){ requireMe(newCaseModal); return; }
+
+  t = e.target.closest("[data-filter]");
+  if(t){ state.filter = t.dataset.filter; state.holderFilter = null; render(); return; }
+
+  t = e.target.closest("[data-holder]");
+  if(t){
+    var h = t.dataset.holder;
+    state.holderFilter = state.holderFilter === h ? null : h;
+    if(state.filter === "done") state.filter = "all";
+    render(); return;
+  }
+
+  t = e.target.closest("[data-open]");
+  if(t){
+    var id = t.dataset.open;
+    state.openId = state.openId === id ? null : id;
+    watchLog(state.openId);
+    render(); return;
+  }
+
+  t = e.target.closest("[data-act]");
+  if(t){
+    var c = byId(t.dataset.id);
+    if(!c) return;
+    var act = t.dataset.act;
+    requireMe(function(){
+      if(act === "pass")   return passModal(c);
+      if(act === "phase")  return phaseModal(c);
+      if(act === "edit")   return editModal(c);
+      if(act === "note")   return textModal("進捗を書く", c.title, "例：役所に提出済み。返答待ち。", "記録する",
+                                            function(v){ return addNote(c, v); });
+      if(act === "nudge")  return textModal("催促する", c.title + " ／ " + (c.holder || "担当未定") + " さんへ",
+                                            "例：来週の着工に間に合いますか？", "催促を記録",
+                                            function(v){ return nudge(c, v); });
+      if(act === "finish"){
+        if(window.confirm("この案件を完了にしますか？")) finish(c).catch(fail);
+        return;
+      }
+      if(act === "reopen") return reopen(c).catch(fail);
+    });
+    return;
+  }
+});
+
+document.addEventListener("keydown", function(e){
+  if(e.key === "Escape") closeModal();
+});
+
+try{ state.me = localStorage.getItem("ballboard.me") || null; }catch(e){}
+boot();
+})();
+</script>
