@@ -103,6 +103,40 @@ body{
 .tcard .tw{display:block; font-size:11px; color:var(--crit); font-weight:500; line-height:1.4}
 .tcard .tw.calm{color:var(--ink-3); font-weight:400}
 
+/* ---------- your own balls, pinned ---------- */
+.mine{
+  background:var(--accent-soft); border:1px solid var(--accent-line); border-radius:2px;
+  padding:12px 13px 13px; margin-top:18px;
+}
+.mine-head{display:flex; align-items:baseline; gap:9px; flex-wrap:wrap; margin-bottom:9px}
+.mine-head .h{font-family:var(--serif); font-size:15px; font-weight:600; letter-spacing:.03em}
+.mine-head .n{font-family:var(--mono); font-size:21px; font-weight:600; color:var(--accent); font-variant-numeric:tabular-nums; line-height:1}
+.mine-head .s{font-size:11.5px; color:var(--ink-2); font-family:var(--mono); margin-left:auto}
+.minelist{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:3px}
+.minerow{
+  display:grid; grid-template-columns:auto 1fr; gap:11px; align-items:baseline; width:100%;
+  text-align:left; background:var(--surface); border:1px solid transparent; border-radius:2px;
+  padding:8px 10px; cursor:pointer; font-family:var(--sans); font-size:13px; line-height:1.6; color:var(--ink);
+}
+.minerow:hover{border-color:var(--accent)}
+.minerow .d{font-family:var(--mono); font-size:16px; font-weight:600; font-variant-numeric:tabular-nums; min-width:3.2em; text-align:right; white-space:nowrap}
+.minerow .d.calm{color:var(--ink-3)}
+.minerow .d.warn{color:var(--warn)}
+.minerow .d.crit{color:var(--crit)}
+.minerow .d small{font-size:11px; font-weight:400; color:var(--ink-3); margin-left:1px}
+.minerow .t{font-weight:700}
+.minerow .a{display:block; color:var(--ink-2); font-size:12.5px}
+
+/* ---------- one person in focus ---------- */
+.focus{
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:16px;
+  padding:11px 13px; background:var(--surface); border:1px solid var(--line-strong); border-radius:2px;
+}
+.focus .fn{font-family:var(--serif); font-size:17px; font-weight:600; display:flex; align-items:center; gap:8px; letter-spacing:.02em}
+.focus .fn i{width:9px; height:9px; border-radius:50%; background:var(--accent); display:block; flex:none}
+.focus .fs{font-family:var(--mono); font-size:11.5px; color:var(--ink-2); font-variant-numeric:tabular-nums}
+.focus .sp{flex:1 1 auto}
+
 /* ---------- case cards ---------- */
 .list{display:flex; flex-direction:column; gap:10px; margin-top:14px}
 .case{
@@ -110,6 +144,7 @@ body{
   box-shadow:var(--shadow); overflow:hidden;
 }
 .case.is-done{opacity:.62}
+.case.is-mine{border-color:var(--accent-line)}
 .case-head{
   display:grid; grid-template-columns:1fr auto; gap:12px; align-items:start;
   width:100%; text-align:left; background:none; border:0; padding:14px 15px 13px;
@@ -146,6 +181,7 @@ body{
 .ball .b i{width:8px;height:8px;border-radius:50%;background:currentColor;flex:none;display:block;opacity:.85}
 .ball .sfx{font-size:12px; color:var(--ink-2)}
 .ball.none .b{background:var(--sunk); color:var(--ink-2)}
+.ball.you .b{box-shadow:0 0 0 3px var(--accent-soft)}
 .ask{display:block; margin:8px 0 0; font-size:14px; color:var(--ink); line-height:1.65}
 .ask:before{content:"「"; color:var(--ink-3)}
 .ask:after{content:"」"; color:var(--ink-3)}
@@ -257,6 +293,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-vis
 }
 .sheet h2{margin:0 0 3px; font-family:var(--serif); font-size:19px; font-weight:600; letter-spacing:.02em}
 .sheet .sub{margin:0 0 14px; font-size:12.5px; color:var(--ink-3); line-height:1.6}
+.sheet textarea.share{min-height:190px; font-size:13.5px; font-family:var(--sans); line-height:1.7}
 .sheet .foot{display:flex; gap:8px; justify-content:flex-end; margin-top:16px}
 .err{color:var(--crit); font-size:12.5px; margin:8px 0 0; min-height:1px}
 [hidden]{display:none!important}
@@ -304,7 +341,7 @@ var LOG_KIND = {
 
 var db = null, dbState = "loading";
 var state = {
-  me: null, members: [], cases: [], logs: [], openId: null,
+  me: null, members: [], cases: [], logs: [], openId: null, shareUrl: "", jumpTo: null,
   filter: "all", holderFilter: null, logUnsub: null, err: ""
 };
 
@@ -378,6 +415,11 @@ function boot(){
       state.members = (d && Array.isArray(d.list)) ? d.list.slice() : [];
       render();
     }, function(){ /* members are optional; the board still works */ });
+    db.doc("meta/config").onSnapshot(function(snap){
+      var d = snap.exists ? snap.data() : null;
+      state.shareUrl = (d && typeof d.shareUrl === "string") ? d.shareUrl : "";
+      render();
+    }, function(){ /* the link is optional */ });
     db.collection("cases").onSnapshot(function(snap){
       state.cases = snap.docs.map(function(s){
         var v = s.data() || {}; v.id = s.id; return v;
@@ -466,6 +508,30 @@ function editCase(c, v){
   }).then(function(){ return writeLog(c.id, "edit", "案件の内容を修正"); });
 }
 
+function holderCases(name){
+  return state.cases.filter(function(c){
+    return c.status !== "done" && (c.holder || "") === name;
+  }).sort(function(a,b){
+    var r = { crit:0, warn:1, calm:2 };
+    return (r[stallLevel(a)] - r[stallLevel(b)]) || ((a.movedAt || 0) - (b.movedAt || 0));
+  });
+}
+
+function buildShareText(name, list){
+  var now = new Date();
+  var head = "【" + (name || "担当未定") + "のボール " + list.length + "件】" +
+             (now.getMonth()+1) + "/" + now.getDate() + "時点";
+  var lines = list.map(function(c, i){
+    var tags = [ PHASES[typeof c.phase === "number" ? c.phase : 0] ];
+    var st = daysSince(c.movedAt);
+    if(st > 0) tags.push(st + "日止まっています");
+    var u = daysUntil(c.due);
+    if(u !== null) tags.push(u < 0 ? "期限" + (-u) + "日超過" : u === 0 ? "期限は今日" : "期限まであと" + u + "日");
+    return (i+1) + ". " + c.title + "（" + tags.join("・") + "）\n   → " + (c.ask || "次にやることが未記入");
+  });
+  return head + "\n" + lines.join("\n") + (state.shareUrl ? "\n\n台帳 " + state.shareUrl : "");
+}
+
 /* ===== filtering ===== */
 function visibleCases(){
   var list = state.cases.slice();
@@ -527,11 +593,13 @@ function render(){
     html += '<div class="notice warn"><h3>保存できませんでした</h3><p>' + esc(state.err) + '</p></div>';
   }
 
+  html += minePanelHtml();
+
   var t = tally();
   if(t.length){
     html += '<div class="tallyhead">ボールの持ち主</div><div class="tally">';
     t.forEach(function(h){
-      var nm = h.name || "担当未定";
+      var nm = (h.name || "担当未定") + (h.name && h.name === state.me ? "（あなた）" : "");
       var pressed = state.holderFilter === h.name ? "true" : "false";
       html += '<button class="tcard" type="button" data-holder="' + esc(h.name) + '" aria-pressed="' + pressed + '">' +
         '<span class="tn"><i></i>' + esc(nm) + '</span>' +
@@ -541,6 +609,8 @@ function render(){
     });
     html += '</div>';
   }
+
+  if(state.holderFilter !== null) html += focusHtml(state.holderFilter);
 
   var list = visibleCases();
   if(!list.length){
@@ -554,6 +624,46 @@ function render(){
     html += '<div class="list">' + list.map(caseHtml).join("") + '</div>';
   }
   body.innerHTML = html;
+
+  if(state.jumpTo){
+    var target = body.querySelector('[data-open="' + state.jumpTo + '"]');
+    state.jumpTo = null;
+    if(target) target.scrollIntoView({ block: "center" });
+  }
+}
+
+function minePanelHtml(){
+  if(!state.me) return "";
+  var mine = holderCases(state.me);
+  if(!mine.length) return "";
+  var warn = mine.filter(needsAttention).length;
+
+  return '<section class="mine"><div class="mine-head">' +
+    '<span class="h">あなたが持っているボール</span>' +
+    '<span class="n">' + mine.length + '</span>' +
+    '<span class="s">' + (warn ? "要対応 " + warn + "件" : "遅れなし") + '</span>' +
+    '</div><ul class="minelist">' +
+    mine.map(function(c){
+      var lvl = stallLevel(c);
+      return '<li><button class="minerow" type="button" data-jump="' + esc(c.id) + '">' +
+        '<span class="d ' + lvl + '">' + daysSince(c.movedAt) + '<small>日</small></span>' +
+        '<span><span class="t">' + esc(c.title) + '</span>' +
+        '<span class="a">' + esc(c.ask || "次にやることが未記入") + '</span></span>' +
+        '</button></li>';
+    }).join("") +
+    '</ul></section>';
+}
+
+function focusHtml(name){
+  var list = holderCases(name);
+  var warn = list.filter(needsAttention).length;
+  var longest = list.reduce(function(m, c){ return Math.max(m, daysSince(c.movedAt)); }, 0);
+  return '<div class="focus">' +
+    '<span class="fn"><i></i>' + esc(name || "担当未定") + '</span>' +
+    '<span class="fs">ボール ' + list.length + '件 ／ 要対応 ' + warn + '件 ／ 最長 ' + longest + '日停滞</span>' +
+    '<span class="sp"></span>' +
+    (list.length ? '<button class="btn" type="button" data-copy="' + esc(name) + '">貼り付ける文面をつくる</button>' : '') +
+    '</div>';
 }
 
 function renderFilters(){
@@ -588,7 +698,10 @@ function caseHtml(c){
       (u < 0 ? "（" + (-u) + "日超過）" : u === 0 ? "（今日）" : "（あと" + u + "日）");
   }
 
-  var h = '<article class="case' + (c.status === "done" ? " is-done" : "") + '">' +
+  var isMine = c.status !== "done" && state.me && c.holder === state.me;
+
+  var h = '<article class="case' + (c.status === "done" ? " is-done" : "") +
+            (isMine ? " is-mine" : "") + '">' +
     '<button class="case-head" type="button" data-open="' + esc(c.id) + '" aria-expanded="' + open + '">' +
       '<span>' +
         '<span class="kind">' + esc(c.kind || "その他") + '</span>' +
@@ -598,8 +711,8 @@ function caseHtml(c){
           '<span class="ticks">' + ticks + '</span></span>' +
         (c.status === "done"
           ? '<span class="ball none"><span class="b"><i></i>完了</span></span>'
-          : '<span class="ball' + (c.holder ? "" : " none") + '">' +
-              '<span class="b"><i></i>' + esc(c.holder || "担当未定") + '</span>' +
+          : '<span class="ball' + (c.holder ? "" : " none") + (isMine ? " you" : "") + '">' +
+              '<span class="b"><i></i>' + esc(isMine ? "あなた" : (c.holder || "担当未定")) + '</span>' +
               '<span class="sfx">' + (c.holder ? "が持っている" : "＝誰も持っていない") + '</span></span>') +
         '<span class="ask' + (c.ask ? "" : " empty") + '">' +
           esc(c.ask || "次にやることが書かれていません") + '</span>' +
@@ -710,6 +823,51 @@ function whoModal(){
         closeModal(); render();
       });
       root.querySelector('[data-x]').addEventListener("click", closeModal);
+    }
+  );
+}
+
+function shareModal(name){
+  openModal(
+    '<h2>貼り付ける文面</h2>' +
+    '<p class="sub">LINE でも Chatwork でも、そのまま貼れます。送る前に直しても構いません。</p>' +
+    '<div class="form"><textarea class="share" id="sh_t"></textarea></div>' +
+    (state.shareUrl ? "" :
+      '<div class="form"><label class="field"><span>台帳のURL（一度入れれば全員に共有され、以後この欄は出ません）</span>' +
+      '<input type="text" id="sh_u" placeholder="https://claude.ai/code/artifact/..." autocomplete="off"></label></div>') +
+    '<p class="err" id="sh_e"></p>' +
+    '<div class="foot"><button class="btn" type="button" data-x="1">閉じる</button>' +
+    '<button class="btn primary" type="button" id="sh_c">コピーする</button></div>',
+    function(root){
+      var ta = root.querySelector("#sh_t");
+      var err = root.querySelector("#sh_e");
+      ta.value = buildShareText(name, holderCases(name));
+      root.querySelector('[data-x]').addEventListener("click", closeModal);
+
+      var u = root.querySelector("#sh_u");
+      if(u) u.addEventListener("change", function(){
+        var v = u.value.trim();
+        if(!v || !db) return;
+        db.doc("meta/config").set({ shareUrl: v }).then(function(){
+          state.shareUrl = v;
+          ta.value = buildShareText(name, holderCases(name));
+          u.closest(".form").hidden = true;
+        }, fail);
+      });
+
+      root.querySelector("#sh_c").addEventListener("click", function(){
+        var btn = this;
+        ta.focus(); ta.select();
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(ta.value).then(function(){
+            btn.textContent = "コピーしました";
+          }, function(){
+            err.textContent = "自動コピーができませんでした。文面はすべて選択してあります。長押し（右クリック）でコピーしてください。";
+          });
+        } else {
+          err.textContent = "この環境では自動コピーができません。文面はすべて選択してあります。長押し（右クリック）でコピーしてください。";
+        }
+      });
     }
   );
 }
@@ -879,8 +1037,19 @@ document.addEventListener("click", function(e){
   if(t){
     var h = t.dataset.holder;
     state.holderFilter = state.holderFilter === h ? null : h;
-    if(state.filter === "done") state.filter = "all";
+    if(state.filter === "done" || state.filter === "mine") state.filter = "all";
     render(); return;
+  }
+
+  t = e.target.closest("[data-copy]");
+  if(t){ shareModal(t.dataset.copy); return; }
+
+  t = e.target.closest("[data-jump]");
+  if(t){
+    var jid = t.dataset.jump;
+    state.filter = "all"; state.holderFilter = null;
+    state.openId = jid; state.jumpTo = jid;
+    watchLog(jid); render(); return;
   }
 
   t = e.target.closest("[data-open]");
