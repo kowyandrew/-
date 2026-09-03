@@ -111,6 +111,18 @@ body{
 .mine-head{display:flex; align-items:baseline; gap:9px; flex-wrap:wrap; margin-bottom:9px}
 .mine-head .h{font-family:var(--serif); font-size:15px; font-weight:600; letter-spacing:.03em}
 .mine-head .n{font-family:var(--mono); font-size:21px; font-weight:600; color:var(--accent); font-variant-numeric:tabular-nums; line-height:1}
+.mine.q{background:var(--warn-soft); border-color:var(--warn)}
+.mine.q .mine-head .n{color:var(--warn)}
+.mine.a{background:var(--ok-soft); border-color:var(--ok)}
+.mine.a .mine-head .n{color:var(--ok)}
+.pending-note{
+  margin:8px 0 0; font-size:12.5px; color:var(--ink-2); background:none; border:0; padding:4px 2px;
+  font-family:var(--sans); text-align:left; cursor:pointer; text-decoration:underline; text-underline-offset:3px;
+}
+.qquote{
+  background:var(--warn-soft); border:1px solid var(--line); border-radius:2px;
+  padding:10px 12px; font-size:13.5px; line-height:1.65; margin:0 0 13px; white-space:pre-wrap;
+}
 .mine-head .s{font-size:11.5px; color:var(--ink-2); font-family:var(--mono); margin-left:auto}
 .minelist{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:3px}
 .minerow{
@@ -124,6 +136,7 @@ body{
 .minerow .d.warn{color:var(--warn)}
 .minerow .d.crit{color:var(--crit)}
 .minerow .d small{font-size:11px; font-weight:400; color:var(--ink-3); margin-left:1px}
+.minerow .d.by{font-size:12px; font-weight:700; min-width:4.5em; color:var(--ok)}
 .minerow .t{font-weight:700}
 .minerow .a{display:block; color:var(--ink-2); font-size:12.5px}
 
@@ -161,6 +174,7 @@ body{
 .stall{text-align:right; flex:none}
 .stall .v{font-family:var(--mono); font-size:25px; font-weight:500; line-height:1; font-variant-numeric:tabular-nums}
 .stall .u{font-size:11px; color:var(--ink-3); letter-spacing:.06em; display:block; margin-top:3px}
+.stall .u.only{margin-top:0; padding-top:9px; white-space:nowrap}
 .stall.calm .v{color:var(--ink-3)}
 .stall.warn .v{color:var(--warn)}
 .stall.crit .v{color:var(--crit)}
@@ -185,8 +199,8 @@ body{
 .ask{display:block; margin:8px 0 0; font-size:14px; color:var(--ink); line-height:1.65}
 .ask:before{content:"「"; color:var(--ink-3)}
 .ask:after{content:"」"; color:var(--ink-3)}
-.ask.empty{color:var(--ink-3); font-size:13px}
-.ask.empty:before,.ask.empty:after{content:none}
+.ask.blank{color:var(--ink-3); font-size:13px}
+.ask.blank:before,.ask.blank:after{content:none}
 
 .meta{
   display:flex; gap:14px; flex-wrap:wrap; margin-top:10px; padding-top:9px;
@@ -196,6 +210,19 @@ body{
 .meta b{font-weight:500; color:var(--ink-2)}
 .meta .due-over{color:var(--crit); font-weight:600}
 .meta .due-soon{color:var(--warn); font-weight:600}
+
+/* ---------- an unanswered question, held open on the card ---------- */
+.qband{
+  border-top:1px solid var(--line); background:var(--warn-soft);
+  padding:11px 15px 12px; display:flex; flex-direction:column; gap:9px;
+}
+.qrow{display:flex; gap:10px; align-items:flex-start; flex-wrap:wrap}
+.qwho{
+  font-family:var(--mono); font-size:11px; font-weight:600; color:var(--warn);
+  letter-spacing:.02em; flex:none; padding-top:3px; white-space:nowrap;
+}
+.qtext{font-size:13.5px; line-height:1.65; flex:1 1 180px; min-width:0; white-space:pre-wrap}
+.qband .btn{align-self:flex-start}
 
 /* ---------- expanded panel ---------- */
 .panel{border-top:1px solid var(--line); background:var(--surface-2); padding:14px 15px 16px}
@@ -231,6 +258,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-vis
   font-family:var(--sans); font-size:13px; padding:5px 11px; border-radius:2px;
   border:1px solid var(--line-strong); background:var(--surface); color:var(--ink); cursor:pointer;
 }
+.chip{text-align:left; line-height:1.5}
+.chip .r{display:block; font-size:10.5px; font-weight:400; opacity:.72; line-height:1.4; margin-top:1px}
 .chip[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:var(--accent-ink); font-weight:700}
 .chip.add{border-style:dashed; color:var(--ink-3)}
 
@@ -246,17 +275,18 @@ input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-vis
   content:""; position:absolute; left:-3.5px; top:8px; width:6px; height:6px;
   border-radius:50%; background:var(--line-strong);
 }
-.log li.pass:before{background:var(--accent)}
-.log li.nudge:before{background:var(--crit)}
-.log li.done:before{background:var(--ok)}
+.log li.k-pass:before{background:var(--accent)}
+.log li.k-nudge:before,.log li.k-ask:before{background:var(--warn)}
+.log li.k-reply:before,.log li.k-done:before{background:var(--ok)}
 .log .lh{display:flex; gap:9px; align-items:baseline; flex-wrap:wrap; font-size:13px}
 .log .lw{font-weight:700}
 .log .lk{
   font-size:11px; padding:0 6px; border-radius:2px; background:var(--sunk); color:var(--ink-2);
 }
-.log li.pass .lk{background:var(--accent-soft); color:var(--accent)}
-.log li.nudge .lk{background:var(--crit-soft); color:var(--crit)}
-.log li.done .lk{background:var(--ok-soft); color:var(--ok)}
+.log li.k-pass .lk{background:var(--accent-soft); color:var(--accent)}
+.log li.k-nudge .lk{background:var(--crit-soft); color:var(--crit)}
+.log li.k-ask .lk{background:var(--warn-soft); color:var(--warn)}
+.log li.k-reply .lk,.log li.k-done .lk{background:var(--ok-soft); color:var(--ok)}
 .log .lt{font-family:var(--mono); font-size:11px; color:var(--ink-3); font-variant-numeric:tabular-nums; margin-left:auto}
 .log .lb{display:block; font-size:13px; color:var(--ink-2); line-height:1.65; margin-top:1px; white-space:pre-wrap}
 
@@ -294,9 +324,20 @@ input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-vis
 .sheet h2{margin:0 0 3px; font-family:var(--serif); font-size:19px; font-weight:600; letter-spacing:.02em}
 .sheet .sub{margin:0 0 14px; font-size:12.5px; color:var(--ink-3); line-height:1.6}
 .sheet textarea.share{min-height:190px; font-size:13.5px; font-family:var(--sans); line-height:1.7}
+.roster{display:flex; flex-direction:column; gap:8px}
+.rrow{display:grid; grid-template-columns:7.5em 1fr; gap:9px; align-items:center}
+.rrow .rn{font-weight:700; font-size:14px}
 .sheet .foot{display:flex; gap:8px; justify-content:flex-end; margin-top:16px}
 .err{color:var(--crit); font-size:12.5px; margin:8px 0 0; min-height:1px}
 [hidden]{display:none!important}
+@media (min-width:900px){
+  .wrap{max-width:1060px}
+  .list{display:grid; grid-template-columns:1fr 1fr; align-items:start; gap:12px}
+  .case.is-open{grid-column:1 / -1}
+  .minelist{display:grid; grid-template-columns:1fr 1fr; gap:4px}
+  .btn,.chip{padding-top:9px; padding-bottom:9px}
+  .masthead h1{font-size:30px}
+}
 @media (prefers-reduced-motion:reduce){ *{transition:none!important; animation:none!important} }
 </style>
 
@@ -313,6 +354,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-vis
         <span class="lbl">あなた</span>
         <span class="nm" id="whoName">未設定</span>
       </button>
+      <button class="who" id="rosterBtn" type="button"><span class="lbl">名簿</span></button>
       <span class="spacer"></span>
       <span id="conn" style="font-family:var(--mono);font-size:11px;color:var(--ink-3)"></span>
     </div>
@@ -333,15 +375,25 @@ input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-vis
 var PHASES = ["用地・仕入","企画・設計","確認申請","契約","着工","上棟","内装・設備","完了検査","引渡・決済"];
 var KINDS  = ["建売","注文","土地","リフォーム","その他"];
 
+/* 初期の名簿。名簿画面でいつでも足せる・直せる */
+var TEAM = [
+  { name:"専務",   role:"決裁・全体判断" },
+  { name:"酒井",   role:"" },
+  { name:"拓也",   role:"設計" },
+  { name:"山口",   role:"工事" },
+  { name:"渡邉",   role:"土地決済・契約手続き・物件売却" }
+];
+
 var DAY = 86400000;
 var LOG_KIND = {
   create:"登録", pass:"引き渡し", note:"進捗", nudge:"催促",
-  phase:"工程", done:"完了", reopen:"再開", edit:"修正"
+  phase:"工程", done:"完了", reopen:"再開", edit:"修正",
+  ask:"質問", reply:"返答"
 };
 
 var db = null, dbState = "loading";
 var state = {
-  me: null, members: [], cases: [], logs: [], openId: null, shareUrl: "", jumpTo: null,
+  me: null, members: [], roles: {}, cases: [], logs: [], openId: null, shareUrl: "", jumpTo: null,
   filter: "all", holderFilter: null, logUnsub: null, err: ""
 };
 
@@ -389,7 +441,48 @@ function stallLevel(c){
   if(d >= 3 || (u !== null && u <= 1)) return "warn";
   return "calm";
 }
-function needsAttention(c){ return c.status !== "done" && stallLevel(c) !== "calm"; }
+function needsAttention(c){
+  return c.status !== "done" && (stallLevel(c) !== "calm" || pendingOf(c).length > 0);
+}
+function pendingOf(c){ return Array.isArray(c.pending) ? c.pending : []; }
+function rank(c){
+  if(pendingOf(c).length) return 0;
+  return { crit:1, warn:2, calm:3 }[stallLevel(c)];
+}
+function seenReply(caseId){
+  try{ return +(localStorage.getItem("ballboard.seen." + caseId) || 0); }catch(e){ return 0; }
+}
+function markReplySeen(caseId, at){
+  try{ localStorage.setItem("ballboard.seen." + caseId, String(at)); }catch(e){}
+}
+/* 自分が出した質問への返答で、まだ読んでいないもの */
+function repliesToMe(){
+  if(!state.me) return [];
+  return state.cases.filter(function(c){
+    var r = c.lastReply;
+    return r && r.to === state.me && r.at > seenReply(c.id);
+  }).sort(function(a,b){ return b.lastReply.at - a.lastReply.at; });
+}
+/* 自分あての未回答の質問 */
+function questionsToMe(){
+  if(!state.me) return [];
+  var out = [];
+  state.cases.forEach(function(c){
+    if(c.status === "done") return;
+    pendingOf(c).forEach(function(q){ if(q.to === state.me) out.push({ c: c, q: q }); });
+  });
+  return out.sort(function(a,b){ return a.q.at - b.q.at; });
+}
+/* 自分が出したまま返ってきていない質問 */
+function questionsFromMe(){
+  if(!state.me) return [];
+  var out = [];
+  state.cases.forEach(function(c){
+    if(c.status === "done") return;
+    pendingOf(c).forEach(function(q){ if(q.by === state.me) out.push({ c: c, q: q }); });
+  });
+  return out;
+}
 
 /* ===== db plumbing ===== */
 function setConn(txt){ document.getElementById("conn").textContent = txt; }
@@ -413,6 +506,7 @@ function boot(){
     db.doc("meta/members").onSnapshot(function(snap){
       var d = snap.exists ? snap.data() : null;
       state.members = (d && Array.isArray(d.list)) ? d.list.slice() : [];
+      state.roles = (d && d.roles && typeof d.roles === "object") ? d.roles : {};
       render();
     }, function(){ /* members are optional; the board still works */ });
     db.doc("meta/config").onSnapshot(function(snap){
@@ -450,11 +544,35 @@ function writeLog(caseId, kind, text, to){
   });
 }
 
+function roster(){
+  var seen = {}, out = [];
+  TEAM.concat(state.members.map(function(n){ return { name:n, role:"" }; })).forEach(function(m){
+    if(!m.name || seen[m.name]) return;
+    seen[m.name] = 1;
+    out.push({ name: m.name, role: roleOf(m.name) });
+  });
+  if(state.me && !seen[state.me]) out.unshift({ name: state.me, role: roleOf(state.me) });
+  return out;
+}
+function roleOf(name){
+  if(state.roles && typeof state.roles[name] === "string") return state.roles[name];
+  for(var i = 0; i < TEAM.length; i++) if(TEAM[i].name === name) return TEAM[i].role;
+  return "";
+}
+function saveRoster(list, roles){
+  if(!db) return Promise.resolve();
+  return db.doc("meta/members").set({ list: list, roles: roles });
+}
+
 function rememberMember(name){
   if(!db || !name) return;
   db.doc("meta/members").get().then(function(snap){
-    var list = (snap.exists && Array.isArray((snap.data()||{}).list)) ? snap.data().list.slice() : [];
-    if(list.indexOf(name) === -1){ list.push(name); db.doc("meta/members").set({ list: list }); }
+    var d = snap.exists ? (snap.data() || {}) : {};
+    var list = Array.isArray(d.list) ? d.list.slice() : [];
+    if(list.indexOf(name) === -1){
+      list.push(name);
+      db.doc("meta/members").set({ list: list, roles: d.roles || {} });
+    }
   }).catch(function(){});
 }
 
@@ -488,6 +606,26 @@ function nudge(c, note){
   return db.collection("cases").doc(c.id).update({ updatedAt: Date.now() })
     .then(function(){ return writeLog(c.id, "nudge", note || (c.holder + " さんへ確認をお願いします"), c.holder); });
 }
+function fresh(c){ return state.cases.filter(function(x){ return x.id === c.id; })[0] || c; }
+
+function askQuestion(c, to, text){
+  var q = { id: nid("q_"), at: Date.now(), by: state.me, to: to, text: text };
+  var list = pendingOf(fresh(c)).slice().concat([q]).slice(-6);
+  return db.collection("cases").doc(c.id).update({ pending: list, updatedAt: Date.now() })
+    .then(function(){ return writeLog(c.id, "ask", text, to); });
+}
+/* 返答しても停滞日数は戻さない。質問に答えることと、ボールが動くことは別 */
+function answerQuestion(c, q, text){
+  var list = pendingOf(fresh(c)).filter(function(x){ return x.id !== q.id; });
+  var now = Date.now();
+  return db.collection("cases").doc(c.id).update({
+    pending: list, updatedAt: now,
+    lastReply: { at: now, by: state.me, to: q.by, text: text, q: q.text }
+  }).then(function(){
+    return writeLog(c.id, "reply", "Q（" + q.by + "）" + q.text + "\n→ " + text, q.by);
+  });
+}
+
 function setPhase(c, phase){
   var now = Date.now();
   return db.collection("cases").doc(c.id).update({ phase: phase, movedAt: now, updatedAt: now })
@@ -512,15 +650,16 @@ function holderCases(name){
   return state.cases.filter(function(c){
     return c.status !== "done" && (c.holder || "") === name;
   }).sort(function(a,b){
-    var r = { crit:0, warn:1, calm:2 };
-    return (r[stallLevel(a)] - r[stallLevel(b)]) || ((a.movedAt || 0) - (b.movedAt || 0));
+    return (rank(a) - rank(b)) || ((a.movedAt || 0) - (b.movedAt || 0));
   });
 }
 
 function buildShareText(name, list){
   var now = new Date();
-  var head = "【" + (name || "担当未定") + "のボール " + list.length + "件】" +
-             (now.getMonth()+1) + "/" + now.getDate() + "時点";
+  var stamp = (now.getMonth()+1) + "/" + now.getDate() + "時点";
+  var head = list.length
+    ? "【" + (name || "担当未定") + "のボール " + list.length + "件】" + stamp
+    : "【" + (name || "担当未定") + "への確認】" + stamp;
   var lines = list.map(function(c, i){
     var tags = [ PHASES[typeof c.phase === "number" ? c.phase : 0] ];
     var st = daysSince(c.movedAt);
@@ -529,7 +668,18 @@ function buildShareText(name, list){
     if(u !== null) tags.push(u < 0 ? "期限" + (-u) + "日超過" : u === 0 ? "期限は今日" : "期限まであと" + u + "日");
     return (i+1) + ". " + c.title + "（" + tags.join("・") + "）\n   → " + (c.ask || "次にやることが未記入");
   });
-  return head + "\n" + lines.join("\n") + (state.shareUrl ? "\n\n台帳 " + state.shareUrl : "");
+  var qs = [];
+  state.cases.forEach(function(c){
+    if(c.status === "done") return;
+    pendingOf(c).forEach(function(q){
+      if(q.to !== name) return;
+      qs.push("・" + c.title + "：" + q.text + "（" + q.by + "・" + daysSince(q.at) + "日未回答）");
+    });
+  });
+  var qBlock = qs.length ? "\n\n【返答待ちの質問 " + qs.length + "件】\n" + qs.join("\n") : "";
+
+  return head + (lines.length ? "\n" + lines.join("\n") : "") + qBlock +
+    (state.shareUrl ? "\n\n台帳 " + state.shareUrl : "");
 }
 
 /* ===== filtering ===== */
@@ -539,12 +689,10 @@ function visibleCases(){
   else list = list.filter(function(c){ return c.status !== "done"; });
   if(state.filter === "mine") list = list.filter(function(c){ return state.me && c.holder === state.me; });
   if(state.filter === "stuck") list = list.filter(needsAttention);
+  if(state.filter === "q") list = list.filter(function(c){ return pendingOf(c).length > 0; });
   if(state.holderFilter !== null) list = list.filter(function(c){ return (c.holder || "") === state.holderFilter; });
   list.sort(function(a,b){
-    var r = { crit:0, warn:1, calm:2 };
-    var d = r[stallLevel(a)] - r[stallLevel(b)];
-    if(d) return d;
-    return (a.movedAt || 0) - (b.movedAt || 0);
+    return (rank(a) - rank(b)) || ((a.movedAt || 0) - (b.movedAt || 0));
   });
   return list;
 }
@@ -554,20 +702,25 @@ function counts(){
     all: open.length,
     mine: state.me ? open.filter(function(c){ return c.holder === state.me; }).length : 0,
     stuck: open.filter(needsAttention).length,
+    q: open.filter(function(c){ return pendingOf(c).length > 0; }).length,
     done: state.cases.length - open.length
   };
 }
 function tally(){
   var open = state.cases.filter(function(c){ return c.status !== "done"; });
   var map = {}, order = [];
+  function touch(k){
+    if(!map[k]){ map[k] = { name: k, n: 0, warn: 0, q: 0 }; order.push(k); }
+    return map[k];
+  }
   open.forEach(function(c){
-    var k = c.holder || "";
-    if(!map[k]){ map[k] = { name: k, n: 0, warn: 0 }; order.push(k); }
-    map[k].n++;
-    if(needsAttention(c)) map[k].warn++;
+    var e = touch(c.holder || "");
+    e.n++;
+    if(needsAttention(c)) e.warn++;
+    pendingOf(c).forEach(function(q){ touch(q.to || "").q++; });
   });
   return order.map(function(k){ return map[k]; })
-    .sort(function(a,b){ return b.warn - a.warn || b.n - a.n; });
+    .sort(function(a,b){ return (b.warn + b.q) - (a.warn + a.q) || b.n - a.n; });
 }
 
 /* ===== render ===== */
@@ -604,8 +757,9 @@ function render(){
       html += '<button class="tcard" type="button" data-holder="' + esc(h.name) + '" aria-pressed="' + pressed + '">' +
         '<span class="tn"><i></i>' + esc(nm) + '</span>' +
         '<span class="tc">' + h.n + '</span>' +
-        '<span class="tw' + (h.warn ? "" : " calm") + '">' +
-        (h.warn ? "要対応 " + h.warn + "件" : "遅れなし") + '</span></button>';
+        '<span class="tw' + (h.warn || h.q ? "" : " calm") + '">' +
+        ([ h.q ? "未回答 " + h.q : "", h.warn ? "要対応 " + h.warn : "" ]
+          .filter(Boolean).join("・") || "遅れなし") + '</span></button>';
     });
     html += '</div>';
   }
@@ -634,11 +788,51 @@ function render(){
 
 function minePanelHtml(){
   if(!state.me) return "";
+  var out = "";
+
+  /* 1. 自分が出した質問に返ってきた答え */
+  var reps = repliesToMe();
+  if(reps.length){
+    out += '<section class="mine a"><div class="mine-head">' +
+      '<span class="h">あなたの質問に返答がありました</span>' +
+      '<span class="n">' + reps.length + '</span>' +
+      '<span class="s">開くと消えます</span></div><ul class="minelist">' +
+      reps.map(function(c){
+        return '<li><button class="minerow" type="button" data-jump="' + esc(c.id) + '" data-seen="' + esc(c.id) + '">' +
+          '<span class="d by">' + esc(c.lastReply.by) + '</span>' +
+          '<span><span class="t">' + esc(c.title) + '</span>' +
+          '<span class="a">' + esc(c.lastReply.text) + '</span></span></button></li>';
+      }).join("") + '</ul></section>';
+  }
+
+  /* 2. 自分あての未回答の質問 */
+  var qs = questionsToMe();
+  if(qs.length){
+    out += '<section class="mine q"><div class="mine-head">' +
+      '<span class="h">あなたへの質問</span>' +
+      '<span class="n">' + qs.length + '</span>' +
+      '<span class="s">答えるまで全員に見えます</span></div><ul class="minelist">' +
+      qs.map(function(x){
+        var d = daysSince(x.q.at);
+        return '<li><button class="minerow" type="button" data-jump="' + esc(x.c.id) + '">' +
+          '<span class="d ' + (d >= 3 ? "crit" : d >= 1 ? "warn" : "calm") + '">' + d + '<small>日</small></span>' +
+          '<span><span class="t">' + esc(x.c.title) + '</span>' +
+          '<span class="a">' + esc(x.q.by) + '「' + esc(x.q.text) + '」</span></span></button></li>';
+      }).join("") + '</ul></section>';
+  }
+
+  /* 3. 自分が出したまま返ってきていない質問 */
+  var fromMe = questionsFromMe();
+  if(fromMe.length){
+    out += '<button class="pending-note" type="button" data-filter="q">' +
+      'あなたが出した質問 ' + fromMe.length + '件が、まだ返ってきていません</button>';
+  }
+
   var mine = holderCases(state.me);
-  if(!mine.length) return "";
+  if(!mine.length) return out;
   var warn = mine.filter(needsAttention).length;
 
-  return '<section class="mine"><div class="mine-head">' +
+  return out + '<section class="mine"><div class="mine-head">' +
     '<span class="h">あなたが持っているボール</span>' +
     '<span class="n">' + mine.length + '</span>' +
     '<span class="s">' + (warn ? "要対応 " + warn + "件" : "遅れなし") + '</span>' +
@@ -654,15 +848,27 @@ function minePanelHtml(){
     '</ul></section>';
 }
 
+function questionsTo(name){
+  var out = [];
+  state.cases.forEach(function(c){
+    if(c.status === "done") return;
+    pendingOf(c).forEach(function(q){ if((q.to || "") === name) out.push({ c: c, q: q }); });
+  });
+  return out;
+}
+
 function focusHtml(name){
   var list = holderCases(name);
+  var qs = questionsTo(name);
   var warn = list.filter(needsAttention).length;
   var longest = list.reduce(function(m, c){ return Math.max(m, daysSince(c.movedAt)); }, 0);
   return '<div class="focus">' +
     '<span class="fn"><i></i>' + esc(name || "担当未定") + '</span>' +
-    '<span class="fs">ボール ' + list.length + '件 ／ 要対応 ' + warn + '件 ／ 最長 ' + longest + '日停滞</span>' +
+    '<span class="fs">ボール ' + list.length + '件 ／ 要対応 ' + warn + '件 ／ 最長 ' + longest + '日停滞' +
+      (qs.length ? ' ／ 未回答 ' + qs.length + '件' : '') + '</span>' +
     '<span class="sp"></span>' +
-    (list.length ? '<button class="btn" type="button" data-copy="' + esc(name) + '">貼り付ける文面をつくる</button>' : '') +
+    (list.length || qs.length
+      ? '<button class="btn" type="button" data-copy="' + esc(name) + '">貼り付ける文面をつくる</button>' : '') +
     '</div>';
 }
 
@@ -671,6 +877,7 @@ function renderFilters(){
   var defs = [
     { k:"all",   t:"進行中", n:c.all },
     { k:"mine",  t:"自分のボール", n:c.mine },
+    { k:"q",     t:"未回答", n:c.q },
     { k:"stuck", t:"要対応", n:c.stuck },
     { k:"done",  t:"完了", n:c.done }
   ];
@@ -701,12 +908,12 @@ function caseHtml(c){
   var isMine = c.status !== "done" && state.me && c.holder === state.me;
 
   var h = '<article class="case' + (c.status === "done" ? " is-done" : "") +
-            (isMine ? " is-mine" : "") + '">' +
+            (isMine ? " is-mine" : "") + (open ? " is-open" : "") + '">' +
     '<button class="case-head" type="button" data-open="' + esc(c.id) + '" aria-expanded="' + open + '">' +
       '<span>' +
         '<span class="kind">' + esc(c.kind || "その他") + '</span>' +
         '<span class="title">' + esc(c.title) + '</span>' +
-        '<span class="phase"><span class="no">' + String(ph+1).padStart(2,"0") + '/' + PHASES.length + '</span>' +
+        '<span class="phase"><span class="no">' + (ph+1) + ' / ' + PHASES.length + '</span>' +
           '<span class="nm">' + esc(PHASES[ph] || "—") + '</span>' +
           '<span class="ticks">' + ticks + '</span></span>' +
         (c.status === "done"
@@ -714,19 +921,34 @@ function caseHtml(c){
           : '<span class="ball' + (c.holder ? "" : " none") + (isMine ? " you" : "") + '">' +
               '<span class="b"><i></i>' + esc(isMine ? "あなた" : (c.holder || "担当未定")) + '</span>' +
               '<span class="sfx">' + (c.holder ? "が持っている" : "＝誰も持っていない") + '</span></span>') +
-        '<span class="ask' + (c.ask ? "" : " empty") + '">' +
+        '<span class="ask' + (c.ask ? "" : " blank") + '">' +
           esc(c.ask || "次にやることが書かれていません") + '</span>' +
         '<span class="meta">' +
           (c.due ? '<span class="' + dueCls + '">期限 ' + esc(dueTxt) + '</span>' : '') +
           '<span>最終更新 <b>' + esc(fmtDate(c.updatedAt)) + '</b></span>' +
         '</span>' +
       '</span>' +
-      '<span class="stall ' + lvl + '"><span class="v">' + d + '</span>' +
-        '<span class="u">日停滞</span></span>' +
+      '<span class="stall ' + lvl + '">' +
+        (d ? '<span class="v">' + d + '</span><span class="u">日停滞</span>'
+           : '<span class="u only">本日</span>') + '</span>' +
     '</button>';
 
+  h += qbandHtml(c);
   if(open) h += panelHtml(c);
   return h + '</article>';
+}
+
+function qbandHtml(c){
+  var qs = pendingOf(c);
+  if(!qs.length || c.status === "done") return "";
+  return '<div class="qband">' + qs.map(function(q){
+    var d = daysSince(q.at);
+    return '<div class="qrow">' +
+      '<span class="qwho">' + esc(q.by) + ' → ' + esc(q.to || "全員") + '　未回答' + (d ? "・" + d + "日" : "") + '</span>' +
+      '<span class="qtext">' + esc(q.text) + '</span>' +
+      '<button class="btn" type="button" data-answer="' + esc(c.id) + '" data-q="' + esc(q.id) + '">返答する</button>' +
+      '</div>';
+  }).join("") + '</div>';
 }
 
 function panelHtml(c){
@@ -734,6 +956,7 @@ function panelHtml(c){
   var h = '<div class="panel"><div class="acts">';
   if(!done){
     h += '<button class="btn primary" type="button" data-act="pass" data-id="' + esc(c.id) + '">ボールを渡す</button>' +
+         '<button class="btn" type="button" data-act="ask" data-id="' + esc(c.id) + '">質問する</button>' +
          '<button class="btn" type="button" data-act="note" data-id="' + esc(c.id) + '">進捗を書く</button>' +
          '<button class="btn" type="button" data-act="nudge" data-id="' + esc(c.id) + '">催促する</button>' +
          '<button class="btn" type="button" data-act="phase" data-id="' + esc(c.id) + '">工程を進める</button>' +
@@ -750,7 +973,7 @@ function panelHtml(c){
     return h;
   }
   h += '<ul class="log">' + state.logs.map(function(l){
-    return '<li class="' + esc(l.kind) + '">' +
+    return '<li class="k-' + esc(l.kind) + '">' +
       '<span class="lh"><span class="lw">' + esc(l.by) + '</span>' +
       '<span class="lk">' + esc(LOG_KIND[l.kind] || l.kind) + '</span>' +
       (l.to ? '<span style="font-size:12px;color:var(--ink-3)">→ ' + esc(l.to) + '</span>' : '') +
@@ -776,12 +999,11 @@ function openModal(html, onMount){
 }
 
 function memberChips(selected, idPrefix){
-  var names = state.members.slice();
-  if(state.me && names.indexOf(state.me) === -1) names.unshift(state.me);
   return '<div class="chips" id="' + idPrefix + '">' +
-    names.map(function(n){
-      return '<button class="chip" type="button" data-name="' + esc(n) + '" aria-pressed="' +
-        (n === selected ? "true" : "false") + '">' + esc(n) + '</button>';
+    roster().map(function(m){
+      return '<button class="chip" type="button" data-name="' + esc(m.name) + '" aria-pressed="' +
+        (m.name === selected ? "true" : "false") + '">' + esc(m.name) +
+        (m.role ? '<span class="r">' + esc(m.role) + '</span>' : '') + '</button>';
     }).join("") +
     '<button class="chip add" type="button" data-name="__new">＋ 名前を追加</button></div>';
 }
@@ -823,6 +1045,81 @@ function whoModal(){
         closeModal(); render();
       });
       root.querySelector('[data-x]').addEventListener("click", closeModal);
+    }
+  );
+}
+
+function askModal(c){
+  var to = "";
+  openModal(
+    '<h2>質問する</h2>' +
+    '<p class="sub">' + esc(c.title) + ' ／ 返答があるまで、この案件は「未回答」として全員の一番上に出続けます。</p>' +
+    '<div class="form">' +
+      '<div class="field"><span>誰に聞くか</span>' + memberChips("", "qTo") + '</div>' +
+      '<label class="field"><span>聞きたいこと</span>' +
+        '<textarea id="q_t" placeholder="例：地盤改良の見積はもう出ている？"></textarea></label>' +
+    '</div><p class="err" id="q_e"></p>' +
+    '<div class="foot"><button class="btn" type="button" data-x="1">やめる</button>' +
+    '<button class="btn primary" type="button" id="q_ok">質問する</button></div>',
+    function(root){
+      bindChips(root, "qTo", function(n){ to = n; });
+      root.querySelector('[data-x]').addEventListener("click", closeModal);
+      root.querySelector("#q_ok").addEventListener("click", function(){
+        var v = root.querySelector("#q_t").value.trim();
+        if(!to){ root.querySelector("#q_e").textContent = "誰に聞くか選んでください。"; return; }
+        if(!v){ root.querySelector("#q_e").textContent = "聞きたいことを書いてください。"; return; }
+        this.disabled = true;
+        askQuestion(c, to, v).then(closeModal, fail);
+      });
+    }
+  );
+}
+
+function answerModal(c, q){
+  openModal(
+    '<h2>返答する</h2><p class="sub">' + esc(c.title) + '</p>' +
+    '<div class="qquote">' + esc(q.by) + ' さんの質問\n' + esc(q.text) + '</div>' +
+    '<div class="form"><label class="field"><span>返答</span>' +
+      '<textarea id="a_t" placeholder="例：先週出た。金額は120万。明日共有します。"></textarea></label></div>' +
+    '<p class="err" id="a_e"></p>' +
+    '<div class="foot"><button class="btn" type="button" data-x="1">やめる</button>' +
+    '<button class="btn primary" type="button" id="a_ok">返答する</button></div>',
+    function(root){
+      root.querySelector('[data-x]').addEventListener("click", closeModal);
+      root.querySelector("#a_ok").addEventListener("click", function(){
+        var v = root.querySelector("#a_t").value.trim();
+        if(!v){ root.querySelector("#a_e").textContent = "返答を書いてください。"; return; }
+        this.disabled = true;
+        answerQuestion(c, q, v).then(closeModal, fail);
+      });
+    }
+  );
+}
+
+function rosterModal(){
+  openModal(
+    '<h2>名簿</h2>' +
+    '<p class="sub">誰が何の担当かを書いておくと、ボールを渡すときと質問するときに名前の下に出ます。</p>' +
+    '<div class="roster" id="ros">' +
+      roster().map(function(m){
+        return '<div class="rrow"><span class="rn">' + esc(m.name) + '</span>' +
+          '<input type="text" data-role-for="' + esc(m.name) + '" value="' + esc(m.role) +
+          '" placeholder="得意分野・担当" autocomplete="off"></div>';
+      }).join("") +
+    '</div><p class="err" id="ros_e"></p>' +
+    '<div class="foot"><button class="btn" type="button" data-x="1">やめる</button>' +
+    '<button class="btn primary" type="button" id="ros_ok">保存する</button></div>',
+    function(root){
+      root.querySelector('[data-x]').addEventListener("click", closeModal);
+      root.querySelector("#ros_ok").addEventListener("click", function(){
+        var list = [], roles = {};
+        Array.prototype.forEach.call(root.querySelectorAll("[data-role-for]"), function(inp){
+          var n = inp.getAttribute("data-role-for");
+          list.push(n); roles[n] = inp.value.trim();
+        });
+        this.disabled = true;
+        saveRoster(list, roles).then(closeModal, fail);
+      });
     }
   );
 }
@@ -1028,7 +1325,16 @@ document.addEventListener("click", function(e){
   if(state.err){ state.err = ""; setTimeout(render, 0); }
 
   if(e.target.closest("#whoBtn")){ whoModal(); return; }
+  if(e.target.closest("#rosterBtn")){ rosterModal(); return; }
   if(e.target.closest("#newBtn")){ requireMe(newCaseModal); return; }
+
+  t = e.target.closest("[data-answer]");
+  if(t){
+    var ac = byId(t.getAttribute("data-answer"));
+    var aq = ac && pendingOf(ac).filter(function(x){ return x.id === t.getAttribute("data-q"); })[0];
+    if(ac && aq) requireMe(function(){ answerModal(ac, aq); });
+    return;
+  }
 
   t = e.target.closest("[data-filter]");
   if(t){ state.filter = t.dataset.filter; state.holderFilter = null; render(); return; }
@@ -1046,7 +1352,12 @@ document.addEventListener("click", function(e){
 
   t = e.target.closest("[data-jump]");
   if(t){
-    var jid = t.dataset.jump;
+    var jid = t.getAttribute("data-jump");
+    var seenId = t.getAttribute("data-seen");
+    if(seenId){
+      var sc = byId(seenId);
+      if(sc && sc.lastReply) markReplySeen(sc.id, sc.lastReply.at);
+    }
     state.filter = "all"; state.holderFilter = null;
     state.openId = jid; state.jumpTo = jid;
     watchLog(jid); render(); return;
@@ -1067,6 +1378,7 @@ document.addEventListener("click", function(e){
     var act = t.dataset.act;
     requireMe(function(){
       if(act === "pass")   return passModal(c);
+      if(act === "ask")    return askModal(c);
       if(act === "phase")  return phaseModal(c);
       if(act === "edit")   return editModal(c);
       if(act === "note")   return textModal("進捗を書く", c.title, "例：役所に提出済み。返答待ち。", "記録する",
