@@ -1,4 +1,4 @@
-<title>識学式 金曜幹部会議</title>
+<title>金曜の決裁会議</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -245,6 +245,36 @@ ul.no-list li::before{
 
 footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);font-size:.76rem;color:var(--ink-3)}
 
+/* ---- decision ledger ---- */
+.led-note{font-size:.82rem;color:var(--ink-2);margin-bottom:.8rem;max-width:44em}
+td.empty{background:var(--shu-soft);color:var(--shu);font-weight:500;text-align:center;font-family:"IBM Plex Mono",monospace;font-size:.78rem}
+
+/* ---- timeline ---- */
+.tl{display:grid;grid-template-columns:6.5rem 1fr;border-top:1px solid var(--line-strong)}
+.tl > *{border-bottom:1px solid var(--line);padding:.75rem .5rem .75rem 0}
+.tl .d{
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+  font-size:.78rem;color:var(--blue);border-right:1px solid var(--line);padding-right:1rem;
+}
+.tl .e{padding-left:1rem;font-size:.87rem}
+.tl .e b{display:block;font-size:.92rem;margin-bottom:.1rem}
+.tl .e span{color:var(--ink-2)}
+.tl .now{background:var(--blue-soft)}
+
+/* ---- gaps ---- */
+.gaps{display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
+.gaps > div{background:var(--surface);padding:1rem 1.15rem;display:grid;grid-template-columns:1.9rem 1fr;gap:.9rem}
+.gaps .n{
+  font-family:"IBM Plex Mono",monospace;color:var(--shu);font-size:.9rem;
+  border-right:2px solid var(--shu-soft);
+}
+.gaps b{display:block;font-size:.95rem;margin-bottom:.25rem}
+.gaps p{font-size:.86rem;color:var(--ink-2)}
+@media (max-width:600px){
+  .tl{grid-template-columns:5rem 1fr}
+  .gaps > div{grid-template-columns:1.5rem 1fr;gap:.6rem}
+}
+
 @media (max-width:600px){
   .run{grid-template-columns:4.2rem 1fr}
   .ledger > div{grid-template-columns:1fr;gap:.2rem}
@@ -262,120 +292,112 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);font-si
 
 <header class="sheet">
   <div class="sheet-in">
-    <div class="eyebrow">幹部会議 運営フォーマット</div>
-    <h1>識学式 金曜幹部会議</h1>
-    <p class="lede">いまやっている金曜の幹部会議を、識学の型に載せ替えるための進行表・報告フォーマット・自己診断。主張ごとに、識学の公開情報にあるものと、こちらの推論とを分けて示す。</p>
+    <div class="eyebrow">部長週次会議 ／ 運営フォーマット</div>
+    <h1>金曜の決裁会議</h1>
+    <p class="lede">金曜10時の部長週次会議を、決裁の場として回すための進行表・報告フォーマット・決裁台帳。会社のカレンダー、役割定義表、週報、Firefliesの記録から実体を起こしてある。主張ごとに、社内の記録にあるものと、こちらの推論とを分けて示す。</p>
   </div>
   <div class="stamp">
-    <span>開催 <b>毎週金曜</b></span>
-    <span>所要 <b>60分</b></span>
-    <span>決裁者 <b>専務</b></span>
-    <span>報告者 <b>酒井・拓也・山口・渡邉</b></span>
+    <span>毎週金曜 <b>10:00–11:00</b></span>
+    <span>場所 <b>本社1階</b></span>
+    <span>決裁 <b>常務</b></span>
+    <span>報告 <b>酒井・大島・山口</b></span>
   </div>
 </header>
 
 <section>
-  <div class="sec-head"><h2>まず結論</h2><span class="note">曜日は合っている。中身が違う</span></div>
+  <div class="sec-head"><h2>この会議の実体</h2><span class="note">カレンダーから起こした</span></div>
   <div class="concl">
-    <p><span class="yes">金曜にやっていること自体は識学の推奨と一致している。</span>識学は週次会議の開催タイミングとして「週末（金曜日）の振り返り」を推奨している<span class="src s-cite">出典<sup>1</sup></span></p>
-    <p><span class="no">ズレるとしたら曜日ではなく、会議の目的。</span>識学が週次会議に置く目的は「部下に評価を得させるため」＝成長の管理であり、情報共有の場ではない<span class="src s-cite">出典<sup>1</sup></span>進捗会議で最も求められるのは部下の成長で、目的は上司と部下の認識を合わせること<span class="src s-cite">出典<sup>3</sup></span></p>
-    <p><span class="no">最も出やすいズレは、報告が「状況」で終わっていること。</span>識学の型では、報告は期日と状態が決まった「完全結果」の〇×から始まる。「進んでいます」「もう少しです」は報告として成立しない<span class="src s-inf">推論</span></p>
-    <p><span class="no">次に出やすいのは、過去の話に時間が溶けること。</span>識学は「打ち合わせの80%は未来の話を」とし、過去は原因分析にとどめる<span class="src s-cite">出典<sup>2</sup></span></p>
+    <p><span class="yes">社長・専務が同席しないことは、識学の型から外れていない。</span>決裁者は常務。識学が問題にするのは、階層を飛び越えた参加者が入って中間管理職の責任と権限が失われることであって、上位者が出ないこと自体ではない<span class="src s-cite">出典<sup>1</sup></span><span class="src s-unc">不確実</span>3部長の直属の上司が常務である限り、この構成が正しい<span class="src s-inf">推論</span></p>
+    <p><span class="no">ただし、6月12日に社長・専務が抜けている。</span>6月5日までは「御園建設 部長 週次会議＠本社2階（社長専務同席）」で、出席者に御園一子さんと秋葉幸男さんが入っていた。6月12日から「部長週次会議 ＠本社1階（社長専務同席無）」に変わった<span class="src s-cite">出典<sup>2</sup></span>この会議で決めきれない案件を、どこに、いつまでに上げるのかが決まっていないと、決裁が宙に浮く<span class="src s-inf">推論</span></p>
+    <p><span class="no">同じ会議の繰り返し予定が4系列走っている。</span>8月28日は2件が重複登録されていた。1系列に統合しないと、出欠も記録も分散する<span class="src s-cite">出典<sup>2</sup></span></p>
   </div>
 </section>
 
 <section>
-  <div class="sec-head"><h2>この会議が何をする場か</h2></div>
+  <div class="sec-head"><h2>位置</h2><span class="note">誰が決め、誰が報告するか</span></div>
   <div class="purpose">
     <div>
-      <h3>成長の管理</h3>
-      <p>週次会議の運営目的は「部下に評価を得させるため」。会議は成長を管理する時間である<span class="src s-cite">出典<sup>1</sup></span></p>
+      <h3>決裁者 ／ 常務</h3>
+      <p>御園和也。この場で1件ずつその場で決める。持ち帰りをつくらない<span class="src s-cite">出典<sup>3</sup></span></p>
     </div>
     <div>
-      <h3>認識合わせ</h3>
-      <p>上司と部下の認識を合わせる。完全結果の〇×で食い違いが出るなら、置き方が甘かったということ<span class="src s-cite">出典<sup>3</sup></span></p>
+      <h3>報告者 ／ 部長3名</h3>
+      <p>営業部長 酒井菜穂子、住宅部部長 山口光弘、管理部部長 大島。自分の管掌についてだけ報告し、自分の管掌の決裁だけを持ち込む<span class="src s-cite">出典<sup>2</sup></span><span class="src s-cite">出典<sup>4</sup></span></p>
     </div>
     <div>
-      <h3>意思決定</h3>
-      <p>意見が一致しないときは、あらかじめ決めた意思決定者が最終判断を下す。合議・多数決は責任の所在をぼかす<span class="src s-cite">出典<sup>4</sup></span><span class="src s-unc">不確実</span></p>
+      <h3>入れない人</h3>
+      <p>部長の部下は同席させない。常務が部長を飛び越えて現場と決めると、部長の責任と権限が失われ、以後も飛び越えた指示を求めるようになる<span class="src s-cite">出典<sup>1</sup></span><span class="src s-unc">不確実</span></p>
     </div>
   </div>
 </section>
 
 <section>
-  <div class="sec-head"><h2>60分の進行表</h2><span class="note">過去10分 ／ 未来46分</span></div>
+  <div class="sec-head"><h2>60分の進行表</h2><span class="note">決裁に25分</span></div>
   <div class="split">
-    <span class="past">過去 17%</span>
-    <span class="future">未来 77% — 識学は打ち合わせの80%を未来の話にあてる<span class="src s-cite">出典<sup>2</sup></span></span>
+    <span class="past">過去 9分</span>
+    <span class="future">未来 47分 — 識学は打ち合わせの80%を未来の話にあてる<span class="src s-cite">出典<sup>5</sup></span></span>
   </div>
   <div class="run">
-    <div class="t">0:00<small>2分</small></div>
-    <div class="c"><b>開始</b><p>全員着席。録画を回す。識学は全会議の録画をルールにする<span class="src s-cite">出典<sup>1</sup></span></p></div>
+    <div class="t">10:00<small>2分</small></div>
+    <div class="c"><b>開始</b><p>全員着席。Firefliesが入っているか確認する。識学は全会議の録画をルールにする<span class="src s-cite">出典<sup>6</sup></span></p></div>
 
-    <div class="t">0:02<small>10分</small></div>
-    <div class="c"><b><span class="tag past">過去</span>先週の完全結果の〇×</b><p>4名が各2分半。期日と状態に対して〇か×かと、数値だけを言う。理由・経緯・言い訳はここでは言わない。</p></div>
+    <div class="t">10:02<small>9分</small></div>
+    <div class="c"><b><span class="tag past">過去</span>先週の完全結果の〇×</b><p>3名が各3分。役割定義表の指標に対して〇か×かと、数値だけ。理由・経緯はここでは言わない。</p></div>
 
-    <div class="t">0:12<small>20分</small></div>
-    <div class="c"><b><span class="tag future">未来</span>未達の原因と、次の施策</b><p>×だった本人が、自分の不足として原因を述べ、達成できる次の施策を<em>自分で</em>考えて言う。専務は先に答えを言わずに待つ<span class="src s-cite">出典<sup>1</sup></span><span class="src s-cite">出典<sup>3</sup></span></p></div>
+    <div class="t">10:11<small>15分</small></div>
+    <div class="c"><b><span class="tag future">未来</span>未達の原因と行動変化</b><p>×だった本人が、自分の不足として原因を述べ、次の施策を<em>自分で</em>考えて言う。常務は先に答えを言わずに待つ<span class="src s-cite">出典<sup>6</sup></span><span class="src s-cite">出典<sup>7</sup></span>週報の〈不足の理由〉〈行動変化〉〈権限〉の欄をそのまま読む。</p></div>
 
-    <div class="t">0:32<small>18分</small></div>
-    <div class="c"><b><span class="tag future">未来</span>決裁事項</b><p>仕入・価格・値下げ・追加費用・人の配置など。持ち込むのは管掌している本人だけ。専務が一人で決める。</p></div>
+    <div class="t">10:26<small>25分</small></div>
+    <div class="c"><b><span class="tag future">決裁</span>決裁事項</b><p>持ち込むのは管掌している本人だけ。1件ずつ、常務が可・否・条件付きのどれかをその場で言う。決裁台帳に書き取ってから次へ進む。挙手も多数決もしない<span class="src s-cite">出典<sup>8</sup></span><span class="src s-unc">不確実</span></p></div>
 
-    <div class="t">0:50<small>8分</small></div>
-    <div class="c"><b><span class="tag future">未来</span>次週の完全結果を確定</b><p>全員分を声に出して読み合わせ、期日（月日と時刻）と状態を一字一句そろえる。ここで曖昧なまま流したものは、翌週も曖昧なまま返ってくる<span class="src s-inf">推論</span></p></div>
+    <div class="t">10:51<small>7分</small></div>
+    <div class="c"><b><span class="tag future">未来</span>読み合わせ</b><p>今週の完全結果と、決裁台帳の条件・期日・実行者を声に出して読み上げ、一字一句そろえる。ここで曖昧なまま流したものは翌週も曖昧なまま返ってくる<span class="src s-inf">推論</span></p></div>
 
-    <div class="t">0:58<small>2分</small></div>
-    <div class="c"><b>終了</b><p>録画と記録を保存。決まった完全結果をボール台帳に入れる。</p></div>
+    <div class="t">10:58<small>2分</small></div>
+    <div class="c"><b>終了</b><p>決裁台帳を確定。週報に今週の完全結果を書き込む。</p></div>
   </div>
 </section>
 
 <section>
-  <div class="sec-head"><h2>報告フォーマット</h2><span class="note">毎週この表だけで回す</span></div>
+  <div class="sec-head"><h2>報告フォーマット</h2><span class="note">指標は役割定義表からそのまま取る</span></div>
   <div class="def">
     <span class="k">完全結果</span>
-    <p>識学用語。<b>期限と状態が明確</b>で、本人と他者との間で認識にズレがない設定のこと。「〇月〇日〇時までに△△円の成約数を獲得する」のような形<span class="src s-cite">出典<sup>5</sup></span></p>
+    <p>識学用語。<b>期限と状態が明確</b>で、本人と他者との間で認識にズレがない設定のこと<span class="src s-cite">出典<sup>9</sup></span>役割定義表の「いつまで」「どのような状態」の2列が、そのままこの形になっている<span class="src s-cite">出典<sup>4</sup></span></p>
     <div class="form">〔月日〕〔時刻〕までに、〔何を〕〔どういう状態〕にする</div>
   </div>
   <div class="scroll">
     <table>
-      <caption>記入例。物件名・数値は仮のもの。毎週この6列を埋めて定点観測する<span class="src s-cite">出典<sup>1</sup></span></caption>
+      <caption>指標と重みは役割定義表の記載。〇×と数値は毎週ここを埋める<span class="src s-cite">出典<sup>4</sup></span></caption>
       <thead>
         <tr>
-          <th scope="col">幹部</th>
-          <th scope="col">先週の完全結果</th>
+          <th scope="col">部長</th>
+          <th scope="col">指標（どのような状態）</th>
+          <th scope="col">重み</th>
           <th scope="col">〇×</th>
-          <th scope="col">未達の原因（自責で）</th>
-          <th scope="col">今週の完全結果</th>
+          <th scope="col">不足の理由 ／ 行動変化 ／ 必要な権限</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <th scope="row">拓也<small>設計</small></th>
-          <td>9/5 17:00までに、A邸の実施図面を確認申請に出せる状態にする</td>
-          <td class="mark ng">×</td>
-          <td>構造事務所への依頼を、自分の手元で3日止めた</td>
-          <td>9/12 17:00までに、実施図面2件を申請提出済にする</td>
+          <th scope="row">酒井<small>営業部長</small></th>
+          <td>会社全体の予算達成（売上高4億円・税込・完工ベース）／ 部全体の契約棟数 ／ 部全体の契約売上 ／ 完工日までに完了金・残金の未入金0件</td>
+          <td>10 / 35 / 35 / 20%</td>
+          <td class="mark">—</td>
+          <td>週報の3欄をそのまま読む</td>
         </tr>
         <tr>
-          <th scope="row">山口<small>工事</small></th>
-          <td>9/4 中に、B分譲3号地を上棟完了にする</td>
-          <td class="mark ok">〇</td>
-          <td>—</td>
-          <td>9/11 中に、4号地の基礎配筋検査を合格にする</td>
-        </tr>
-        <tr>
-          <th scope="row">渡邉<small>土地決済・契約手続き・物件売却</small></th>
-          <td>9/3 中に、C土地の決済を完了する</td>
-          <td class="mark ng">×</td>
-          <td>買主の必要書類の確認を口頭で済ませ、期日を切っていなかった</td>
-          <td>9/10 12:00までに、決済日を書面で確定する</td>
+          <th scope="row">山口<small>住宅部部長</small></th>
+          <td>全社予算（売上高4億円）／ 粗利率30%の達成 ／ 上棟日と施主検査が予定日から2日後以内に収まっている（完了率）</td>
+          <td>10 / 45 / 45%</td>
+          <td class="mark">—</td>
+          <td>週報の3欄をそのまま読む</td>
         </tr>
         <tr class="blank">
-          <th scope="row">酒井<small>管掌が未設定</small></th>
-          <td class="fill">置けない</td>
+          <th scope="row">大島<small>管理部部長</small></th>
+          <td class="fill">役割定義表に管理部部長の行が見当たらない。表の中で「管理部」が出てくるのは月給表のみ<span class="src s-cite">出典<sup>4</sup></span><span class="src s-unc">不確実</span></td>
+          <td class="fill">—</td>
           <td class="mark">—</td>
-          <td class="fill">責任と権限の範囲が決まっていない相手には、完全結果を置けない。まず管掌を決めるのが先<span class="src s-inf">推論</span></td>
-          <td class="fill">まず管掌を確定<span class="src s-cite">出典<sup>6</sup></span></td>
+          <td class="fill">指標が置かれていない相手には〇×がつけられない。ここを埋めるのが先<span class="src s-inf">推論</span></td>
         </tr>
       </tbody>
     </table>
@@ -383,86 +405,174 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);font-si
 </section>
 
 <section>
-  <div class="sec-head"><h2>決め方のルール</h2></div>
-  <ul class="rules">
-    <li><b>決めるのは専務ひとり</b><span>挙手も多数決もしない。意見が割れたら、あらかじめ決めた意思決定者が最終判断を下す<span class="src s-cite">出典<sup>4</sup></span><span class="src s-unc">不確実</span></span></li>
-    <li><b>幹部は自分の管掌についてだけ話す</b><span>管掌外への意見は会議に持ち込まない。自分の担当だけを見て会社全体を見ないと評論家的な立場になる、という逆も同じで、他人の領域に意見を出す評論家も要らない<span class="src s-inf">推論</span></span></li>
-    <li><b>階層を飛び越えた参加者を入れない</b><span>専務が幹部を飛び越えて現場の担当者と直接決めると、幹部の責任と権限が失われ、以後も飛び越えた指示を求めるようになる<span class="src s-cite">出典<sup>1</sup></span><span class="src s-unc">不確実</span></span></li>
-    <li><b>決まったことは、その場で完全結果に変換する</b><span>「検討する」「進める」で終わらせず、期日と状態を入れて読み上げてから閉じる<span class="src s-cite">出典<sup>5</sup></span></span></li>
-  </ul>
+  <div class="sec-head"><h2>決裁台帳</h2><span class="note">決裁の場である以上、ここが本体</span></div>
+  <p class="led-note">下の議題は、8月28日の会議で実際に扱われたものをFirefliesの要約から起こした。<b>決裁の列が空いているのは、書式の都合ではなく、決まったかどうかが記録に残っていないため</b>。この列を毎週埋めることが、この会議を決裁の場にするということ<span class="src s-cite">出典<sup>10</sup></span></p>
+  <div class="scroll">
+    <table>
+      <caption>2026年8月28日（金）の議題。決裁・条件・期日・実行者は復元できなかった</caption>
+      <thead>
+        <tr>
+          <th scope="col">議題</th>
+          <th scope="col">持ち込み</th>
+          <th scope="col">決裁</th>
+          <th scope="col">条件・期日</th>
+          <th scope="col">実行者</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>モデルハウスの値下げルール（期間に応じた段階的な引き下げ）</td>
+          <td>営業</td>
+          <td class="empty">未記録</td>
+          <td class="empty">未記録</td>
+          <td class="empty">未記録</td>
+        </tr>
+        <tr>
+          <td>ベリーハウスの1か月遅延（9月→10月）にともなう引渡し日</td>
+          <td>住宅部</td>
+          <td class="empty">未記録</td>
+          <td class="empty">未記録</td>
+          <td class="empty">未記録</td>
+        </tr>
+        <tr>
+          <td>9月の集客（週4回のチラシ配布とウェブイベントで月48組）</td>
+          <td>営業</td>
+          <td class="empty">未記録</td>
+          <td class="empty">未記録</td>
+          <td class="empty">未記録</td>
+        </tr>
+        <tr>
+          <td>現場の無断立ち入り禁止と、お客様の現場見学を事前調整に限る運用</td>
+          <td>住宅部</td>
+          <td class="empty">未記録</td>
+          <td class="empty">未記録</td>
+          <td class="empty">未記録</td>
+        </tr>
+        <tr>
+          <td>AIチャットボットの9月導入</td>
+          <td>管理部</td>
+          <td class="empty">未記録</td>
+          <td class="empty">未記録</td>
+          <td class="empty">未記録</td>
+        </tr>
+        <tr>
+          <td>退職にともなう業務引継ぎと、小林晴菜さんの評価軸の調整</td>
+          <td>管理部</td>
+          <td class="empty">未記録</td>
+          <td class="empty">未記録</td>
+          <td class="empty">未記録</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </section>
 
 <section>
-  <div class="sec-head"><h2>やらないこと</h2><span class="note">識学が明示的に挙げるもの</span></div>
-  <ul class="no-list rules">
-    <li>会議の欠席・スキップを認める<span class="src s-cite">出典<sup>1</sup></span></li>
-    <li>上司が指示と介入を続ける。指示待ちを生む。次の施策は本人に考えさせて待つ<span class="src s-cite">出典<sup>1</sup></span></li>
-    <li>過去の話に終始する。過去は原因分析にとどめる<span class="src s-cite">出典<sup>1</sup></span><span class="src s-cite">出典<sup>2</sup></span></li>
-    <li>「上が言うから」などの他責ワードを使う<span class="src s-cite">出典<sup>1</sup></span></li>
-    <li>部下が自分で考えた進め方を否定する<span class="src s-cite">出典<sup>1</sup></span></li>
-    <li>「頑張ります」「なるべく早く」「様子を見て」で宿題を終わらせる<span class="src s-inf">推論</span></li>
-    <li>録画も記録も残さない<span class="src s-cite">出典<sup>1</sup></span></li>
-  </ul>
+  <div class="sec-head"><h2>識学から入っている型</h2><span class="note">長島さんとの往復でできたもの</span></div>
+  <div class="tl">
+    <div class="d">2026<br>4/22</div>
+    <div class="e"><b>役割定義表の共有</b><span>長島史明さんから「振り返りシート_役割定義表」へのアクセス申請。以後、この表が評価と目標設定の土台になっている<span class="src s-cite">出典<sup>11</sup></span></span></div>
+
+    <div class="d">5/1・5/12</div>
+    <div class="e"><b>長島さん打ち合わせ（オンライン・15分）</b><span>設計部の評価基準と役割定義。<b>5月27日までに草案を確定</b>し、5/27・28に長島さん・草壁さんとレビューする、という宿題。論点は「スキルの難易度と業務量のバランスをどう取るか」「スキルと責任がずれたときに役割定義をどう扱うか」。詰まりとして「評価基準の統一が難しい」が挙がり、担当は酒井さん・長島さん・御園さん<span class="src s-cite">出典<sup>12</sup></span></span></div>
+
+    <div class="d">5/19・5/28<br>6/30</div>
+    <div class="e"><b>長島さん・日下部さんご来社</b><span>本社2階で2時間ずつ。内容は本文が読めていない<span class="src s-cite">出典<sup>2</sup></span><span class="src s-unc">不確実</span></span></div>
+
+    <div class="d">6/3</div>
+    <div class="e"><b>識学コミュニティセミナー受講</b><span>「組織で発生する迷いをなくす — 日常的に行うべき"姿勢のルール"のメンテナンスと運用法」<span class="src s-cite">出典<sup>13</sup></span></span></div>
+
+    <div class="d">7/10・7/30</div>
+    <div class="e"><b>識学サーベイのフィードバック</b><span>ソシキサーベイの結果返し。識学クラウド側では、サーベイ結果を採用面接の質問設計に使うガイドが未確認のまま案内が来ている<span class="src s-cite">出典<sup>13</sup></span></span></div>
+
+    <div class="d now">8/24</div>
+    <div class="e"><b>役割定義・組織図の打ち合わせ（オンライン2時間）</b><span>長島さん・草壁さん・秋葉さん・山口さん・御園一子さん。<b>いま進行中の主題</b><span class="src s-cite">出典<sup>2</sup></span></span></div>
+
+    <div class="d now">8/26</div>
+    <div class="e"><b>長島さん・日下部さんMTG（本社2階・2時間半）</b><span>直近の来社。8/24の続き<span class="src s-cite">出典<sup>2</sup></span></span></div>
+
+    <div class="d">10/19</div>
+    <div class="e"><b>真名カントリー 識学 長島さん＠茂原</b><span>9:00–14:45。次の予定<span class="src s-cite">出典<sup>13</sup></span></span></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>いま空いている穴</h2><span class="note">型はある。使われていない</span></div>
+  <div class="gaps">
+    <div>
+      <span class="n">1</span>
+      <div>
+        <b>週報の〈不足の理由〉〈行動変化〉〈権限〉が直近3週とも空欄</b>
+        <p>住宅部部長の週報は「①全社予算目標／②粗利率／③工期」に対して「先週の目標・結果」「今週の目標」を置き、その下に3欄を持つ。識学の完全結果→自責の不足認識→行動変化→必要な権限に、そのまま対応している。過去には「アンドパット登録時の予測原価と暫定粗利を入力し基準点の設定を来週火曜12時までに実施」「工務課内部の権限と責任の整理を来週月曜までに実施」と期日つきで書けている。いまは書かれていない<span class="src s-cite">出典<sup>14</sup></span></p>
+      </div>
+    </div>
+    <div>
+      <span class="n">2</span>
+      <div>
+        <b>決裁の結果がどこにも残っていない</b>
+        <p>会議の音声はFirefliesに残っていて、8月28日は「18〜21件の質問」「15〜19件のアクションアイテム」を検出したと通知が来ている。ただし中身はFireflies上にあり、Googleドライブにも社内のどこにも書き出されていない。誰が何をいつまでにやるかが、会議の外に出ていない<span class="src s-cite">出典<sup>10</sup></span></p>
+      </div>
+    </div>
+    <div>
+      <span class="n">3</span>
+      <div>
+        <b>管理部部長の役割定義が置かれていない</b>
+        <p>役割定義表には住宅営業・住宅部・工務課・設計課・ANBAI不動産の行があるが、管理部部長の行が見当たらない。指標がない相手には完全結果を置けず、〇×もつかない<span class="src s-cite">出典<sup>4</sup></span><span class="src s-unc">不確実</span></p>
+      </div>
+    </div>
+    <div>
+      <span class="n">4</span>
+      <div>
+        <b>この場で決めきれない案件の上げ先が決まっていない</b>
+        <p>6月12日に社長・専務が抜けて以降、常務の決裁を超える案件をどこへ、いつまでに上げるかの導線が見当たらない。決裁の場と名乗る以上、「ここで決まらないもの」の行き先まで決めておく必要がある<span class="src s-inf">推論</span></p>
+      </div>
+    </div>
+  </div>
 </section>
 
 <section>
   <div class="sec-head"><h2>今週の金曜、この場でつけてみる</h2><span class="note">1つでも×なら、そこがズレ</span></div>
   <div class="check-head">
-    <span id="count">13項目中 0件が確認済み</span>
+    <span id="count">12項目中 0件が確認済み</span>
     <button id="reset" type="button">全部外す</button>
   </div>
   <div class="check">
-    <label><input type="checkbox"><span class="q">報告が、期日と状態のある完全結果の〇×から始まった<span class="src s-cite">出典<sup>5</sup></span></span></label>
-    <label><input type="checkbox"><span class="q">〇×の判定で、本人と専務の認識が食い違わなかった<span class="src s-cite">出典<sup>5</sup></span></span></label>
-    <label><input type="checkbox"><span class="q">過去の話が、全体の2割以内に収まった<span class="src s-cite">出典<sup>2</sup></span></span></label>
-    <label><input type="checkbox"><span class="q">未達の原因を、本人が自分の不足として述べた<span class="src s-cite">出典<sup>3</sup></span></span></label>
-    <label><input type="checkbox"><span class="q">次の施策を、専務より先に本人が言った<span class="src s-cite">出典<sup>1</sup></span></span></label>
-    <label><input type="checkbox"><span class="q">決裁が、話し合いではなく専務ひとりの判断で下りた<span class="src s-cite">出典<sup>4</sup></span><span class="src s-unc">不確実</span></span></label>
+    <label><input type="checkbox"><span class="q">報告が、役割定義表の指標に対する〇×から始まった<span class="src s-cite">出典<sup>4</sup></span></span></label>
+    <label><input type="checkbox"><span class="q">〇×の判定で、本人と常務の認識が食い違わなかった<span class="src s-cite">出典<sup>9</sup></span></span></label>
+    <label><input type="checkbox"><span class="q">過去の話が、全体の2割以内に収まった<span class="src s-cite">出典<sup>5</sup></span></span></label>
+    <label><input type="checkbox"><span class="q">未達の原因を、本人が自分の不足として述べた<span class="src s-cite">出典<sup>7</sup></span></span></label>
+    <label><input type="checkbox"><span class="q">次の施策を、常務より先に本人が言った<span class="src s-cite">出典<sup>6</sup></span></span></label>
+    <label><input type="checkbox"><span class="q">決裁事項が、その場で可・否・条件付きのどれかに決まった<span class="src s-cite">出典<sup>8</sup></span><span class="src s-unc">不確実</span></span></label>
+    <label><input type="checkbox"><span class="q">決裁台帳の「条件・期日・実行者」が、その場で全部埋まった<span class="src s-inf">推論</span></span></label>
     <label><input type="checkbox"><span class="q">自分の管掌外について意見を述べた人がいなかった<span class="src s-inf">推論</span></span></label>
-    <label><input type="checkbox"><span class="q">階層を飛び越えた参加者がいなかった<span class="src s-cite">出典<sup>1</sup></span><span class="src s-unc">不確実</span></span></label>
-    <label><input type="checkbox"><span class="q">欠席・遅刻・途中抜けがなかった<span class="src s-cite">出典<sup>1</sup></span></span></label>
-    <label><input type="checkbox"><span class="q">他責ワードが一度も出なかった<span class="src s-cite">出典<sup>1</sup></span></span></label>
-    <label><input type="checkbox"><span class="q">全員が、期日と状態のある宿題を持って帰った<span class="src s-cite">出典<sup>5</sup></span></span></label>
-    <label><input type="checkbox"><span class="q">録画または記録が残った<span class="src s-cite">出典<sup>1</sup></span></span></label>
-    <label><input type="checkbox"><span class="q">先週とまったく同じフォーマットで、定点観測できる形になっている<span class="src s-cite">出典<sup>1</sup></span></span></label>
-  </div>
-</section>
-
-<section>
-  <div class="sec-head"><h2>ボール台帳をこの会議に載せる</h2><span class="note">同じ台帳を会議の入口と出口にする</span></div>
-  <div class="ledger">
-    <div>
-      <span class="when">木曜まで</span>
-      <p><b>報告を台帳から作る。</b>停滞7日（赤）のカードと未回答の質問が、そのまま「×になりそうな案件」の一覧になる。台帳は3日で琥珀、7日または期限超過で赤に変わる<span class="src s-cite">出典<sup>6</sup></span></p>
-    </div>
-    <div>
-      <span class="when">会議中</span>
-      <p><b>口頭で決めた宿題を、その場で台帳に入れる。</b>「ボールを渡す」の相手・依頼内容・期日が、そのまま完全結果の三点になる<span class="src s-inf">推論</span></p>
-    </div>
-    <div>
-      <span class="when">翌週</span>
-      <p><b>実行を停滞日数で見る。</b>渡したはずのボールが動いていなければ、台帳の停滞日数が勝手に告発する。催促は日数をリセットしないので、「頼んだのに動いていない」が記録に残る<span class="src s-cite">出典<sup>6</sup></span></p>
-    </div>
-    <div>
-      <span class="when">先に一つ</span>
-      <p><b>酒井さんの得意分野が名簿で未設定になっている。</b>台帳上でも会議上でも、管掌が空欄の人には振り先も完全結果も決まらない。ここを埋めるのが型を入れる前の作業<span class="src s-cite">出典<sup>6</sup></span></p>
-    </div>
+    <label><input type="checkbox"><span class="q">部長の部下が同席していなかった<span class="src s-cite">出典<sup>1</sup></span><span class="src s-unc">不確実</span></span></label>
+    <label><input type="checkbox"><span class="q">「上が言うから」などの他責ワードが出なかった<span class="src s-cite">出典<sup>6</sup></span></span></label>
+    <label><input type="checkbox"><span class="q">週報の〈不足の理由〉〈行動変化〉〈権限〉が、3名とも埋まっていた<span class="src s-cite">出典<sup>14</sup></span></span></label>
+    <label><input type="checkbox"><span class="q">終了時に、決裁台帳と今週の完全結果が文字になって残った<span class="src s-cite">出典<sup>6</sup></span></span></label>
   </div>
 </section>
 
 <section>
   <div class="sec-head"><h2>出典</h2></div>
   <ol class="sources">
-    <li>識学総研「正しい会議でタイパを上げる？識学式会議法を改め解説！」— 週次会議の目的、4つの要素、やってはいけないこと、金曜開催の推奨、全会議の録画。<a href="https://souken.shikigaku.jp/34503/">souken.shikigaku.jp/34503/</a></li>
-    <li>識学総研「実践編『よい会議 悪い会議』」— 「打ち合わせの80%は未来の話を」。<a href="https://souken.shikigaku.jp/trendemon/jissenn-yoikaigiwaruikaigi/">souken.shikigaku.jp/trendemon/jissenn-yoikaigiwaruikaigi/</a> <em>※具体的な運用方法と週報フォーマットは資料請求後の配布物にあり、本文からは読めていない</em></li>
+    <li>識学総研「正しい会議でタイパを上げる？識学式会議法を改め解説！」— 週次会議の目的、4つの要素、やってはいけないこと、金曜開催の推奨、全会議の録画。<a href="https://souken.shikigaku.jp/34503/">souken.shikigaku.jp/34503/</a> <em>※階層を飛び越えた参加者についての記述は検索結果の要約に依拠しており、本文で確認できていない</em></li>
+    <li>Googleカレンダー（御園和也）— 会議名・日時・場所・出席者。6/5「御園建設 部長 週次会議＠本社2階（社長専務同席）」／6/12以降「部長週次会議 ＠本社1階（社長専務同席無）」／8/28に同一会議が2件重複／識学の来社・打ち合わせ予定。</li>
+    <li>豊文堂からのメール宛名「御園建設株式会社 常務取締役 御園和也様」（2026年3月31日・4月8日）。</li>
+    <li>Googleドライブ「振り返りシート_役割定義表」— 部署／役職／役割／いつまで／どのような状態／重み／尺度0〜100／単位。<em>※管理部部長の行が見当たらない点は、キーワード検索による確認であり、表を全行読んだ結果ではない</em></li>
+    <li>識学総研「実践編『よい会議 悪い会議』」— 「打ち合わせの80%は未来の話を」。<a href="https://souken.shikigaku.jp/trendemon/jissenn-yoikaigiwaruikaigi/">souken.shikigaku.jp/trendemon/…</a> <em>※具体的な運用方法と週報フォーマットは資料請求後の配布物にあり、本文からは読めていない</em></li>
+    <li>識学総研「正しい会議でタイパを上げる？」（出典1と同記事）— 欠席を認めない、上司が介入し続けない、過去に終始しない、他責ワードを使わない、全会議を録画する。</li>
     <li>識学総研「会議で部下を成長させるマネジメント術」— 進捗会議の目的は認識合わせ、完全結果の設定・不足の自責認識・未来志向。<a href="https://souken.shikigaku.jp/23407/">souken.shikigaku.jp/23407/</a></li>
-    <li>識学「良い会議と悪い会議の決定的な違い3つ」<a href="https://corp.shikigaku.jp/blog/meeting_05">corp.shikigaku.jp/blog/meeting_05</a> <em>※現在このURLは資料請求フォームへ転送され、本文が読めない。合議・多数決と階層飛び越えについての記述は検索結果の要約に基づくため〔不確実〕とした</em></li>
+    <li>識学「良い会議と悪い会議の決定的な違い3つ」<a href="https://corp.shikigaku.jp/blog/meeting_05">corp.shikigaku.jp/blog/meeting_05</a> <em>※現在このURLは資料請求フォームへ転送され、本文が読めない。合議・多数決についての記述は検索結果の要約に基づくため〔不確実〕とした</em></li>
     <li>識学総研「社員の意欲と成果をコミットする正しい評価制度の考え方」— 完全結果＝期限と状態が明確で、認識にズレがない設定。<a href="https://souken.shikigaku.jp/23444/">souken.shikigaku.jp/23444/</a></li>
-    <li>本リポジトリ <code>README.md</code>（ボール台帳）— 名簿と得意分野、停滞日数のしきい値（3日で琥珀、7日または期限超過で赤）、催促は停滞日数をリセットしない。</li>
+    <li>Fireflies.ai の会議レポートメール「Your meeting recap - 部長週次会議 ＠本社1階（社長専務同席無）」2026年8月28日着。Meeting Overview の6項目と、検出された質問・アクションアイテムの件数。<em>※アクションアイテムの中身はFirefliesアプリ内にあり、ログインが必要なため本セッションからは読めていない</em></li>
+    <li>Googleドライブの共有リクエスト通知「『振り返りシート_役割定義表』の共有リクエスト」— 長島史明（fumiakinagashima@shikigaku.com）2026年4月22日。</li>
+    <li>Fireflies.ai「Daily Digest」2026年5月12日着 — 設計部の評価基準・役割定義、5月27日までの草案確定、5/27・28のレビュー、論点と詰まり、担当者。</li>
+    <li>Gmail（識学からの各種メール）— 6/3 識学コミュニティセミナー「姿勢のルール」、識学クラウドのサーベイ活用ガイド案内、10/19「真名カントリー 識学 長島さん＠茂原」の承諾通知。</li>
+    <li>Googleドライブ「住宅部部長_週報」— ①全社予算目標／②粗利率／③工期、〈不足の理由〉〈行動変化〉〈権限〉の3欄。<em>※タブと週の対応は並び順からの推定</em></li>
   </ol>
 </section>
 
-<footer>〔出典〕は上記の一次情報にあたる記述、〔推論〕はこちらで当社の状況にあてはめたもの、〔不確実〕は原典が読めず要約に依拠している記述。</footer>
+<footer>〔出典〕は社内の記録または識学の公開情報にあたる記述、〔推論〕はこちらで当社の状況にあてはめたもの、〔不確実〕は原典が読めず要約に依拠している記述。Chatwork・LINE・ANDPAD・Zoho・Plaud は未確認。</footer>
 
 </div>
 
