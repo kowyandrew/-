@@ -1,0 +1,547 @@
+<title>鷲巣 配置検討</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#E7EAE7; --sheet:#FBFCFA; --panel:#F2F4F1;
+  --ink:#16211E; --ink2:#4C5A56; --ink3:#7A8783;
+  --rule:#C6CFCB; --rule2:#DDE3DF;
+  --ai:#2B5566; --ai-soft:#DCE7EB;
+  --shu:#B0402A; --shu-soft:#F2DED8;
+  --moss:#6F8E6C; --moss-soft:#E0E9DC;
+  --amber:#8E6A18; --amber-soft:#F0E6CE;
+  --grid:#CBD6D2;
+  --shadow:0 1px 0 rgba(22,33,30,.05), 0 8px 26px -18px rgba(22,33,30,.5);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#12181A; --sheet:#1A2225; --panel:#1F282B;
+    --ink:#E3E9E7; --ink2:#A2AFAB; --ink3:#78857F;
+    --rule:#33403F; --rule2:#2A3537;
+    --ai:#78B4C8; --ai-soft:#1E3540;
+    --shu:#E08260; --shu-soft:#3A241E;
+    --moss:#8FB48A; --moss-soft:#223024;
+    --amber:#D3A94E; --amber-soft:#33290F;
+    --grid:#2C3839;
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 30px -20px #000;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#12181A; --sheet:#1A2225; --panel:#1F282B;
+  --ink:#E3E9E7; --ink2:#A2AFAB; --ink3:#78857F;
+  --rule:#33403F; --rule2:#2A3537;
+  --ai:#78B4C8; --ai-soft:#1E3540;
+  --shu:#E08260; --shu-soft:#3A241E;
+  --moss:#8FB48A; --moss-soft:#223024;
+  --amber:#D3A94E; --amber-soft:#33290F;
+  --grid:#2C3839;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 30px -20px #000;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",system-ui,sans-serif;
+  font-size:15px; line-height:1.85; letter-spacing:.01em;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:940px; margin:0 auto; padding:40px 22px 96px;}
+
+/* ---- header ---- */
+.masthead{
+  border-top:3px solid var(--ai); padding-top:22px; margin-bottom:34px;
+  display:grid; grid-template-columns:1fr auto; gap:20px 28px; align-items:end;
+}
+.eyebrow{
+  font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--ai); margin:0 0 6px;
+}
+h1{
+  font-family:"Shippori Mincho B1",serif; font-weight:600;
+  font-size:clamp(28px,4.6vw,42px); line-height:1.25; margin:0; text-wrap:balance;
+  letter-spacing:.04em;
+}
+.sub{margin:10px 0 0; color:var(--ink2); font-size:14px; max-width:52ch;}
+.stamp{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; line-height:1.9;
+  color:var(--ink2); border:1px solid var(--rule); background:var(--sheet);
+  padding:10px 14px; white-space:nowrap;
+}
+.stamp b{color:var(--ink); font-weight:500;}
+
+/* ---- sections ---- */
+section{margin-top:52px;}
+h2{
+  font-family:"Shippori Mincho B1",serif; font-weight:600; font-size:21px;
+  margin:0 0 4px; letter-spacing:.06em;
+  display:flex; align-items:baseline; gap:12px;
+}
+h2::after{content:""; flex:1; height:1px; background:var(--rule);}
+.lede{margin:0 0 22px; color:var(--ink2); font-size:14px; max-width:60ch;}
+h3{font-size:14px; font-weight:700; margin:26px 0 8px; letter-spacing:.04em;}
+
+/* ---- tag ---- */
+.tag{
+  font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.06em;
+  padding:1px 5px; border-radius:2px; white-space:nowrap; vertical-align:.08em;
+}
+.t-src{background:var(--ai-soft); color:var(--ai);}
+.t-inf{background:var(--moss-soft); color:var(--moss);}
+.t-unc{background:var(--shu-soft); color:var(--shu);}
+
+/* ---- assumption block ---- */
+.assume{
+  background:var(--sheet); border:1px solid var(--rule);
+  border-left:3px solid var(--shu); padding:20px 22px;
+}
+.assume dl{margin:0; display:grid; grid-template-columns:auto 1fr; gap:9px 20px;}
+.assume dt{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.08em;
+  color:var(--ink3); padding-top:5px; white-space:nowrap;
+}
+.assume dd{margin:0; font-size:14px; line-height:1.75;}
+
+/* ---- drawing sheet ---- */
+.sheet{
+  background:var(--sheet); border:1px solid var(--rule); box-shadow:var(--shadow);
+  padding:18px 18px 0;
+}
+.sheet svg{display:block; width:100%; height:auto;}
+.titleblock{
+  border-top:1px solid var(--rule); margin-top:8px;
+  display:flex; flex-wrap:wrap; gap:0;
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; color:var(--ink2);
+}
+.titleblock div{padding:9px 14px 9px 0; margin-right:14px; border-right:1px solid var(--rule2);}
+.titleblock div:last-child{border-right:0;}
+.titleblock b{color:var(--ink); font-weight:500;}
+
+.legend{
+  margin-top:16px; display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(158px,1fr)); gap:8px 20px;
+  font-size:12.5px; color:var(--ink2);
+}
+.legend span{display:flex; align-items:flex-start; gap:9px;}
+.legend .sw{margin-top:5px;}
+.sw{width:20px; height:12px; flex:none; border:1px solid var(--ai);}
+.sw-b{background:var(--ai-soft); border-width:2px;}
+.sw-p{background:var(--panel); border-color:var(--ink3);}
+.sw-g{background:var(--moss-soft); border-color:var(--moss);}
+.sw-a{background:var(--shu-soft); border-color:var(--shu);}
+.sw-f{background:transparent; border-style:dashed; border-color:var(--ink3);}
+
+/* ---- floor plans ---- */
+.plans{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:22px;}
+.plan-cap{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.14em;
+  color:var(--ai); margin:0 0 2px;
+}
+.plan-cap em{font-style:normal; color:var(--ink3); letter-spacing:0;}
+
+/* ---- tables ---- */
+.tw{overflow-x:auto;}
+table{border-collapse:collapse; width:100%; font-size:13.5px;}
+caption{
+  text-align:left; font-family:"IBM Plex Mono",monospace; font-size:11px;
+  letter-spacing:.14em; color:var(--ink3); padding-bottom:8px;
+}
+th,td{padding:9px 12px; text-align:left; border-bottom:1px solid var(--rule2); white-space:nowrap;}
+thead th{
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.1em;
+  color:var(--ink3); font-weight:500; border-bottom:1px solid var(--rule);
+}
+td.n{text-align:right; font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums;}
+tbody tr:last-child td{border-bottom:0;}
+tr.sum td{border-top:1px solid var(--rule); font-weight:700;}
+.ok{color:var(--moss); font-weight:500;}
+.check{color:var(--amber); font-weight:500;}
+
+/* ---- notes ---- */
+.notes{display:grid; gap:2px;}
+.note{
+  display:grid; grid-template-columns:88px 1fr; gap:20px;
+  padding:16px 0; border-bottom:1px solid var(--rule2); align-items:start;
+}
+.note:last-child{border-bottom:0;}
+.note h4{
+  margin:0; font-family:"IBM Plex Mono",monospace; font-size:10.5px;
+  letter-spacing:.12em; color:var(--ai); font-weight:500; padding-top:4px;
+}
+.note p{margin:0; font-size:14px;}
+.note p + p{margin-top:7px; color:var(--ink2); font-size:13px;}
+
+/* ---- alt plan ---- */
+.alt{
+  background:var(--panel); border:1px solid var(--rule); padding:20px 22px;
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:20px 30px;
+}
+.alt h4{margin:0 0 6px; font-size:14px; letter-spacing:.04em;}
+.alt p{margin:0; font-size:13.5px; color:var(--ink2);}
+
+/* ---- ask list ---- */
+ol.ask{margin:0; padding:0; list-style:none; counter-reset:q;}
+ol.ask li{
+  counter-increment:q; position:relative; padding:13px 0 13px 42px;
+  border-bottom:1px solid var(--rule2); font-size:14px;
+}
+ol.ask li:last-child{border-bottom:0;}
+ol.ask li::before{
+  content:"Q" counter(q); position:absolute; left:0; top:15px;
+  font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--shu);
+  letter-spacing:.06em;
+}
+ol.ask b{font-weight:700;}
+ol.ask span{display:block; color:var(--ink2); font-size:13px; margin-top:3px;}
+
+footer{
+  margin-top:64px; padding-top:18px; border-top:1px solid var(--rule);
+  font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--ink3);
+  display:flex; flex-wrap:wrap; gap:6px 22px;
+}
+
+/* ================= SVG ================= */
+svg text{font-family:"Zen Kaku Gothic New",sans-serif; fill:var(--ink);}
+.grid{stroke:var(--grid); stroke-width:.5;}
+.site-fill{fill:var(--sheet);}
+.site-line{fill:none; stroke:var(--ink); stroke-width:2;}
+.road{fill:var(--panel); stroke:var(--rule); stroke-width:.8;}
+.road-t{font-size:9px; fill:var(--ink3); letter-spacing:.18em;}
+.garden{fill:var(--moss-soft); stroke:var(--moss); stroke-width:.7; stroke-dasharray:3 2;}
+.park{fill:var(--panel); stroke:var(--ink3); stroke-width:.9;}
+.park-div{stroke:var(--ink3); stroke-width:.6; stroke-dasharray:3 2;}
+.future{fill:none; stroke:var(--ink3); stroke-width:.9; stroke-dasharray:5 3;}
+.appr{fill:var(--shu-soft); stroke:var(--shu); stroke-width:.7;}
+.arrow{stroke:var(--shu); stroke-width:1.2;}
+.arh{fill:var(--shu);}
+.bldg{fill:var(--ai-soft); stroke:var(--ai); stroke-width:2.4;}
+.porch{fill:var(--ai-soft); stroke:var(--ai); stroke-width:1;}
+.bldg-t{font-size:11px; font-weight:700; letter-spacing:.16em; fill:var(--ai);}
+.bldg-s{font-size:9px; fill:var(--ink2);}
+.bldg-n{font-size:9px; font-family:"IBM Plex Mono",monospace; fill:var(--ink2);}
+.zone{font-size:9.5px; font-weight:700; fill:var(--ink2); letter-spacing:.1em;}
+.zone-d{font-size:9px; font-weight:500; fill:var(--ink3); letter-spacing:.08em;}
+.zone-s{font-size:8px; font-family:"IBM Plex Mono",monospace; fill:var(--ink3);}
+.dim{stroke:var(--shu); stroke-width:.6;}
+.dim-t{font-size:8.5px; font-family:"IBM Plex Mono",monospace; fill:var(--shu);}
+.compass{fill:var(--sheet); stroke:var(--ink3); stroke-width:.7;}
+.north{fill:var(--ink);}
+.sc-a{fill:var(--ink);}
+.sc-b{fill:var(--sheet); stroke:var(--ink); stroke-width:.6;}
+.outer{fill:none; stroke:var(--ink); stroke-width:2.4;}
+.rm{font-size:9px; font-weight:500; fill:var(--ink);}
+.rm-s{font-size:7.5px; font-family:"IBM Plex Mono",monospace; fill:var(--ink3);}
+.rm-svc{fill:var(--panel); stroke:var(--ink3); stroke-width:.8;}
+.rm-bed{fill:var(--ai-soft); stroke:var(--ink3); stroke-width:.8;}
+.rm-stair{fill:var(--amber-soft); stroke:var(--ink3); stroke-width:.8;}
+.rm-hall{fill:var(--shu-soft); stroke:var(--ink3); stroke-width:.8;}
+.rm-ldk{fill:var(--moss-soft); stroke:var(--ink3); stroke-width:.8;}
+.fdim{font-size:8px; font-family:"IBM Plex Mono",monospace; fill:var(--ink3);}
+
+@media (max-width:560px){
+  .masthead{grid-template-columns:1fr;}
+  .note{grid-template-columns:1fr; gap:6px;}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important;}}
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <div>
+    <p class="eyebrow">敷地配置検討 ／ A 案</p>
+    <h1>鷲巣の土地に、この平面を置く</h1>
+    <p class="sub">お預かりした手描き平面（1階・2階）を実寸に起こし、打合せ時の配置スケッチの並びに沿って敷地に落としたものです。寸法はすべて仮定値です — 測量図をいただければそのまま実寸に差し替えます。</p>
+  </div>
+  <div class="stamp">
+    物件 &nbsp;<b>鷲巣</b><br>
+    図面 &nbsp;<b>配置図 A案</b><br>
+    縮尺 &nbsp;<b>1 / 200 相当</b><br>
+    作成 &nbsp;<b>2026.09.03</b>
+  </div>
+</header>
+
+<section>
+  <h2>この資料の前提</h2>
+  <p class="lede">敷地の実測値をまだ持っていないため、次の読み取りと仮定の上に描いています。①②は要確認、③④は図面から実測した確かな値です。</p>
+  <div class="assume">
+    <dl>
+      <dt>① 敷地形状</dt>
+      <dd>配置スケッチの外形をトレースし、スケッチ内に書かれていた駐車マス「3×5」「4×5」を物差しにして縮尺を割り出しました。東辺 38.0m / 南辺 21.8m / 北辺 3.6m / 北西の斜辺 40.0m、面積 <b>約 557 m²（約 168 坪）</b>。<span class="tag t-unc">不確実</span></dd>
+      <dt>② 方位・接道</dt>
+      <dd>スケッチで駐車マスが並んでいた長い直線の辺を <b>道路側（東）</b>、紙面の上を <b>北</b> としました。手描き平面のキッチンが北・LDKが南に来る向きと整合します。<span class="tag t-inf">推論</span></dd>
+      <dt>③ 建物の大きさ</dt>
+      <dd>手描き平面の方眼と家具（キッチン 1,800 / 冷蔵庫 650 / ソファ 1,280）から、1マス＝910mm、外形 <b>5,460 × 6,370（3間 × 3.5間）</b> と確定。総二階、延床 69.56 m²（21.0 坪）。<span class="tag t-src">出典：頂いた平面図の実測</span></dd>
+      <dt>④ 階段の位置</dt>
+      <dd>2階の紙は1階に対して天地が逆でした。階段位置（北東角）が上下階で合うよう <b>2階を180°回して</b>重ねています。回すと 6帖・4.5帖がそろって南面する、良い側に転びます。<span class="tag t-src">出典：両階の階段位置の照合</span></dd>
+      <dt>⑤ 黒枠の2区画</dt>
+      <dd>スケッチ中央にあった方眼紙の黒枠2つは、用途が読み取れませんでした（倉庫／車庫／別棟／区画割？）。北側の空地に「別棟 想定枠」として破線で仮置きしています。<span class="tag t-unc">不確実</span></dd>
+    </dl>
+  </div>
+</section>
+
+<section>
+  <h2>配置図</h2>
+  <p class="lede">建物を敷地の南西寄りに、道路沿いに駐車、その間をアプローチでつなぐ — 打合せスケッチの並びをそのまま実寸に置き換えた形です。</p>
+  <div class="sheet">
+    <svg viewBox="0 0 404 545" role="img" aria-label="鷲巣 敷地配置図 縮尺1/200相当">
+<defs>
+<clipPath id="siteclip"><polygon fill="#000" points="280.4,46.0 320.0,46.0 320.0,464.0 80.2,464.0 56.0,424.4" /></clipPath>
+<pattern id="grid1m" width="11.00" height="11.00" patternUnits="userSpaceOnUse"><path d="M 11.00 0 L 0 0 0 11.00" fill="none" class="grid"/></pattern>
+<marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,1 L9,5 L0,9 z" class="arh"/></marker>
+</defs>
+<rect x="320.0" y="39.4" width="28.6" height="431.2" class="road"/>
+<text x="334.3" y="255.0" class="road-t" text-anchor="middle" transform="rotate(90 334.3 255.0)">道 路（位置・幅員 要確認）</text>
+<g clip-path="url(#siteclip)">
+<polygon points="280.4,46.0 320.0,46.0 320.0,464.0 80.2,464.0 56.0,424.4" class="site-fill"/>
+<rect x="45.0" y="35.0" width="330.0" height="462.0" fill="url(#grid1m)"/>
+</g>
+<polygon points="62.7,413.1 265.0,413.1 265.0,464.0 80.2,464.0 56.0,424.4" class="garden"/>
+<text x="210.0" y="439.8" class="zone" text-anchor="middle">南 庭</text>
+<text x="210.0" y="450.8" class="zone-s" text-anchor="middle">約 75 m²</text>
+<rect x="199.0" y="205.5" width="66.0" height="66.0" class="future"/>
+<text x="232.0" y="233.0" class="zone-d" text-anchor="middle">別棟 想定枠 A</text>
+<text x="232.0" y="244.0" class="zone-s" text-anchor="middle">6.0 × 6.0</text>
+<rect x="171.5" y="277.0" width="66.0" height="55.0" class="future"/>
+<text x="204.5" y="301.2" class="zone-d" text-anchor="middle">別棟 想定枠 B</text>
+<text x="204.5" y="312.2" class="zone-s" text-anchor="middle">6.0 × 5.0</text>
+<rect x="265.0" y="321.0" width="55.0" height="99.0" class="park"/>
+<line x1="265.0" y1="354.0" x2="320.0" y2="354.0" class="park-div"/>
+<line x1="265.0" y1="387.0" x2="320.0" y2="387.0" class="park-div"/>
+<text x="292.5" y="370.5" class="zone" text-anchor="middle">駐車 3台</text>
+<text x="292.5" y="381.5" class="zone-s" text-anchor="middle">3.0×5.0</text>
+<rect x="265.0" y="167.0" width="55.0" height="33.0" class="park"/>
+<rect x="265.0" y="202.2" width="55.0" height="44.0" class="park"/>
+<text x="292.5" y="183.5" class="zone" text-anchor="middle">来客 1台</text>
+<text x="292.5" y="193.5" class="zone-s" text-anchor="middle">3.0×5.0</text>
+<text x="292.5" y="222.0" class="zone" text-anchor="middle">大型 1台</text>
+<text x="292.5" y="232.0" class="zone-s" text-anchor="middle">4.0×5.0</text>
+<rect x="206.3" y="350.7" width="58.7" height="13.2" class="appr"/>
+<line x1="258.4" y1="357.3" x2="213.3" y2="357.3" class="arrow" marker-end="url(#ar)"/>
+<rect x="133.0" y="343.0" width="60.1" height="70.1" class="bldg"/>
+<text x="163.0" y="370.5" class="bldg-t" text-anchor="middle">主 屋</text>
+<text x="163.0" y="382.5" class="bldg-s" text-anchor="middle">木造2階建</text>
+<text x="163.0" y="395.5" class="bldg-n" text-anchor="middle">5,460 × 6,370</text>
+<rect x="193.1" y="350.7" width="13.2" height="19.8" class="porch"/>
+<text x="209.6" y="387.0" class="zone" text-anchor="middle">玄関</text>
+<polygon points="280.4,46.0 320.0,46.0 320.0,464.0 80.2,464.0 56.0,424.4" class="site-line"/>
+<line x1="357.4" y1="46.0" x2="357.4" y2="464.0" class="dim"/>
+<line x1="353.0" y1="46.0" x2="361.8" y2="46.0" class="dim"/>
+<line x1="353.0" y1="464.0" x2="361.8" y2="464.0" class="dim"/>
+<text x="357.4" y="251.0" class="dim-t" text-anchor="middle" transform="rotate(90 357.4 251.0)">38.0 m</text>
+<line x1="80.2" y1="486.0" x2="320.0" y2="486.0" class="dim"/>
+<line x1="80.2" y1="481.6" x2="80.2" y2="490.4" class="dim"/>
+<line x1="320.0" y1="481.6" x2="320.0" y2="490.4" class="dim"/>
+<text x="200.1" y="482.0" class="dim-t" text-anchor="middle">21.8 m</text>
+<text x="300.2" y="39.0" class="dim-t" text-anchor="middle">3.6 m</text>
+<text x="155.0" y="238.5" class="dim-t" text-anchor="middle" transform="rotate(-59.3 155.0 238.5)">隣地境界 40.0 m</text>
+<line x1="133.0" y1="343.0" x2="111.7" y2="355.6" class="dim"/>
+<text x="114.0" y="346.6" class="dim-t" text-anchor="middle">2.25</text>
+<line x1="144.0" y1="413.1" x2="144.0" y2="464.0" class="dim"/>
+<text x="140.0" y="438.5" class="dim-t" text-anchor="middle" transform="rotate(90 140.0 438.5)">4.63 m</text>
+<g transform="translate(80.2 92.2)"><circle r="12" class="compass"/><path d="M0,-11 L4,3 L0,0 L-4,3 Z" class="north"/><text y="-14" class="dim-t" text-anchor="middle">N</text></g>
+<g transform="translate(65.9 521.2)">
+<rect x="0.0" y="0" width="55.0" height="4" class="sc-a"/>
+<rect x="55.0" y="0" width="55.0" height="4" class="sc-b"/>
+<rect x="110.0" y="0" width="55.0" height="4" class="sc-a"/>
+<rect x="165.0" y="0" width="55.0" height="4" class="sc-b"/>
+<text x="0" y="14" class="dim-t" text-anchor="start">0</text>
+<text x="110.0" y="14" class="dim-t" text-anchor="middle">10</text>
+<text x="220.0" y="14" class="dim-t" text-anchor="middle">20 m</text>
+</g>
+</svg>
+    <div class="titleblock">
+      <div>物件 <b>鷲巣</b></div>
+      <div>図面 <b>配置図 A案</b></div>
+      <div>縮尺 <b>1/200 相当</b></div>
+      <div>敷地 <b>約 557 m²</b></div>
+      <div>建築面積 <b>34.78 m²</b></div>
+      <div>日付 <b>2026.09.03</b></div>
+    </div>
+  </div>
+  <div class="legend">
+    <span><i class="sw sw-b"></i>主屋（木造2階建）</span>
+    <span><i class="sw sw-p"></i>駐車 5台</span>
+    <span><i class="sw sw-a"></i>玄関アプローチ</span>
+    <span><i class="sw sw-g"></i>南庭</span>
+    <span><i class="sw sw-f"></i>別棟 想定枠（用途未確認）</span>
+  </div>
+</section>
+
+<section>
+  <h2>面積と法規のあたり</h2>
+  <p class="lede">建物が小さく敷地が広いので、建蔽率・容積率はどの用途地域でも余裕です。逆に言えば「もっと建てられる」余地が相当あります。</p>
+  <div class="tw">
+    <table>
+      <caption>面積表</caption>
+      <thead><tr><th>項目</th><th>面積 m²</th><th>坪</th><th>備考</th></tr></thead>
+      <tbody>
+        <tr><td>敷地面積</td><td class="n">557.20</td><td class="n">168.5</td><td>仮定値 <span class="tag t-unc">要実測</span></td></tr>
+        <tr><td>建築面積</td><td class="n">34.78</td><td class="n">10.5</td><td>5,460 × 6,370</td></tr>
+        <tr><td>1階 床面積</td><td class="n">34.78</td><td class="n">10.5</td><td>LDK 約13.8帖 ほか</td></tr>
+        <tr><td>2階 床面積</td><td class="n">34.78</td><td class="n">10.5</td><td>洋室 6・6・4.5帖</td></tr>
+        <tr class="sum"><td>延床面積</td><td class="n">69.56</td><td class="n">21.0</td><td>総二階</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="tw" style="margin-top:26px">
+    <table>
+      <caption>法規チェック</caption>
+      <thead><tr><th>項目</th><th>計画値</th><th>一般的な上限</th><th>判定</th></tr></thead>
+      <tbody>
+        <tr><td>建蔽率</td><td class="n">6.2 %</td><td class="n">60 %</td><td class="ok">余裕</td></tr>
+        <tr><td>容積率</td><td class="n">12.5 %</td><td class="n">200 %</td><td class="ok">余裕</td></tr>
+        <tr><td>隣地境界（北西の斜辺）まで</td><td class="n">2.25 m</td><td class="n">0.5 m 以上</td><td class="ok">適合</td></tr>
+        <tr><td>南側境界まで</td><td class="n">4.63 m</td><td class="n">—</td><td class="ok">日照確保</td></tr>
+        <tr><td>道路境界まで</td><td class="n">11.54 m</td><td class="n">—</td><td class="ok">駐車＋転回可</td></tr>
+        <tr><td>用途地域・高さ制限</td><td class="n">—</td><td class="n">—</td><td class="check">要確認</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2>置いた平面</h2>
+  <p class="lede">頂いた手描きを方眼どおりに起こしたものです。2階は前述のとおり180°回して階段を合わせています。細部（建具・収納の割付）はスケッチの読み取りなので、意図と違う箇所は直します。</p>
+  <div class="plans">
+    <div>
+      <p class="plan-cap">1F &nbsp;<em>床面積 34.78 m² / 10.5 坪</em></p>
+      <div class="sheet" style="padding-bottom:14px"><svg viewBox="0 0 195 220" role="img" aria-label="1階平面">
+<defs><pattern id="g9101階" width="21.84" height="21.84" patternUnits="userSpaceOnUse"><path d="M 21.84 0 L 0 0 0 21.84" fill="none" class="grid"/></pattern></defs>
+<rect x="30.0" y="30.0" width="131.0" height="152.9" fill="url(#g9101階)"/>
+<polygon points="62.8,30.0 139.2,30.0 139.2,117.4 161.0,117.4 161.0,182.9 62.8,182.9" class="rm-ldk"/>
+<rect x="30.0" y="30.0" width="32.8" height="43.7" class="rm-svc"/>
+<rect x="30.0" y="73.7" width="32.8" height="32.8" class="rm-svc"/>
+<rect x="30.0" y="106.4" width="32.8" height="32.8" class="rm-svc"/>
+<rect x="30.0" y="139.2" width="32.8" height="43.7" class="rm-svc"/>
+<rect x="139.2" y="30.0" width="21.8" height="43.7" class="rm-stair"/>
+<rect x="139.2" y="73.7" width="21.8" height="43.7" class="rm-hall"/>
+<text x="46.4" y="50.8" class="rm" text-anchor="middle">収納</text>
+<text x="46.4" y="61.8" class="rm-s" text-anchor="middle">勝手口</text>
+<text x="46.4" y="89.1" class="rm" text-anchor="middle">洗面</text>
+<text x="46.4" y="100.1" class="rm-s" text-anchor="middle">脱衣 1.5帖</text>
+<text x="46.4" y="125.8" class="rm" text-anchor="middle">トイレ</text>
+<text x="46.4" y="160.0" class="rm" text-anchor="middle">浴室</text>
+<text x="46.4" y="171.0" class="rm-s" text-anchor="middle">1216</text>
+<text x="150.1" y="54.8" class="rm" text-anchor="middle">階段</text>
+<text x="150.1" y="98.5" class="rm" text-anchor="middle">玄関</text>
+<rect x="30.0" y="30.0" width="131.0" height="152.9" class="outer"/>
+<text x="95.5" y="20.0" class="fdim" text-anchor="middle">5,460 (3間)</text>
+<text x="15.0" y="106.4" class="fdim" text-anchor="middle" transform="rotate(-90 15.0 106.4)">6,370 (3.5間)</text>
+<text x="101.0" y="104.8" class="rm" text-anchor="middle">L D K</text><text x="101.0" y="115.8" class="rm-s" text-anchor="middle">約13.8帖</text></svg></div>
+    </div>
+    <div>
+      <p class="plan-cap">2F &nbsp;<em>床面積 34.78 m² / 10.5 坪</em></p>
+      <div class="sheet" style="padding-bottom:14px"><svg viewBox="0 0 195 220" role="img" aria-label="2階平面">
+<defs><pattern id="g9102階" width="21.84" height="21.84" patternUnits="userSpaceOnUse"><path d="M 21.84 0 L 0 0 0 21.84" fill="none" class="grid"/></pattern></defs>
+<rect x="30.0" y="30.0" width="131.0" height="152.9" fill="url(#g9102階)"/>
+<rect x="30.0" y="30.0" width="21.8" height="65.5" class="rm-svc"/>
+<rect x="51.8" y="30.0" width="87.4" height="65.5" class="rm-bed"/>
+<rect x="139.2" y="30.0" width="21.8" height="87.4" class="rm-stair"/>
+<rect x="30.0" y="95.5" width="65.5" height="87.4" class="rm-bed"/>
+<rect x="95.5" y="95.5" width="43.7" height="21.8" class="rm-hall"/>
+<rect x="95.5" y="117.4" width="65.5" height="65.5" class="rm-bed"/>
+<text x="40.9" y="65.8" class="rm" text-anchor="middle">収納</text>
+<text x="95.5" y="61.8" class="rm" text-anchor="middle">洋室</text>
+<text x="95.5" y="72.8" class="rm-s" text-anchor="middle">6.0帖</text>
+<text x="150.1" y="76.7" class="rm" text-anchor="middle">階段</text>
+<text x="62.8" y="138.2" class="rm" text-anchor="middle">洋室</text>
+<text x="62.8" y="149.2" class="rm-s" text-anchor="middle">6.0帖</text>
+<text x="117.4" y="109.4" class="rm" text-anchor="middle">ホール</text>
+<text x="128.3" y="149.1" class="rm" text-anchor="middle">洋室</text>
+<text x="128.3" y="160.1" class="rm-s" text-anchor="middle">4.5帖</text>
+<rect x="30.0" y="30.0" width="131.0" height="152.9" class="outer"/>
+<text x="95.5" y="20.0" class="fdim" text-anchor="middle">5,460 (3間)</text>
+<text x="15.0" y="106.4" class="fdim" text-anchor="middle" transform="rotate(-90 15.0 106.4)">6,370 (3.5間)</text>
+</svg></div>
+    </div>
+  </div>
+  <div class="tw" style="margin-top:26px">
+    <table>
+      <caption>室内訳</caption>
+      <thead><tr><th>階</th><th>室名</th><th>寸法 mm</th><th>面積 m²</th><th>帖</th></tr></thead>
+      <tbody>
+        <tr><td>1F</td><td>LDK（L字）</td><td class="n">—</td><td class="n">22.77</td><td class="n">13.8</td></tr>
+        <tr><td>1F</td><td>玄関・階段</td><td>910 × 3,640</td><td class="n">3.31</td><td class="n">2.0</td></tr>
+        <tr><td>1F</td><td>洗面脱衣</td><td>1,365 × 1,365</td><td class="n">1.86</td><td class="n">1.1</td></tr>
+        <tr><td>1F</td><td>浴室</td><td>1,365 × 1,820</td><td class="n">2.48</td><td class="n">1.5</td></tr>
+        <tr><td>1F</td><td>トイレ</td><td>1,365 × 1,365</td><td class="n">1.86</td><td class="n">1.1</td></tr>
+        <tr><td>1F</td><td>収納・勝手口</td><td>1,365 × 1,820</td><td class="n">2.48</td><td class="n">1.5</td></tr>
+        <tr><td>2F</td><td>洋室（北）</td><td>3,640 × 2,730</td><td class="n">9.94</td><td class="n">6.0</td></tr>
+        <tr><td>2F</td><td>洋室（南西）</td><td>2,730 × 3,640</td><td class="n">9.94</td><td class="n">6.0</td></tr>
+        <tr><td>2F</td><td>洋室（南東）</td><td>2,730 × 2,730</td><td class="n">7.45</td><td class="n">4.5</td></tr>
+        <tr><td>2F</td><td>階段・ホール</td><td class="n">—</td><td class="n">4.97</td><td class="n">3.0</td></tr>
+        <tr><td>2F</td><td>収納</td><td>910 × 2,730</td><td class="n">2.48</td><td class="n">1.5</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2>配置の考え方</h2>
+  <div class="notes">
+    <div class="note">
+      <h4>斜辺の逃げ</h4>
+      <p>北西の斜辺は建物と平行になりません。建物を真北向きのまま置くと北西角がいちばん近づくので、そこで <b>2.25m</b> 取れる位置まで東へ寄せています。<span class="tag t-inf">推論</span></p>
+      <p>民法の 50cm は当然クリア。足場・雨落ち・将来の外壁メンテを見ても 2m あれば困りません。</p>
+    </div>
+    <div class="note">
+      <h4>南の空き</h4>
+      <p>南側境界まで <b>4.63m</b>。新潟（北緯 約37.9°）の冬至の南中高度は 28.7°なので、南隣に高さ 2.5m を超えるものが建つと1階の掃き出しに影がかかる計算です。<span class="tag t-inf">推論</span></p>
+      <p>南隣地の現況（畑か宅地か、将来建つか）で、この 4.63m を 6〜8m まで広げるか判断したいところです。</p>
+    </div>
+    <div class="note">
+      <h4>玄関と駐車</h4>
+      <p>玄関は道路側（東）。日常使いの 3台を玄関の真正面に置き、<b>アプローチは 5.3m の一直線</b>にしました。雪の日に荷物を持って歩く距離が最短になります。<span class="tag t-inf">推論</span></p>
+      <p>北寄りの2台は来客・大型（4.0×5.0）用。日常動線と分けているので、来客時も出入りが塞がりません。</p>
+    </div>
+    <div class="note">
+      <h4>冬の風</h4>
+      <p>新潟の冬の季節風は北西。玄関を東に開くと、風を背に受ける側になります。北西の斜辺側には水まわり（浴室・洗面・トイレ）が並ぶ配置なので、開口の小さい面が風上を向く形で理にかなっています。<span class="tag t-inf">推論</span></p>
+    </div>
+    <div class="note">
+      <h4>余った北側</h4>
+      <p>建物が 21坪 と小さいのに対し敷地は 168坪。北側に <b>およそ 20m ぶんの空地</b>が残ります。スケッチの黒枠2区画はここに仮置きしました。<span class="tag t-unc">不確実</span></p>
+      <p>倉庫・作業場・畑・将来の増築、どれにも使える面積です。用途が決まれば、そこから逆算して建物位置をもう一度動かせます。</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>比較案 B — 建物を北へ 7m</h2>
+  <p class="lede">スケッチどおりの A案 に対し、南の庭をまとめて取りにいく案。ご希望があれば図面に起こします。</p>
+  <div class="alt">
+    <div>
+      <h4>変えること</h4>
+      <p>建物を北へ 7m 動かし、敷地が細くなる分だけ東へ 4m 寄せる（外形は同じ）。南側の空きが 4.63m → 11.6m になります。</p>
+    </div>
+    <div>
+      <h4>得るもの</h4>
+      <p>南隣に何が建っても1階の日照が確保できる。南庭が 130m² 規模になり、駐車と庭が完全に分かれます。</p>
+    </div>
+    <div>
+      <h4>失うもの</h4>
+      <p>敷地が北へ行くほど狭まるため、北西の斜辺との離れが 2.1m とほぼ変わらないまま、道路までの奥行が 7.5m に減ります。北側の空地も分断されます。</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>いただきたい情報</h2>
+  <p class="lede">この5点が埋まれば、仮定を全部外して確定図に描き直せます。</p>
+  <ol class="ask">
+    <li><b>測量図（地積測量図・公図）</b><span>辺長と面積が確定します。いまの 557m² はスケッチからの推定値です。</span></li>
+    <li><b>方位と道路の位置・幅員</b><span>「上が北・東が道路」で描いていますが、ここがずれると日照も駐車も全部変わります。</span></li>
+    <li><b>スケッチ中央の黒枠2区画は何か</b><span>倉庫／車庫／別棟／区画割 — 用途が分かれば建物位置ごと組み直します。</span></li>
+    <li><b>用途地域・建蔽率・容積率・高さ制限</b><span>市街化調整区域かどうかも含めて。今の規模なら数値上は問題ありませんが、確認は要ります。</span></li>
+    <li><b>この 21坪 でよいか</b><span>敷地には 1〜2間の拡張余地が十分あります。LDK をもう半間広げる、2階に4帖の納戸を足す、といった調整は今の段階なら容易です。</span></li>
+  </ol>
+</section>
+
+<footer>
+  <span>鷲巣 配置検討 A案</span>
+  <span>2026.09.03 作成</span>
+  <span>寸法は仮定値・測量図にて差し替え</span>
+</footer>
+
+</div>
