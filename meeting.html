@@ -1,0 +1,485 @@
+<title>識学式 金曜幹部会議</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#EDEFF3;
+  --surface:#FFFFFF;
+  --surface-2:#F5F7FA;
+  --ink:#16202B;
+  --ink-2:#4A5765;
+  --ink-3:#78879A;
+  --line:#CBD3DD;
+  --line-strong:#9FADBC;
+  --blue:#1B4F8A;
+  --blue-soft:#E2EAF4;
+  --shu:#B23A2E;
+  --shu-soft:#F7E6E3;
+  --amber:#8A6011;
+  --amber-soft:#F4EAD4;
+  --green:#1D6B49;
+  --grid:rgba(27,79,138,.09);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0E151C;
+    --surface:#151E27;
+    --surface-2:#1A242F;
+    --ink:#E6EBF1;
+    --ink-2:#A9B6C4;
+    --ink-3:#77869B;
+    --line:#2A3742;
+    --line-strong:#41525F;
+    --blue:#84B2E2;
+    --blue-soft:#16293D;
+    --shu:#E2867B;
+    --shu-soft:#341F1C;
+    --amber:#D6AB5C;
+    --amber-soft:#2C2517;
+    --green:#72C09A;
+    --grid:rgba(132,178,226,.10);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0E151C;
+  --surface:#151E27;
+  --surface-2:#1A242F;
+  --ink:#E6EBF1;
+  --ink-2:#A9B6C4;
+  --ink-3:#77869B;
+  --line:#2A3742;
+  --line-strong:#41525F;
+  --blue:#84B2E2;
+  --blue-soft:#16293D;
+  --shu:#E2867B;
+  --shu-soft:#341F1C;
+  --amber:#D6AB5C;
+  --amber-soft:#2C2517;
+  --green:#72C09A;
+  --grid:rgba(132,178,226,.10);
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Noto Sans JP",system-ui,sans-serif;
+  font-size:15px;
+  line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:53rem;margin:0 auto;padding:0 1.25rem 5rem}
+h1,h2,h3{font-family:"Shippori Mincho","Hiragino Mincho ProN",serif;font-weight:600;text-wrap:balance;line-height:1.4;margin:0}
+p{margin:0}
+a{color:var(--blue)}
+a:focus-visible,input:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* ---- header : 青焼きの図面枠 ---- */
+.sheet{
+  margin:2.25rem 0 2.75rem;
+  border:1px solid var(--line-strong);
+  background:
+    linear-gradient(var(--grid) 1px,transparent 1px) 0 0/100% 1.5rem,
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px) 0 0/1.5rem 100%,
+    var(--surface);
+}
+.sheet-in{padding:2rem 1.75rem 1.75rem;border-bottom:1px solid var(--line)}
+.eyebrow{
+  font-size:.72rem;letter-spacing:.18em;color:var(--ink-3);
+  font-weight:500;margin-bottom:.9rem;
+}
+.sheet h1{font-size:clamp(1.7rem,5.5vw,2.5rem)}
+.sheet .lede{margin-top:.9rem;color:var(--ink-2);max-width:34em}
+.stamp{
+  display:flex;flex-wrap:wrap;gap:0 1.75rem;
+  padding:.7rem 1.75rem;background:var(--surface-2);
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.75rem;color:var(--ink-2);
+}
+.stamp b{color:var(--ink);font-weight:500}
+
+/* ---- provenance marks ---- */
+.src{
+  display:inline-flex;align-items:center;gap:.1em;
+  font-size:.66rem;line-height:1.5;font-weight:500;
+  padding:.05em .4em;margin-left:.35em;
+  border-radius:2px;white-space:nowrap;
+  vertical-align:.12em;letter-spacing:.02em;
+}
+.src sup{font-family:"IBM Plex Mono",monospace;font-size:.85em;margin-left:.1em}
+.s-cite{background:var(--blue-soft);color:var(--blue)}
+.s-inf{background:transparent;color:var(--ink-3);border:1px solid var(--line)}
+.s-unc{background:var(--amber-soft);color:var(--amber)}
+
+/* ---- sections ---- */
+section{margin-bottom:3.25rem}
+.sec-head{display:flex;align-items:baseline;gap:.75rem;margin-bottom:1.1rem;padding-bottom:.5rem;border-bottom:1px solid var(--line)}
+.sec-head h2{font-size:1.22rem}
+.sec-head .note{font-size:.78rem;color:var(--ink-3);margin-left:auto;white-space:nowrap}
+
+/* ---- conclusion ---- */
+.concl{border-left:3px solid var(--blue);padding-left:1.1rem;display:grid;gap:.85rem}
+.concl p{max-width:40em}
+.concl .yes{color:var(--green);font-weight:700}
+.concl .no{color:var(--shu);font-weight:700}
+
+/* ---- purpose cards ---- */
+.purpose{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);grid-template-columns:repeat(auto-fit,minmax(14rem,1fr))}
+.purpose > div{background:var(--surface);padding:1.1rem 1.15rem}
+.purpose h3{font-size:.98rem;margin-bottom:.4rem}
+.purpose p{font-size:.86rem;color:var(--ink-2)}
+
+/* ---- run sheet ---- */
+.split{
+  display:flex;gap:.4rem;align-items:stretch;
+  margin-bottom:.9rem;font-size:.75rem;
+  font-family:"IBM Plex Mono",monospace;
+}
+.split span{padding:.3rem .6rem;white-space:nowrap}
+.split .past{background:var(--shu-soft);color:var(--shu);flex:0 0 auto}
+.split .future{background:var(--blue-soft);color:var(--blue);flex:1 1 auto}
+.run{display:grid;grid-template-columns:5rem 1fr;border-top:1px solid var(--line-strong)}
+.run > *{border-bottom:1px solid var(--line);padding:.85rem .5rem .85rem 0}
+.run .t{
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+  font-size:.8rem;color:var(--blue);padding-left:0;padding-right:1rem;
+  border-right:1px solid var(--line);
+}
+.run .t small{display:block;color:var(--ink-3);font-size:.72rem}
+.run .c{padding-left:1rem}
+.run .c b{font-weight:700;font-size:.95rem}
+.run .c p{font-size:.85rem;color:var(--ink-2);margin-top:.2rem}
+.run em{font-style:normal;font-weight:700;color:var(--ink)}
+.tag{font-size:.66rem;font-weight:500;padding:.05em .4em;margin-right:.45em;vertical-align:.12em;border-radius:2px}
+.tag.past{background:var(--shu-soft);color:var(--shu)}
+.tag.future{background:var(--blue-soft);color:var(--blue)}
+
+/* ---- definition box ---- */
+.def{background:var(--surface);border:1px solid var(--line);border-top:2px solid var(--blue);padding:1.1rem 1.25rem;margin-bottom:1.25rem}
+.def .k{font-family:"Shippori Mincho",serif;font-size:1.05rem;font-weight:600}
+.def p{font-size:.88rem;color:var(--ink-2);margin-top:.35rem}
+.def .form{
+  margin-top:.7rem;padding:.55rem .8rem;background:var(--blue-soft);color:var(--blue);
+  font-family:"IBM Plex Mono",monospace;font-size:.82rem;
+}
+
+/* ---- table ---- */
+.scroll{overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:52rem;font-size:.83rem}
+caption{
+  caption-side:top;text-align:left;padding:.6rem .9rem;
+  background:var(--surface-2);border-bottom:1px solid var(--line);
+  font-size:.75rem;color:var(--ink-3);
+}
+th,td{padding:.7rem .9rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+thead th{
+  font-size:.72rem;letter-spacing:.06em;font-weight:500;color:var(--ink-3);
+  background:var(--surface-2);white-space:nowrap;
+}
+tbody th{font-weight:700;white-space:nowrap;font-size:.9rem}
+tbody th small{display:block;font-weight:400;font-size:.72rem;color:var(--ink-3);letter-spacing:0}
+td.mark{font-family:"IBM Plex Mono",monospace;font-size:1.05rem;text-align:center;font-weight:500}
+.ok{color:var(--green)}
+.ng{color:var(--shu)}
+tr.blank td,tr.blank th{background:var(--shu-soft)}
+tr.blank .fill{color:var(--shu);font-weight:500}
+
+/* ---- rules / prohibitions ---- */
+.rules{display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
+.rules li{background:var(--surface);padding:.8rem 1.1rem;list-style:none;font-size:.88rem}
+.rules li b{display:block;font-size:.93rem;margin-bottom:.15rem}
+.rules li span{color:var(--ink-2)}
+ul.no-list{margin:0;padding:0}
+ul.no-list li{
+  list-style:none;background:var(--surface);padding:.7rem 1.1rem .7rem 2.4rem;
+  position:relative;font-size:.88rem;
+}
+ul.no-list li::before{
+  content:"×";position:absolute;left:1rem;top:.7rem;
+  color:var(--shu);font-family:"IBM Plex Mono",monospace;font-weight:500;
+}
+
+/* ---- checklist ---- */
+.check-head{display:flex;align-items:center;gap:.9rem;flex-wrap:wrap;margin-bottom:.9rem}
+#count{
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+  font-size:.8rem;color:var(--ink-2);
+}
+#reset{
+  font:inherit;font-size:.78rem;padding:.25rem .7rem;cursor:pointer;
+  background:var(--surface);color:var(--ink-2);border:1px solid var(--line);border-radius:2px;
+}
+#reset:hover{border-color:var(--line-strong);color:var(--ink)}
+.check{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);counter-reset:c}
+.check label{
+  background:var(--surface);display:grid;grid-template-columns:2.6rem 1.35rem 1fr;
+  gap:.6rem;align-items:start;padding:.75rem 1.1rem .75rem .8rem;cursor:pointer;font-size:.88rem;
+}
+.check label:hover{background:var(--surface-2)}
+.check label::before{
+  counter-increment:c;content:counter(c,decimal-leading-zero);
+  font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:var(--ink-3);
+  text-align:right;padding-top:.15rem;
+}
+.check input{margin:.42rem 0 0;width:1.05rem;height:1.05rem;accent-color:var(--blue)}
+.check input:checked ~ .q{color:var(--ink-3);text-decoration:line-through;text-decoration-color:var(--line-strong)}
+
+/* ---- ledger link ---- */
+.ledger{display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
+.ledger > div{background:var(--surface);padding:.9rem 1.1rem;display:grid;grid-template-columns:4.5rem 1fr;gap:1rem}
+.ledger .when{font-family:"IBM Plex Mono",monospace;font-size:.76rem;color:var(--blue);padding-top:.15rem}
+.ledger p{font-size:.87rem;color:var(--ink-2)}
+.ledger p b{color:var(--ink)}
+
+/* ---- sources ---- */
+.sources{font-size:.8rem;color:var(--ink-2);display:grid;gap:.75rem;padding:0;margin:0;list-style:none;counter-reset:s}
+.sources li{position:relative;padding-left:2.1rem;max-width:44em}
+.sources li::before{
+  counter-increment:s;content:counter(s);
+  position:absolute;left:0;top:0;width:1.5rem;text-align:right;
+  font-family:"IBM Plex Mono",monospace;color:var(--blue);
+}
+.sources a{word-break:break-all}
+.sources em{font-style:normal;color:var(--amber)}
+
+footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);font-size:.76rem;color:var(--ink-3)}
+
+@media (max-width:600px){
+  .run{grid-template-columns:4.2rem 1fr}
+  .ledger > div{grid-template-columns:1fr;gap:.2rem}
+  .check label{grid-template-columns:1.9rem 1.25rem 1fr;gap:.45rem}
+}
+@media print{
+  body{background:#fff;font-size:10.5pt}
+  .sheet{break-inside:avoid}
+  section{break-inside:avoid}
+  #reset{display:none}
+}
+</style>
+
+<div class="wrap">
+
+<header class="sheet">
+  <div class="sheet-in">
+    <div class="eyebrow">幹部会議 運営フォーマット</div>
+    <h1>識学式 金曜幹部会議</h1>
+    <p class="lede">いまやっている金曜の幹部会議を、識学の型に載せ替えるための進行表・報告フォーマット・自己診断。主張ごとに、識学の公開情報にあるものと、こちらの推論とを分けて示す。</p>
+  </div>
+  <div class="stamp">
+    <span>開催 <b>毎週金曜</b></span>
+    <span>所要 <b>60分</b></span>
+    <span>決裁者 <b>専務</b></span>
+    <span>報告者 <b>酒井・拓也・山口・渡邉</b></span>
+  </div>
+</header>
+
+<section>
+  <div class="sec-head"><h2>まず結論</h2><span class="note">曜日は合っている。中身が違う</span></div>
+  <div class="concl">
+    <p><span class="yes">金曜にやっていること自体は識学の推奨と一致している。</span>識学は週次会議の開催タイミングとして「週末（金曜日）の振り返り」を推奨している<span class="src s-cite">出典<sup>1</sup></span></p>
+    <p><span class="no">ズレるとしたら曜日ではなく、会議の目的。</span>識学が週次会議に置く目的は「部下に評価を得させるため」＝成長の管理であり、情報共有の場ではない<span class="src s-cite">出典<sup>1</sup></span>進捗会議で最も求められるのは部下の成長で、目的は上司と部下の認識を合わせること<span class="src s-cite">出典<sup>3</sup></span></p>
+    <p><span class="no">最も出やすいズレは、報告が「状況」で終わっていること。</span>識学の型では、報告は期日と状態が決まった「完全結果」の〇×から始まる。「進んでいます」「もう少しです」は報告として成立しない<span class="src s-inf">推論</span></p>
+    <p><span class="no">次に出やすいのは、過去の話に時間が溶けること。</span>識学は「打ち合わせの80%は未来の話を」とし、過去は原因分析にとどめる<span class="src s-cite">出典<sup>2</sup></span></p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>この会議が何をする場か</h2></div>
+  <div class="purpose">
+    <div>
+      <h3>成長の管理</h3>
+      <p>週次会議の運営目的は「部下に評価を得させるため」。会議は成長を管理する時間である<span class="src s-cite">出典<sup>1</sup></span></p>
+    </div>
+    <div>
+      <h3>認識合わせ</h3>
+      <p>上司と部下の認識を合わせる。完全結果の〇×で食い違いが出るなら、置き方が甘かったということ<span class="src s-cite">出典<sup>3</sup></span></p>
+    </div>
+    <div>
+      <h3>意思決定</h3>
+      <p>意見が一致しないときは、あらかじめ決めた意思決定者が最終判断を下す。合議・多数決は責任の所在をぼかす<span class="src s-cite">出典<sup>4</sup></span><span class="src s-unc">不確実</span></p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>60分の進行表</h2><span class="note">過去10分 ／ 未来46分</span></div>
+  <div class="split">
+    <span class="past">過去 17%</span>
+    <span class="future">未来 77% — 識学は打ち合わせの80%を未来の話にあてる<span class="src s-cite">出典<sup>2</sup></span></span>
+  </div>
+  <div class="run">
+    <div class="t">0:00<small>2分</small></div>
+    <div class="c"><b>開始</b><p>全員着席。録画を回す。識学は全会議の録画をルールにする<span class="src s-cite">出典<sup>1</sup></span></p></div>
+
+    <div class="t">0:02<small>10分</small></div>
+    <div class="c"><b><span class="tag past">過去</span>先週の完全結果の〇×</b><p>4名が各2分半。期日と状態に対して〇か×かと、数値だけを言う。理由・経緯・言い訳はここでは言わない。</p></div>
+
+    <div class="t">0:12<small>20分</small></div>
+    <div class="c"><b><span class="tag future">未来</span>未達の原因と、次の施策</b><p>×だった本人が、自分の不足として原因を述べ、達成できる次の施策を<em>自分で</em>考えて言う。専務は先に答えを言わずに待つ<span class="src s-cite">出典<sup>1</sup></span><span class="src s-cite">出典<sup>3</sup></span></p></div>
+
+    <div class="t">0:32<small>18分</small></div>
+    <div class="c"><b><span class="tag future">未来</span>決裁事項</b><p>仕入・価格・値下げ・追加費用・人の配置など。持ち込むのは管掌している本人だけ。専務が一人で決める。</p></div>
+
+    <div class="t">0:50<small>8分</small></div>
+    <div class="c"><b><span class="tag future">未来</span>次週の完全結果を確定</b><p>全員分を声に出して読み合わせ、期日（月日と時刻）と状態を一字一句そろえる。ここで曖昧なまま流したものは、翌週も曖昧なまま返ってくる<span class="src s-inf">推論</span></p></div>
+
+    <div class="t">0:58<small>2分</small></div>
+    <div class="c"><b>終了</b><p>録画と記録を保存。決まった完全結果をボール台帳に入れる。</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>報告フォーマット</h2><span class="note">毎週この表だけで回す</span></div>
+  <div class="def">
+    <span class="k">完全結果</span>
+    <p>識学用語。<b>期限と状態が明確</b>で、本人と他者との間で認識にズレがない設定のこと。「〇月〇日〇時までに△△円の成約数を獲得する」のような形<span class="src s-cite">出典<sup>5</sup></span></p>
+    <div class="form">〔月日〕〔時刻〕までに、〔何を〕〔どういう状態〕にする</div>
+  </div>
+  <div class="scroll">
+    <table>
+      <caption>記入例。物件名・数値は仮のもの。毎週この6列を埋めて定点観測する<span class="src s-cite">出典<sup>1</sup></span></caption>
+      <thead>
+        <tr>
+          <th scope="col">幹部</th>
+          <th scope="col">先週の完全結果</th>
+          <th scope="col">〇×</th>
+          <th scope="col">未達の原因（自責で）</th>
+          <th scope="col">今週の完全結果</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">拓也<small>設計</small></th>
+          <td>9/5 17:00までに、A邸の実施図面を確認申請に出せる状態にする</td>
+          <td class="mark ng">×</td>
+          <td>構造事務所への依頼を、自分の手元で3日止めた</td>
+          <td>9/12 17:00までに、実施図面2件を申請提出済にする</td>
+        </tr>
+        <tr>
+          <th scope="row">山口<small>工事</small></th>
+          <td>9/4 中に、B分譲3号地を上棟完了にする</td>
+          <td class="mark ok">〇</td>
+          <td>—</td>
+          <td>9/11 中に、4号地の基礎配筋検査を合格にする</td>
+        </tr>
+        <tr>
+          <th scope="row">渡邉<small>土地決済・契約手続き・物件売却</small></th>
+          <td>9/3 中に、C土地の決済を完了する</td>
+          <td class="mark ng">×</td>
+          <td>買主の必要書類の確認を口頭で済ませ、期日を切っていなかった</td>
+          <td>9/10 12:00までに、決済日を書面で確定する</td>
+        </tr>
+        <tr class="blank">
+          <th scope="row">酒井<small>管掌が未設定</small></th>
+          <td class="fill">置けない</td>
+          <td class="mark">—</td>
+          <td class="fill">責任と権限の範囲が決まっていない相手には、完全結果を置けない。まず管掌を決めるのが先<span class="src s-inf">推論</span></td>
+          <td class="fill">まず管掌を確定<span class="src s-cite">出典<sup>6</sup></span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>決め方のルール</h2></div>
+  <ul class="rules">
+    <li><b>決めるのは専務ひとり</b><span>挙手も多数決もしない。意見が割れたら、あらかじめ決めた意思決定者が最終判断を下す<span class="src s-cite">出典<sup>4</sup></span><span class="src s-unc">不確実</span></span></li>
+    <li><b>幹部は自分の管掌についてだけ話す</b><span>管掌外への意見は会議に持ち込まない。自分の担当だけを見て会社全体を見ないと評論家的な立場になる、という逆も同じで、他人の領域に意見を出す評論家も要らない<span class="src s-inf">推論</span></span></li>
+    <li><b>階層を飛び越えた参加者を入れない</b><span>専務が幹部を飛び越えて現場の担当者と直接決めると、幹部の責任と権限が失われ、以後も飛び越えた指示を求めるようになる<span class="src s-cite">出典<sup>1</sup></span><span class="src s-unc">不確実</span></span></li>
+    <li><b>決まったことは、その場で完全結果に変換する</b><span>「検討する」「進める」で終わらせず、期日と状態を入れて読み上げてから閉じる<span class="src s-cite">出典<sup>5</sup></span></span></li>
+  </ul>
+</section>
+
+<section>
+  <div class="sec-head"><h2>やらないこと</h2><span class="note">識学が明示的に挙げるもの</span></div>
+  <ul class="no-list rules">
+    <li>会議の欠席・スキップを認める<span class="src s-cite">出典<sup>1</sup></span></li>
+    <li>上司が指示と介入を続ける。指示待ちを生む。次の施策は本人に考えさせて待つ<span class="src s-cite">出典<sup>1</sup></span></li>
+    <li>過去の話に終始する。過去は原因分析にとどめる<span class="src s-cite">出典<sup>1</sup></span><span class="src s-cite">出典<sup>2</sup></span></li>
+    <li>「上が言うから」などの他責ワードを使う<span class="src s-cite">出典<sup>1</sup></span></li>
+    <li>部下が自分で考えた進め方を否定する<span class="src s-cite">出典<sup>1</sup></span></li>
+    <li>「頑張ります」「なるべく早く」「様子を見て」で宿題を終わらせる<span class="src s-inf">推論</span></li>
+    <li>録画も記録も残さない<span class="src s-cite">出典<sup>1</sup></span></li>
+  </ul>
+</section>
+
+<section>
+  <div class="sec-head"><h2>今週の金曜、この場でつけてみる</h2><span class="note">1つでも×なら、そこがズレ</span></div>
+  <div class="check-head">
+    <span id="count">13項目中 0件が確認済み</span>
+    <button id="reset" type="button">全部外す</button>
+  </div>
+  <div class="check">
+    <label><input type="checkbox"><span class="q">報告が、期日と状態のある完全結果の〇×から始まった<span class="src s-cite">出典<sup>5</sup></span></span></label>
+    <label><input type="checkbox"><span class="q">〇×の判定で、本人と専務の認識が食い違わなかった<span class="src s-cite">出典<sup>5</sup></span></span></label>
+    <label><input type="checkbox"><span class="q">過去の話が、全体の2割以内に収まった<span class="src s-cite">出典<sup>2</sup></span></span></label>
+    <label><input type="checkbox"><span class="q">未達の原因を、本人が自分の不足として述べた<span class="src s-cite">出典<sup>3</sup></span></span></label>
+    <label><input type="checkbox"><span class="q">次の施策を、専務より先に本人が言った<span class="src s-cite">出典<sup>1</sup></span></span></label>
+    <label><input type="checkbox"><span class="q">決裁が、話し合いではなく専務ひとりの判断で下りた<span class="src s-cite">出典<sup>4</sup></span><span class="src s-unc">不確実</span></span></label>
+    <label><input type="checkbox"><span class="q">自分の管掌外について意見を述べた人がいなかった<span class="src s-inf">推論</span></span></label>
+    <label><input type="checkbox"><span class="q">階層を飛び越えた参加者がいなかった<span class="src s-cite">出典<sup>1</sup></span><span class="src s-unc">不確実</span></span></label>
+    <label><input type="checkbox"><span class="q">欠席・遅刻・途中抜けがなかった<span class="src s-cite">出典<sup>1</sup></span></span></label>
+    <label><input type="checkbox"><span class="q">他責ワードが一度も出なかった<span class="src s-cite">出典<sup>1</sup></span></span></label>
+    <label><input type="checkbox"><span class="q">全員が、期日と状態のある宿題を持って帰った<span class="src s-cite">出典<sup>5</sup></span></span></label>
+    <label><input type="checkbox"><span class="q">録画または記録が残った<span class="src s-cite">出典<sup>1</sup></span></span></label>
+    <label><input type="checkbox"><span class="q">先週とまったく同じフォーマットで、定点観測できる形になっている<span class="src s-cite">出典<sup>1</sup></span></span></label>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>ボール台帳をこの会議に載せる</h2><span class="note">同じ台帳を会議の入口と出口にする</span></div>
+  <div class="ledger">
+    <div>
+      <span class="when">木曜まで</span>
+      <p><b>報告を台帳から作る。</b>停滞7日（赤）のカードと未回答の質問が、そのまま「×になりそうな案件」の一覧になる。台帳は3日で琥珀、7日または期限超過で赤に変わる<span class="src s-cite">出典<sup>6</sup></span></p>
+    </div>
+    <div>
+      <span class="when">会議中</span>
+      <p><b>口頭で決めた宿題を、その場で台帳に入れる。</b>「ボールを渡す」の相手・依頼内容・期日が、そのまま完全結果の三点になる<span class="src s-inf">推論</span></p>
+    </div>
+    <div>
+      <span class="when">翌週</span>
+      <p><b>実行を停滞日数で見る。</b>渡したはずのボールが動いていなければ、台帳の停滞日数が勝手に告発する。催促は日数をリセットしないので、「頼んだのに動いていない」が記録に残る<span class="src s-cite">出典<sup>6</sup></span></p>
+    </div>
+    <div>
+      <span class="when">先に一つ</span>
+      <p><b>酒井さんの得意分野が名簿で未設定になっている。</b>台帳上でも会議上でも、管掌が空欄の人には振り先も完全結果も決まらない。ここを埋めるのが型を入れる前の作業<span class="src s-cite">出典<sup>6</sup></span></p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>出典</h2></div>
+  <ol class="sources">
+    <li>識学総研「正しい会議でタイパを上げる？識学式会議法を改め解説！」— 週次会議の目的、4つの要素、やってはいけないこと、金曜開催の推奨、全会議の録画。<a href="https://souken.shikigaku.jp/34503/">souken.shikigaku.jp/34503/</a></li>
+    <li>識学総研「実践編『よい会議 悪い会議』」— 「打ち合わせの80%は未来の話を」。<a href="https://souken.shikigaku.jp/trendemon/jissenn-yoikaigiwaruikaigi/">souken.shikigaku.jp/trendemon/jissenn-yoikaigiwaruikaigi/</a> <em>※具体的な運用方法と週報フォーマットは資料請求後の配布物にあり、本文からは読めていない</em></li>
+    <li>識学総研「会議で部下を成長させるマネジメント術」— 進捗会議の目的は認識合わせ、完全結果の設定・不足の自責認識・未来志向。<a href="https://souken.shikigaku.jp/23407/">souken.shikigaku.jp/23407/</a></li>
+    <li>識学「良い会議と悪い会議の決定的な違い3つ」<a href="https://corp.shikigaku.jp/blog/meeting_05">corp.shikigaku.jp/blog/meeting_05</a> <em>※現在このURLは資料請求フォームへ転送され、本文が読めない。合議・多数決と階層飛び越えについての記述は検索結果の要約に基づくため〔不確実〕とした</em></li>
+    <li>識学総研「社員の意欲と成果をコミットする正しい評価制度の考え方」— 完全結果＝期限と状態が明確で、認識にズレがない設定。<a href="https://souken.shikigaku.jp/23444/">souken.shikigaku.jp/23444/</a></li>
+    <li>本リポジトリ <code>README.md</code>（ボール台帳）— 名簿と得意分野、停滞日数のしきい値（3日で琥珀、7日または期限超過で赤）、催促は停滞日数をリセットしない。</li>
+  </ol>
+</section>
+
+<footer>〔出典〕は上記の一次情報にあたる記述、〔推論〕はこちらで当社の状況にあてはめたもの、〔不確実〕は原典が読めず要約に依拠している記述。</footer>
+
+</div>
+
+<script>
+(function(){
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.check input'));
+  var out = document.getElementById('count');
+  var reset = document.getElementById('reset');
+  function render(){
+    var n = boxes.filter(function(b){ return b.checked; }).length;
+    out.textContent = boxes.length + '項目中 ' + n + '件が確認済み';
+  }
+  boxes.forEach(function(b){ b.addEventListener('change', render); });
+  reset.addEventListener('click', function(){
+    boxes.forEach(function(b){ b.checked = false; });
+    render();
+  });
+  render();
+})();
+</script>
