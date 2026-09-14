@@ -66,8 +66,11 @@ def extract_rooms(lines):
     seen = set()
     for i, ln in enumerate(lines):
         m = re.search(r'\(?\s*([\d.]+)\s*㎡\s*([\d.]+)\s*[帖畳]\s*\)?', ln)
+        jo_only = None
         if not m:
-            continue
+            jo_only = re.match(r'^[（(]?\s*([\d.]+)\s*[帖畳]\s*[）)]?$', ln.strip())
+            if not jo_only:
+                continue
         name = None
         for j in range(i - 1, max(i - 4, -1), -1):
             cand = lines[j].strip()
@@ -77,6 +80,15 @@ def extract_rooms(lines):
                 name = cand
             break
         if not name:
+            continue
+        name = re.sub(r'[・･]', '', name)
+        name = name.replace('ＬＤＫ', 'LDK').replace('ＤＫ', 'DK')
+        if jo_only:
+            key = (name, jo_only.group(1))
+            if key in seen:
+                continue
+            seen.add(key)
+            rooms.append({'name': name, 'm2': None, 'jo': num(jo_only.group(1))})
             continue
         key = (name, m.group(1))
         if key in seen:
@@ -123,13 +135,22 @@ def extract_areas(text):
             m = re.search(pat, t)
             if m:
                 out[key] = num(m.group(1))
-    # 床面積表<1階> 合計（坪, ㎡）
-    for fl in ('1', '2'):
-        m = re.search(r'床\s*面\s*積\s*表\s*<' + fl + r'階>(.{0,1500}?)合計', t, re.S)
-        if m and f'floorArea{fl}' not in out:
-            pass
-    m = re.search(r'計\(坪\)', t)
-    tsubo = re.findall(r'\n\s*(\d{1,3}\.\d{2})\s{2,}\n', t)
+    # 旧テンプレート: 「合計\n79.49\n≒\n1階床面積表」の並び（合計値の後に表名が来る）
+    for m in re.finditer(r'合計\s*\n\s*([\d,]+\.\d+)\s*\n\s*≒\s*\n\s*(1階床面積表|2階床面積表|建築面積求積表|建築面積表)', t):
+        v, label = num(m.group(1)), m.group(2)
+        key = {'1階床面積表': 'floorArea1', '2階床面積表': 'floorArea2'}.get(label, 'buildingArea')
+        out.setdefault(key, v)
+    if 'siteArea' not in out:
+        m = re.search(r'地積\s*\n\s*([\d,]+\.\d+)\s*㎡', t) or re.search(r'合計面積\s*\n\s*([\d,]+\.\d+)', t)
+        if m:
+            out['siteArea'] = num(m.group(1))
+    if 'totalFloorArea' not in out and out.get('floorArea1') is not None:
+        out['totalFloorArea'] = round(out['floorArea1'] + (out.get('floorArea2') or 0), 2)
+    if out.get('siteArea'):
+        if 'bcr' not in out and out.get('buildingArea'):
+            out['bcr'] = round(out['buildingArea'] / out['siteArea'] * 100, 2)
+        if 'far' not in out and out.get('totalFloorArea'):
+            out['far'] = round(out['totalFloorArea'] / out['siteArea'] * 100, 2)
     return out
 
 
@@ -166,7 +187,7 @@ def extract_from_text(text):
     m = re.search(r'最高高さ\s*[:：]?\s*([\d.]+)\s*m', t)
     if m:
         d['maxHeight'] = num(m.group(1))
-    two = re.search(r'2\s*階\s*平面|2階\s*床面積|床\s*面\s*積\s*表\s*<2階>|2階平面', t)
+    two = re.search(r'2\s*階\s*平面|2階\s*床面積|床\s*面\s*積\s*表\s*<2階>|2階平面|2階床面積表', t) or (d.get('floorArea2') or 0) > 0
     d['floors'] = 2 if two else 1
     if re.search(r'3\s*階\s*平面|床\s*面\s*積\s*表\s*<3階>', t):
         d['floors'] = 3
@@ -228,7 +249,15 @@ def main():
     a = ap.parse_args()
     os.makedirs(a.thumbs, exist_ok=True)
     ocr = json.load(open(a.ocr)) if a.ocr and os.path.exists(a.ocr) else {}
-    manual = json.load(open(a.manual)) if a.manual and os.path.exists(a.manual) else {}
+    manual = {}
+    if a.manual and os.path.isdir(a.manual):
+        for f in sorted(glob.glob(os.path.join(a.manual, '*.json'))):
+            try:
+                manual[os.path.splitext(os.path.basename(f))[0]] = json.load(open(f))
+            except Exception as e:
+                print('manual skip', f, e, file=sys.stderr)
+    elif a.manual and os.path.exists(a.manual):
+        manual = json.load(open(a.manual))
     plans = []
     seen = set()
     for cf in a.cases:
@@ -264,11 +293,37 @@ def main():
                 rec['thumb'] = f'thumbs/{fid}.jpg'
             except Exception as e:
                 rec['thumbError'] = str(e)
-            rec.update(manual.get(fid, {}))
+            mrec = manual.get(fid)
+            if mrec:
+                # 目視で読んだ値は null 以外だけ上書きする（自動抽出を消さない）
+                for k, v in mrec.items():
+                    if v is None or (isinstance(v, list) and not v and rec.get(k)):
+                        continue
+                    rec[k] = v
+                rec['reviewed'] = True
+                if rec.get('rooms') and rec.get('bedrooms') is None:
+                    rec['bedrooms'] = sum(1 for r in rec['rooms'] if BEDROOM_RE.match(z2h(r.get('name', ''))))
+                if rec.get('floors') and rec.get('features'):
+                    f0 = '平屋' if rec['floors'] == 1 else f"{rec['floors']}階建"
+                    rec['features'] = [f0] + [x for x in rec['features'] if x not in ('平屋', '2階建', '3階建')]
             if not rec.get('contractDate') and rec.get('modifiedTime'):
                 rec['contractDate'] = rec['modifiedTime'][:10]
                 rec['contractDateSource'] = 'drive'
             plans.append(rec)
+    # 同じ施主が複数期間に現れたら、情報の多い方（同点なら新しい方）を残す
+    KEYS = ('totalFloorArea', 'siteArea', 'layout', 'ldkJo', 'site', 'rooms')
+    def richness(r):
+        return sum(1 for k in KEYS if r.get(k)) + (0 if r.get('scanned') else 1)
+    best = {}
+    for r in plans:
+        c = (r.get('customer') or '').strip()
+        if not c or r.get('error'):
+            best[r['id']] = r
+            continue
+        cur = best.get(c)
+        if cur is None or (richness(r), r.get('contractDate') or '') > (richness(cur), cur.get('contractDate') or ''):
+            best[c] = r
+    plans = list(best.values())
     plans.sort(key=lambda r: r.get('contractDate') or '', reverse=True)
     json.dump(plans, open(a.out, 'w'), ensure_ascii=False, indent=1)
     ok = sum(1 for p in plans if not p.get('error'))
