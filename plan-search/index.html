@@ -1,0 +1,286 @@
+<title>御園建設 類似プラン検索</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Zen+Kaku+Gothic+New:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#F7F6F2; --paper-2:#EFEDE6; --ink:#1D2530; --ink-2:#4A5563; --ink-3:#7B8593;
+  --line:#C9D1DC; --line-2:#DEE3EA; --blue:#1F5FA8; --blue-soft:#E3ECF7; --stamp:#B8312F; --stamp-soft:#F6E4E3;
+  --good:#2E7D4F; --warn:#B7791F;
+  --card:#FFFFFF; --shadow:0 1px 2px rgba(29,37,48,.06),0 8px 24px -12px rgba(29,37,48,.18);
+  --sans:"BIZ UDPGothic","Hiragino Sans","Yu Gothic",sans-serif;
+  --disp:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#14171C; --paper-2:#1B1F26; --ink:#E4E7EC; --ink-2:#AEB6C2; --ink-3:#7E8794;
+    --line:#333B47; --line-2:#272E38; --blue:#6FA6E8; --blue-soft:#1C2A3D; --stamp:#E0645F; --stamp-soft:#3A2323;
+    --good:#5DBB84; --warn:#D9A24A; --card:#1B1F26; --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#14171C; --paper-2:#1B1F26; --ink:#E4E7EC; --ink-2:#AEB6C2; --ink-3:#7E8794;
+  --line:#333B47; --line-2:#272E38; --blue:#6FA6E8; --blue-soft:#1C2A3D; --stamp:#E0645F; --stamp-soft:#3A2323;
+  --good:#5DBB84; --warn:#D9A24A; --card:#1B1F26; --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.55;padding-inline:16px;padding-block:0 48px}
+a{color:var(--blue)}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:.95em}
+
+/* 図枠風ヘッダー */
+.frame{max-width:1280px;margin:16px auto 0;border:1.5px solid var(--ink);display:grid;grid-template-columns:auto 1fr auto;align-items:stretch}
+.frame>div{padding:10px 14px;border-right:1px solid var(--line)}
+.frame>div:last-child{border-right:0}
+.frame .co{font-family:var(--disp);font-weight:900;font-size:13px;letter-spacing:.12em}
+.frame .co small{display:block;font-weight:500;font-size:11px;color:var(--ink-3);letter-spacing:.1em;margin-top:2px}
+.frame h1{margin:0;font-family:var(--disp);font-weight:700;font-size:22px;letter-spacing:.04em;text-wrap:balance}
+.frame .sub{color:var(--ink-2);font-size:12.5px;margin-top:2px}
+.stamp{align-self:center;border:2px solid var(--stamp);color:var(--stamp);font-family:var(--disp);font-weight:900;font-size:15px;letter-spacing:.3em;padding:6px 10px 6px 14px;transform:rotate(-2deg);margin:0 6px}
+@media (max-width:720px){.frame{grid-template-columns:1fr auto}.frame .co{display:none}}
+
+.wrap{max-width:1280px;margin:20px auto 0;display:grid;grid-template-columns:320px 1fr;gap:24px;align-items:start}
+@media (max-width:900px){.wrap{grid-template-columns:1fr}}
+
+/* 条件パネル */
+.panel{position:sticky;top:12px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
+@media (max-width:900px){.panel{position:static}}
+.panel h2{margin:0;padding:10px 14px;font-family:var(--disp);font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;border-bottom:1px solid var(--line);background:var(--paper-2)}
+.rows{display:grid;grid-template-columns:auto 1fr;border-bottom:1px solid var(--line-2)}
+.rows>label{padding:9px 12px;font-size:12px;color:var(--ink-2);border-right:1px solid var(--line-2);border-bottom:1px solid var(--line-2);display:flex;align-items:center;letter-spacing:.04em;white-space:nowrap}
+.rows>div{padding:6px 10px;border-bottom:1px solid var(--line-2);display:flex;gap:6px;align-items:center;min-width:0}
+.rows input[type=number],.rows input[type=text],.rows select{width:100%;min-width:0;border:1px solid var(--line);background:var(--paper);padding:6px 8px;border-radius:3px;font-family:var(--mono);font-size:13px}
+.rows input[type=text]{font-family:var(--sans)}
+.rows .unit{color:var(--ink-3);font-size:12px;white-space:nowrap}
+.seg{display:flex;border:1px solid var(--line);border-radius:3px;overflow:hidden;width:100%}
+.seg button{flex:1;border:0;background:transparent;padding:6px 4px;font-size:12.5px;cursor:pointer;color:var(--ink-2)}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed=true]{background:var(--blue);color:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;border-bottom:1px solid var(--line-2)}
+.chips label{border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:12px;cursor:pointer;user-select:none;color:var(--ink-2);display:inline-flex;gap:4px;align-items:center}
+.chips input{display:none}
+.chips label:has(input:checked){background:var(--blue-soft);border-color:var(--blue);color:var(--blue);font-weight:700}
+.panel .foot{display:flex;gap:8px;padding:10px 12px;align-items:center;justify-content:space-between}
+.btn{border:1px solid var(--line);background:var(--paper);padding:7px 12px;border-radius:3px;cursor:pointer;font-size:13px}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700}
+.hint{padding:8px 12px 12px;font-size:11.5px;color:var(--ink-3);line-height:1.5}
+
+/* 結果 */
+.bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:baseline;justify-content:space-between;margin-bottom:10px}
+.bar .count{font-family:var(--disp);font-weight:700;font-size:16px}
+.bar .count b{color:var(--blue);font-family:var(--mono);font-size:20px}
+.bar .meta{color:var(--ink-3);font-size:12px}
+.sort{display:flex;gap:6px;align-items:center;font-size:12.5px;color:var(--ink-2)}
+.sort select{border:1px solid var(--line);background:var(--card);padding:4px 6px;border-radius:3px}
+.list{display:grid;gap:14px}
+.card{background:var(--card);border:1px solid var(--line);display:grid;grid-template-columns:260px 1fr;box-shadow:var(--shadow)}
+@media (max-width:640px){.card{grid-template-columns:1fr}}
+.card.top{border-color:var(--stamp)}
+.thumb{position:relative;background:#fff;border-right:1px solid var(--line-2);display:block;aspect-ratio:1.414/1;max-width:100%;overflow:hidden}
+@media (max-width:640px){.thumb{border-right:0;border-bottom:1px solid var(--line-2)}}
+.thumb img{width:100%;height:100%;object-fit:contain;object-position:center;display:block;background:#fff}
+.thumb .noimg{position:absolute;inset:0;display:grid;place-items:center;color:var(--ink-3);font-size:12px;background:var(--paper-2)}
+.thumb .score{position:absolute;left:8px;top:8px;background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:12px;padding:2px 7px;border-radius:2px}
+.card.top .thumb .score{background:var(--stamp);color:#fff}
+.body{padding:12px 14px;display:grid;gap:8px;min-width:0}
+.head{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.head .name{font-family:var(--disp);font-weight:700;font-size:17px}
+.head .name small{font-weight:500;color:var(--ink-3);font-size:12px;margin-left:4px}
+.head .date{font-family:var(--mono);color:var(--ink-2);font-size:12.5px}
+.head .tag{font-size:11px;border:1px solid var(--line);border-radius:2px;padding:1px 6px;color:var(--ink-3)}
+.head .tag.scan{color:var(--warn);border-color:var(--warn)}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:6px 14px}
+.kv div{display:grid;gap:1px}
+.kv dt{font-size:11px;color:var(--ink-3);letter-spacing:.04em}
+.kv dd{margin:0;font-family:var(--mono);font-size:14px;font-variant-numeric:tabular-nums}
+.kv dd small{font-size:11px;color:var(--ink-3);font-family:var(--sans)}
+.kv dd.big{font-size:18px;font-weight:500}
+.feat{display:flex;flex-wrap:wrap;gap:5px}
+.feat span{font-size:11.5px;background:var(--paper-2);border:1px solid var(--line-2);padding:1px 8px;border-radius:999px;color:var(--ink-2)}
+.feat span.hit{background:var(--blue-soft);border-color:var(--blue);color:var(--blue)}
+.rooms{font-size:12px;color:var(--ink-2)}
+.rooms b{font-weight:400;color:var(--ink)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:2px}
+.actions a.btn{text-decoration:none;color:var(--blue);border-color:var(--blue)}
+details.more{font-size:12px;color:var(--ink-2)}
+details.more summary{cursor:pointer;color:var(--blue)}
+details.more ul{margin:6px 0 0;padding-left:18px;columns:2;column-gap:20px}
+@media (max-width:640px){details.more ul{columns:1}}
+.empty{padding:40px 20px;text-align:center;color:var(--ink-3);border:1px dashed var(--line)}
+@media (prefers-reduced-motion:no-preference){.card{transition:border-color .15s}}
+</style>
+
+<header class="frame">
+  <div class="co">御園建設株式会社<small>茂原市高師521-6 ・ 二級建築士事務所</small></div>
+  <div>
+    <h1>類似プラン検索</h1>
+    <div class="sub">過去の契約図から、条件の近い案件を並べます。敷地・延床・階数・間取り・地域・仕様で絞り込めます。</div>
+  </div>
+  <div class="stamp">契約図</div>
+</header>
+
+<div class="wrap">
+  <aside class="panel">
+    <h2>検索条件</h2>
+    <div class="rows">
+      <label for="q">施主・地名</label>
+      <div><input id="q" type="text" placeholder="例: 茂原 / 田中"></div>
+      <label for="site">敷地面積</label>
+      <div><input id="site" type="number" inputmode="decimal" step="1" placeholder="—"><span class="unit">㎡</span></div>
+      <label for="floor">延床面積</label>
+      <div><input id="floor" type="number" inputmode="decimal" step="0.5" placeholder="—"><span class="unit">㎡</span><input id="tsubo" type="number" inputmode="decimal" step="0.5" placeholder="—" style="max-width:76px"><span class="unit">坪</span></div>
+      <label>階数</label>
+      <div><div class="seg" id="floors"><button type="button" data-v="" aria-pressed="true">指定なし</button><button type="button" data-v="1" aria-pressed="false">平屋</button><button type="button" data-v="2" aria-pressed="false">2階建</button></div></div>
+      <label for="beds">居室数</label>
+      <div><select id="beds"><option value="">指定なし</option><option value="1">1（1LDK）</option><option value="2">2（2LDK）</option><option value="3">3（3LDK）</option><option value="4">4（4LDK以上）</option></select></div>
+      <label for="ldk">LDK</label>
+      <div><input id="ldk" type="number" inputmode="decimal" step="0.5" placeholder="—"><span class="unit">帖</span></div>
+      <label for="city">市町村</label>
+      <div><select id="city"><option value="">指定なし</option></select></div>
+    </div>
+    <div class="chips" id="feats"></div>
+    <div class="foot">
+      <span class="hint" style="padding:0">条件は入れた分だけ効きます</span>
+      <button class="btn" type="button" id="reset">クリア</button>
+    </div>
+    <div class="hint" id="src"></div>
+  </aside>
+
+  <main>
+    <div class="bar">
+      <div class="count"><b id="n">0</b> 件 <span class="meta" id="range"></span></div>
+      <div class="sort"><label for="sort">並び</label><select id="sort"><option value="score">一致度の高い順</option><option value="date">契約日の新しい順</option><option value="area">延床の大きい順</option><option value="areaAsc">延床の小さい順</option></select></div>
+    </div>
+    <div class="list" id="list"></div>
+  </main>
+</div>
+
+<script src="plans.js"></script>
+<script>
+(function(){
+  const PLANS = (window.PLANS || []).filter(p => !p.error);
+  const TSUBO = 3.305785;
+  const FEATS = ['太陽光','吹抜','ロフト','小屋裏','WIC','パントリー','書斎','シューズクローク','土間収納','バルコニー','和室','ランドリー','ファミリークローク','勝手口','カーポート','都市ガス','プロパン','浄化槽','下水道','増築','店舗・事務所','賃貸・共同住宅'];
+  const $ = id => document.getElementById(id);
+  const state = { q:'', site:null, floor:null, floors:'', beds:'', ldk:null, city:'', feats:new Set(), sort:'score' };
+
+  // 選択肢を実データから作る
+  const cities = [...new Set(PLANS.map(p=>p.city).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ja'));
+  for (const c of cities){ const o=document.createElement('option'); o.value=c; o.textContent=c+'（'+PLANS.filter(p=>p.city===c).length+'）'; $('city').appendChild(o); }
+  const fc = {}; PLANS.forEach(p=>(p.features||[]).forEach(f=>fc[f]=(fc[f]||0)+1));
+  $('feats').innerHTML = FEATS.filter(f=>fc[f]).map(f=>`<label><input type="checkbox" value="${f}">${f}<span class="num" style="color:var(--ink-3)">${fc[f]}</span></label>`).join('');
+
+  const dates = PLANS.map(p=>p.contractDate).filter(Boolean).sort();
+  $('range').textContent = dates.length ? `（${dates[0].slice(0,7)} 〜 ${dates[dates.length-1].slice(0,7)} の契約図）` : '';
+  const nScan = PLANS.filter(p=>p.scanned).length, nPdf = PLANS.length-nScan;
+  $('src').textContent = `データ源: 契約図PDFの本文 ${nPdf}件、スキャンPDF（OCR・目視補完） ${nScan}件。面積・部屋は図面の面積表と平面図から自動で読み取ったもので、確認申請の数値とは異なることがあります。`;
+
+  function fmt(v, d=2){ return (v==null||isNaN(v)) ? '—' : Number(v).toLocaleString('ja-JP',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+  function tsubo(m2){ return m2==null ? null : m2/TSUBO; }
+
+  // 一致度: 各条件の差をペナルティにして 100 から引く
+  function score(p){
+    let pen = 0, used = 0, known = 0;
+    if (state.floor!=null){ used++; if(p.totalFloorArea==null) pen+=25; else { known++; pen += Math.min(40, Math.abs(p.totalFloorArea-state.floor)/state.floor*100); } }
+    if (state.site!=null){ used++; if(p.siteArea==null) pen+=12; else { known++; pen += Math.min(25, Math.abs(p.siteArea-state.site)/state.site*60); } }
+    if (state.floors){ used++; if(p.floors==null) pen+=15; else { known++; pen += (String(p.floors)===state.floors) ? 0 : 35; } }
+    if (state.beds){ used++; const b=+state.beds; const pb=p.bedrooms; if(pb==null) pen+=12; else { known++; pen += (b>=4 ? (pb>=4?0:15*(4-pb)) : Math.min(30, Math.abs(pb-b)*15)); } }
+    if (state.ldk!=null){ used++; if(p.ldkJo==null) pen+=10; else { known++; pen += Math.min(25, Math.abs(p.ldkJo-state.ldk)/state.ldk*80); } }
+    if (state.city){ used++; if(!p.city) pen+=10; else { known++; pen += p.city===state.city ? 0 : 20; } }
+    if (state.feats.size){ used++; known++; const fs=new Set(p.features||[]); let miss=0; state.feats.forEach(f=>{ if(!fs.has(f)) miss++; }); pen += Math.min(40, miss*14); }
+    if (!used) return null;
+    if (!known) return 0;
+    return Math.max(0, Math.round(100-pen));
+  }
+  function matchText(p){
+    if(!state.q) return true;
+    const q = state.q.trim(); if(!q) return true;
+    const hay = [p.customer,p.workName,p.site,p.city,p.folder,p.title,(p.features||[]).join(' ')].join(' ');
+    return q.split(/\s+/).every(w=>hay.includes(w));
+  }
+
+  function render(){
+    let rows = PLANS.filter(matchText).map(p=>({p, s:score(p)}));
+    if (state.feats.size) rows = rows.filter(r=>{ const fs=new Set(r.p.features||[]); let miss=0; state.feats.forEach(f=>{if(!fs.has(f))miss++;}); return miss<state.feats.size; });
+    const sortKey = state.sort;
+    rows.sort((a,b)=>{
+      if (sortKey==='date') return (b.p.contractDate||'').localeCompare(a.p.contractDate||'');
+      if (sortKey==='area') return (b.p.totalFloorArea||0)-(a.p.totalFloorArea||0);
+      if (sortKey==='areaAsc') return (a.p.totalFloorArea||1e9)-(b.p.totalFloorArea||1e9);
+      if (a.s==null && b.s==null) return (b.p.contractDate||'').localeCompare(a.p.contractDate||'');
+      return (b.s??-1)-(a.s??-1) || (b.p.contractDate||'').localeCompare(a.p.contractDate||'');
+    });
+    $('n').textContent = rows.length;
+    const list = $('list');
+    if(!rows.length){ list.innerHTML = '<div class="empty">条件に合う案件がありません。条件を減らしてみてください。</div>'; return; }
+    const hasScore = rows.some(r=>r.s!=null) && sortKey==='score';
+    list.innerHTML = rows.map((r,i)=>card(r.p, r.s, hasScore && i===0 && r.s>=70)).join('');
+  }
+
+  function card(p, s, top){
+    const feats = (p.features||[]).map(f=>`<span class="${state.feats.has(f)?'hit':''}">${f}</span>`).join('');
+    const rooms = (p.rooms||[]).map(r=>`<b>${r.name}</b>${r.jo?` ${r.jo}帖`:''}`).join('・');
+    const ops = (p.options||[]);
+    const kind = p.floors===1 ? '平屋' : (p.floors ? p.floors+'階建' : '');
+    const layout = p.layout || (p.bedrooms!=null ? p.bedrooms+'LDK?' : '');
+    return `<article class="card ${top?'top':''}">
+      <a class="thumb" href="${p.viewUrl}" target="_blank" rel="noopener" title="Driveで契約図を開く">
+        ${p.thumb ? `<img src="${p.thumb}" alt="${p.customer||''}様邸 平面図" loading="lazy">` : `<div class="noimg">図面画像なし</div>`}
+        ${s!=null ? `<span class="score">一致 ${s}</span>` : ''}
+      </a>
+      <div class="body">
+        <div class="head">
+          <span class="name">${p.customer||'（施主不明）'}<small>${p.customer ? '様' : ''}${p.workName && p.customer && !p.workName.includes(p.customer) ? '・'+p.workName : ''}</small></span>
+          <span class="date">${p.contractDate||''}</span>
+          ${p.city ? `<span class="tag">${p.city}</span>`:''}
+          ${p.docType && p.docType!=='契約図' ? `<span class="tag">${p.docType}</span>`:''}
+          ${p.scanned ? `<span class="tag scan">スキャン</span>`:''}
+        </div>
+        <dl class="kv">
+          <div><dt>階数・間取り</dt><dd>${kind}${layout?` ${layout}`:''}</dd></div>
+          <div><dt>延床面積</dt><dd class="big">${fmt(p.totalFloorArea)}<small> ㎡ ${p.totalFloorArea?'／'+fmt(tsubo(p.totalFloorArea),1)+'坪':''}</small></dd></div>
+          <div><dt>敷地面積</dt><dd>${fmt(p.siteArea)}<small> ㎡</small></dd></div>
+          <div><dt>建築面積</dt><dd>${fmt(p.buildingArea)}<small> ㎡</small></dd></div>
+          <div><dt>建蔽率／容積率</dt><dd>${p.bcr!=null?fmt(p.bcr,1)+'%':'—'}<small> ／ </small>${p.far!=null?fmt(p.far,1)+'%':'—'}</dd></div>
+          <div><dt>LDK</dt><dd>${p.ldkJo!=null?fmt(p.ldkJo,1)+'<small> 帖</small>':'—'}</dd></div>
+          ${p.maxHeight ? `<div><dt>最高高さ</dt><dd>${fmt(p.maxHeight,3)}<small> m</small></dd></div>`:''}
+          ${p.road ? `<div><dt>前面道路</dt><dd style="font-family:var(--sans);font-size:12.5px">${p.road}${p.roadWidthMm?` <span class="num">${fmt(p.roadWidthMm/1000,1)}m</span>`:''}</dd></div>`:''}
+        </dl>
+        ${feats ? `<div class="feat">${feats}</div>`:''}
+        ${rooms ? `<div class="rooms">${rooms}</div>`:''}
+        <div class="actions">
+          <a class="btn" href="${p.viewUrl}" target="_blank" rel="noopener">Driveで契約図を開く</a>
+          ${p.site ? `<span class="hint" style="padding:0">${p.site}</span>`:''}
+        </div>
+        ${ops.length ? `<details class="more"><summary>オプション ${ops.length} 件</summary><ul>${ops.map(o=>`<li>${o}</li>`).join('')}</ul></details>`:''}
+      </div>
+    </article>`;
+  }
+
+  // 入力
+  const numOrNull = v => v===''||v==null ? null : Number(v);
+  $('q').addEventListener('input', e=>{state.q=e.target.value; render();});
+  $('site').addEventListener('input', e=>{state.site=numOrNull(e.target.value); render();});
+  $('floor').addEventListener('input', e=>{state.floor=numOrNull(e.target.value); $('tsubo').value = state.floor==null?'':(state.floor/TSUBO).toFixed(1); render();});
+  $('tsubo').addEventListener('input', e=>{const t=numOrNull(e.target.value); state.floor = t==null?null:t*TSUBO; $('floor').value = state.floor==null?'':state.floor.toFixed(1); render();});
+  $('ldk').addEventListener('input', e=>{state.ldk=numOrNull(e.target.value); render();});
+  $('beds').addEventListener('change', e=>{state.beds=e.target.value; render();});
+  $('city').addEventListener('change', e=>{state.city=e.target.value; render();});
+  $('sort').addEventListener('change', e=>{state.sort=e.target.value; render();});
+  $('floors').addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return; state.floors=b.dataset.v; [...$('floors').children].forEach(x=>x.setAttribute('aria-pressed', x===b)); render(); });
+  $('feats').addEventListener('change', e=>{ state.feats = new Set([...$('feats').querySelectorAll('input:checked')].map(i=>i.value)); render(); });
+  $('reset').addEventListener('click', ()=>{
+    Object.assign(state,{q:'',site:null,floor:null,floors:'',beds:'',ldk:null,city:'',feats:new Set()});
+    ['q','site','floor','tsubo','ldk'].forEach(id=>$(id).value='');
+    $('beds').value=''; $('city').value='';
+    [...$('floors').children].forEach((x,i)=>x.setAttribute('aria-pressed', i===0));
+    $('feats').querySelectorAll('input').forEach(i=>i.checked=false);
+    render();
+  });
+  render();
+})();
+</script>
