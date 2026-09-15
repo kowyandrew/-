@@ -154,6 +154,27 @@ def extract_areas(text):
     return out
 
 
+def extract_footprint(doc):
+    """建築面積求積表の計算式（例 5.460×9.555）から建物の平面寸法を取る。"""
+    for page in doc:
+        t = page.get_text()
+        if '建築面積' not in t.replace(' ', ''):
+            continue
+        rects = [(float(a), float(b)) for a, b in
+                 re.findall(r'(\d+\.\d{2,3})\s*[×xX*]\s*(\d+\.\d{2,3})', t)]
+        if not rects:
+            return None
+        # 同じ矩形が求積図と表の両方に出るので重複を除く
+        uniq = []
+        for r in rects:
+            if r not in uniq:
+                uniq.append(r)
+        main = max(uniq, key=lambda r: r[0] * r[1])
+        return {'rects': uniq[:8], 'w': main[0], 'd': main[1],
+                'area': round(main[0] * main[1], 4)}
+    return None
+
+
 def extract_from_text(text):
     lines = [l.strip() for l in text.split('\n')]
     t = z2h(text)
@@ -309,6 +330,13 @@ def main():
             rec['textSource'] = 'ocr' if rec['scanned'] else 'pdf'
             if text:
                 rec.update(extract_from_text(text))
+            if not rec['scanned']:
+                fp = extract_footprint(doc)
+                if fp:
+                    # 建築面積と一致すれば単純な矩形。ずれていればL字などで寸法は目安
+                    ba = rec.get('buildingArea')
+                    fp['exact'] = bool(ba and abs(fp['area'] - ba) / ba < 0.01)
+                    rec['footprint'] = fp
             try:
                 pm = pagemap.get(fid) or {}
                 forced = pm.get('planPage')
