@@ -217,10 +217,12 @@ def scanned(doc):
     return chars < 200
 
 
-def thumbnail(doc, out_path, prefer=('平面詳細図', '平面図'), width=900):
-    """平面図ページを優先してJPEGサムネイルを作る。"""
+def thumbnail(doc, out_path, prefer=('平面詳細図', '平面図'), width=900, forced=None):
+    """平面図ページを優先してJPEGサムネイルを作る。forced が指定されればそのページ。"""
     idx = 0
     best = None
+    if forced is not None and 0 <= forced < len(doc):
+        best = (0, forced)
     for i, p in enumerate(doc):
         t = p.get_text()
         for k, w in enumerate(prefer):
@@ -229,8 +231,19 @@ def thumbnail(doc, out_path, prefer=('平面詳細図', '平面図'), width=900)
                     best = (k, i)
     if best:
         idx = best[1]
-    elif len(doc) > 2:
-        idx = 2
+    else:
+        # スキャン品は文字が取れないので、線と文字が最も密なページ（多くは平面詳細図）を選ぶ
+        dens = []
+        for i, p in enumerate(doc):
+            pix = p.get_pixmap(matrix=pymupdf.Matrix(0.15, 0.15), colorspace=pymupdf.csGRAY, alpha=False)
+            dark = sum(1 for b in pix.samples if b < 128)
+            dens.append((dark / max(1, len(pix.samples)), i))
+        if dens:
+            # 先頭ページ（案内図・表紙）は除外して最も濃いページ
+            # 電気配線図は末尾に来るので、前半6割のページから選ぶ
+            lim = max(2, int(len(dens) * 0.6 + 0.999))
+            cand = [d for d in dens if 0 < d[1] < lim] or [d for d in dens if d[1] != 0] or dens
+            idx = max(cand)[1]
     page = doc[idx]
     zoom = width / page.rect.width
     pix = page.get_pixmap(matrix=pymupdf.Matrix(zoom, zoom), alpha=False)
@@ -245,7 +258,8 @@ def main():
     ap.add_argument('--out', required=True)
     ap.add_argument('--thumbs', required=True)
     ap.add_argument('--ocr', help='JSON {fileId: ocrText} for scanned PDFs')
-    ap.add_argument('--manual', help='JSON {fileId: {field: value}} 手動補正')
+    ap.add_argument('--manual', help='JSON {fileId: {field: value}} 手動補正（ディレクトリ可）')
+    ap.add_argument('--pagemap', help='目視で特定した平面図ページ {fileId: {planPage: n}} のディレクトリ')
     a = ap.parse_args()
     os.makedirs(a.thumbs, exist_ok=True)
     ocr = json.load(open(a.ocr)) if a.ocr and os.path.exists(a.ocr) else {}
@@ -258,6 +272,13 @@ def main():
                 print('manual skip', f, e, file=sys.stderr)
     elif a.manual and os.path.exists(a.manual):
         manual = json.load(open(a.manual))
+    pagemap = {}
+    if a.pagemap and os.path.isdir(a.pagemap):
+        for f in glob.glob(os.path.join(a.pagemap, '*.json')):
+            try:
+                pagemap[os.path.splitext(os.path.basename(f))[0]] = json.load(open(f))
+            except Exception as e:
+                print('pagemap skip', f, e, file=sys.stderr)
     plans = []
     seen = set()
     for cf in a.cases:
@@ -289,7 +310,10 @@ def main():
             if text:
                 rec.update(extract_from_text(text))
             try:
-                rec['thumbPage'] = thumbnail(doc, os.path.join(a.thumbs, f'{fid}.jpg'))
+                pm = pagemap.get(fid) or {}
+                rec['thumbPage'] = thumbnail(doc, os.path.join(a.thumbs, f'{fid}.jpg'), forced=pm.get('planPage'))
+                if pm:
+                    rec['pageMap'] = pm
                 rec['thumb'] = f'thumbs/{fid}.jpg'
             except Exception as e:
                 rec['thumbError'] = str(e)
