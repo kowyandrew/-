@@ -1,0 +1,10 @@
+# 施主名・建築地・図面画像を含むため、リポジトリには入れない。
+# 手元で extract.py / build.py を実行して作り直す（作り方は README.md）。
+cases/
+manual/
+pagemap/
+plans.json
+plans.js
+thumbs/
+pdf/
+*.html.out
