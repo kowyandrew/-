@@ -311,7 +311,10 @@ def main():
                 rec.update(extract_from_text(text))
             try:
                 pm = pagemap.get(fid) or {}
-                rec['thumbPage'] = thumbnail(doc, os.path.join(a.thumbs, f'{fid}.jpg'), forced=pm.get('planPage'))
+                forced = pm.get('planPage')
+                if forced is None and (manual.get(fid) or {}).get('planPage') is not None:
+                    forced = manual[fid]['planPage']
+                rec['thumbPage'] = thumbnail(doc, os.path.join(a.thumbs, f'{fid}.jpg'), forced=forced)
                 if pm:
                     rec['pageMap'] = pm
                 rec['thumb'] = f'thumbs/{fid}.jpg'
@@ -333,6 +336,17 @@ def main():
             if not rec.get('contractDate') and rec.get('modifiedTime'):
                 rec['contractDate'] = rec['modifiedTime'][:10]
                 rec['contractDateSource'] = 'drive'
+            elif rec.get('contractDate') and rec.get('modifiedTime') and not rec.get('reviewed'):
+                # 自動抽出した日付が Drive の更新日から1年以上ずれていれば誤読とみなす
+                import datetime
+                try:
+                    a_ = datetime.date.fromisoformat(rec['contractDate'][:10])
+                    b_ = datetime.date.fromisoformat(rec['modifiedTime'][:10])
+                    if abs((b_ - a_).days) > 400:
+                        rec['contractDate'] = rec['modifiedTime'][:10]
+                        rec['contractDateSource'] = 'drive'
+                except ValueError:
+                    pass
             plans.append(rec)
     # 同じ施主が複数期間に現れたら、情報の多い方（同点なら新しい方）を残す
     KEYS = ('totalFloorArea', 'siteArea', 'layout', 'ldkJo', 'site', 'rooms')

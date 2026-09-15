@@ -177,7 +177,8 @@ details.more ul{margin:6px 0 0;padding-left:18px;columns:2;column-gap:20px}
   const dates = PLANS.map(p=>p.contractDate).filter(Boolean).sort();
   $('range').textContent = dates.length ? `（${dates[0].slice(0,7)} 〜 ${dates[dates.length-1].slice(0,7)} の契約図）` : '';
   const nScan = PLANS.filter(p=>p.scanned).length, nPdf = PLANS.length-nScan;
-  $('src').textContent = `データ源: 契約図PDFの本文 ${nPdf}件、スキャンPDF（OCR・目視補完） ${nScan}件。面積・部屋は図面の面積表と平面図から自動で読み取ったもので、確認申請の数値とは異なることがあります。`;
+  const nRev = PLANS.filter(p=>p.scanned && p.reviewed).length;
+  $('src').textContent = `データ源: CAD出力PDFの本文 ${nPdf}件、文字の無いPDFを目視で読み取ったもの ${nRev}件、未読取（図面リンクのみ） ${nScan-nRev}件。面積・部屋は図面の面積表と平面図から読んだもので、確認申請の数値と異なることがあります。`;
 
   function fmt(v, d=2){ return (v==null||isNaN(v)) ? '—' : Number(v).toLocaleString('ja-JP',{minimumFractionDigits:d,maximumFractionDigits:d}); }
   function tsubo(m2){ return m2==null ? null : m2/TSUBO; }
@@ -238,7 +239,7 @@ details.more ul{margin:6px 0 0;padding-left:18px;columns:2;column-gap:20px}
           <span class="date">${p.contractDate||''}</span>
           ${p.city ? `<span class="tag">${p.city}</span>`:''}
           ${p.docType && p.docType!=='契約図' ? `<span class="tag">${p.docType}</span>`:''}
-          ${p.scanned ? `<span class="tag scan">スキャン</span>`:''}
+          ${p.scanned && !p.reviewed ? `<span class="tag scan">未読取</span>` : (p.scanned ? `<span class="tag">目視読取</span>` : '')}
         </div>
         <dl class="kv">
           <div><dt>階数・間取り</dt><dd>${kind}${layout?` ${layout}`:''}</dd></div>
