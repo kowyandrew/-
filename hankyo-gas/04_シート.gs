@@ -42,21 +42,39 @@ function 管理列を用意_(sheet) {
         開始 + 不足.length - 1 - sheet.getMaxColumns());
     }
     sheet.getRange(設定.ヘッダー行, 開始, 1, 不足.length).setValues([不足]);
+    SpreadsheetApp.flush();  // 直後の getLastColumn が古い値を返さないように
     Logger.log('管理列を追加しました: %s', 不足.join(', '));
     辞書 = 列番号を解決_(sheet);
   }
   return 辞書;
 }
 
-/** 既に取り込んだGmailメッセージIDの集合。二重取込の防止はここが要。 */
+/**
+ * 既に取り込んだGmailメッセージIDの集合。二重取込の防止はここが要。
+ *
+ * 「メッセージID」列と「Gmailリンク」列の末尾のID、両方を見る。
+ * 行を消すつもりでセルの中身だけ消してしまっても、
+ * 片方が残っていれば二重取込にならない。
+ */
 function 取込済IDを集める_(sheet, 列) {
   const 集合 = new Set();
-  const 列番号 = 列['メッセージID'];
   const 最終行 = sheet.getLastRow();
-  if (!列番号 || 最終行 < 設定.データ開始行) return 集合;
-  sheet.getRange(設定.データ開始行, 列番号, 最終行 - 設定.データ開始行 + 1, 1)
-    .getValues()
-    .forEach(r => { const v = String(r[0]).trim(); if (v) 集合.add(v); });
+  if (最終行 < 設定.データ開始行) return 集合;
+  const 行数 = 最終行 - 設定.データ開始行 + 1;
+
+  const 読む = [
+    { 名: 'メッセージID', 取り出す: v => v },
+    { 名: 'Gmailリンク',  取り出す: v => (v.match(/([0-9a-f]{8,})\s*$/i) || ['', ''])[1] },
+  ];
+
+  読む.forEach(({ 名, 取り出す }) => {
+    const c = 列[名];
+    if (!c) return;
+    sheet.getRange(設定.データ開始行, c, 行数, 1).getValues().forEach(r => {
+      const v = 取り出す(String(r[0]).trim());
+      if (v) 集合.add(v);
+    });
+  });
   return 集合;
 }
 
