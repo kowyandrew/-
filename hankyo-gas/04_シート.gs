@@ -60,7 +60,14 @@ function 取込済IDを集める_(sheet, 列) {
   return 集合;
 }
 
-/** 反響1件を最終行の下に書き足す。 */
+/**
+ * 反響1件を最終行の下に書き足す。
+ *
+ * 手入力（飛込・紹介・リピート）との併用が前提なので、
+ * 自動で値を入れるのは上の対応表にある列だけ。
+ * 返信日・追客1〜3・来店日などの手運用の列や、
+ * その行に人が仕込んだ数式・入力規則の値には一切触らない。
+ */
 function 行を追加_(sheet, 列, 反響) {
   const tz = 設定.タイムゾーン;
   const 日付 = 設定.日付を文字列で書く
@@ -89,7 +96,9 @@ function 行を追加_(sheet, 列, 反響) {
 
   const 行番号 = Math.max(sheet.getLastRow() + 1, 設定.データ開始行);
   const 幅 = sheet.getLastColumn();
-  const 一行 = new Array(幅).fill('');
+
+  // その行に既に何か入っていれば残したまま、担当する列だけ差し替える
+  const 一行 = sheet.getRange(行番号, 1, 1, 幅).getValues()[0];
   let 書いた = false;
 
   Object.keys(値).forEach(名 => {
