@@ -69,11 +69,11 @@ function 取り込む_(試しだけ) {
     const 反響 = 反響を読む_(message);
     if (!反響) return;  // 反響メール以外（広告・返信など）は無視
 
-    反響.返信案 = 返信案を作る_(反響);
-
     if (試しだけ) {
-      Logger.log('【新規】%s', JSON.stringify(反響, null, 2));
+      Logger.log('【新規】%s\n返信の下書き: %s',
+        JSON.stringify(反響, null, 2), 下書きの見込み_(反響));
     } else {
+      // 先にシートへ。下書きの作成に失敗しても反響の記録は残る
       行を追加_(sheet, 列, 反響);
       既存ID.add(id);
       if (設定.下書きを作る) 下書きを作る_(反響);
