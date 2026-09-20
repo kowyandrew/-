@@ -79,6 +79,29 @@ function 取込済IDを集める_(sheet, 列) {
 }
 
 /**
+ * 台帳として使っている列（見出しのある列）だけを見て、最終行を決める。
+ *
+ * sheet.getLastRow() はシート全体の最終行を返すので、
+ * 見出しの無い列に関係ないデータが残っていると、
+ * 新しい行がその下（見た目には空白のはるか下）まで飛ばされてしまう。
+ * それを避けるため、見出しのある範囲だけを見る。
+ */
+function 最終データ行_(sheet, 列) {
+  const 空 = 設定.データ開始行 - 1;
+  const 下端 = sheet.getLastRow();
+  if (下端 < 設定.データ開始行) return 空;
+
+  const 右端 = Object.keys(列).reduce((m, k) => Math.max(m, 列[k]), 0);
+  if (!右端) return 空;
+
+  const 値 = sheet.getRange(設定.データ開始行, 1, 下端 - 設定.データ開始行 + 1, 右端).getValues();
+  for (let i = 値.length - 1; i >= 0; i--) {
+    if (値[i].some(v => String(v).trim() !== '')) return 設定.データ開始行 + i;
+  }
+  return 空;
+}
+
+/**
  * 反響1件を最終行の下に書き足す。
  *
  * 手入力（飛込・紹介・リピート）との併用が前提なので、
@@ -89,7 +112,7 @@ function 取込済IDを集める_(sheet, 列) {
 function 行を追加_(sheet, 列, 反響) {
   const tz = 設定.タイムゾーン;
   const 日付 = 設定.日付を文字列で書く
-    ? Utilities.formatDate(反響.日時, tz, 'yyyy/MM/dd')
+    ? Utilities.formatDate(反響.日時, tz, 設定.日付の書式 || 'yyyy/MM/dd')
     : 反響.日時;
   const 時刻 = Utilities.formatDate(反響.日時, tz, 'HH:mm')
     .replace(':', 設定.時刻の区切り);
@@ -111,7 +134,10 @@ function 行を追加_(sheet, 列, 反響) {
     'メッセージID': 反響.メッセージID,
   };
 
-  const 行番号 = Math.max(sheet.getLastRow() + 1, 設定.データ開始行);
+  const 行番号 = Math.max(最終データ行_(sheet, 列) + 1, 設定.データ開始行);
+  if (行番号 > sheet.getMaxRows()) {
+    sheet.insertRowsAfter(sheet.getMaxRows(), 行番号 - sheet.getMaxRows() + 20);
+  }
   const 幅 = sheet.getLastColumn();
 
   // その行に既に何か入っていれば残したまま、担当する列だけ差し替える
