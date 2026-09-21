@@ -27,6 +27,10 @@ function 反響を読む_(message) {
  * @return {Object|null}
  */
 function 反響を読む本文から_(from, 生本文, 受信日時, メッセージID) {
+  const 送り主 = String(from || '').toLowerCase();
+  if ((設定.除外する差出人 || []).some(x => 送り主.indexOf(String(x).toLowerCase()) >= 0)) {
+    return null;  // 反響ではないと分かっているお知らせ。ログにも出さない
+  }
   const 元 = 反響元一覧_().find(x => x.差出人.test(from));
   if (!元) return null;
 
