@@ -64,6 +64,7 @@ function 取り込む_(試しだけ) {
   メール一覧.sort((a, b) => a.message.getDate() - b.message.getDate());
 
   let 件数 = 0;
+  let 下書き数 = 0;
   メール一覧.forEach(({ message, thread }) => {
     const id = message.getId();
     if (既存ID.has(id)) return;
@@ -78,11 +79,12 @@ function 取り込む_(試しだけ) {
       // 先にシートへ。下書きの作成に失敗しても反響の記録は残る
       行を追加_(sheet, 列, 反響);
       既存ID.add(id);
-      if (設定.下書きを作る) 下書きを作る_(反響);
+      if (設定.下書きを作る && 下書きを作る_(反響)) 下書き数++;
       if (設定.取込済ラベルを付ける) 取込済にする_(thread);
     }
     件数++;
   });
+  if (!試しだけ) Logger.log('下書きを作った数: %s / 取り込んだ %s件', 下書き数, 件数);
   return 件数;
 }
 
