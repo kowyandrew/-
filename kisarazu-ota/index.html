@@ -1,0 +1,413 @@
+<title>木更津太田 貸店舗工程</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#F7F5F1; --surface:#FFFFFF; --surface-2:#F1EEE8; --sunk:#EAE6DE;
+  --line:#DFD9CF; --line-strong:#C6BFB2;
+  --ink:#1D1B17; --ink-2:#5B5750; --ink-3:#8B857B;
+  --accent:#1D4E6E; --accent-ink:#FFFFFF; --accent-soft:#E3EDF3; --accent-line:#B9D2E1;
+  --ok:#2E6B4F; --ok-soft:#E2EFE7;
+  --warn:#9A6417; --warn-soft:#F6EBD8;
+  --crit:#A33327; --crit-soft:#F7E4E0;
+  --owner:#6B5B3E; --owner-soft:#EFE8DA;
+  --weekend:#EFEBE4;
+  --shadow:0 1px 0 rgba(29,27,23,.04), 0 2px 10px rgba(29,27,23,.05);
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:"Zen Kaku Gothic New",-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+  --serif:"Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#171614; --surface:#1F1E1B; --surface-2:#26241F; --sunk:#141311;
+    --line:#35322C; --line-strong:#4A463E;
+    --ink:#EFEBE3; --ink-2:#A9A296; --ink-3:#7C7568;
+    --accent:#7CB4D6; --accent-ink:#12212B; --accent-soft:#1E3340; --accent-line:#2F4E60;
+    --ok:#6FBE92; --ok-soft:#1C3227;
+    --warn:#DBA04A; --warn-soft:#382C18;
+    --crit:#E3766A; --crit-soft:#3B211D;
+    --owner:#C9B48C; --owner-soft:#2E281D;
+    --weekend:#1C1B18;
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 2px 10px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#171614; --surface:#1F1E1B; --surface-2:#26241F; --sunk:#141311;
+  --line:#35322C; --line-strong:#4A463E;
+  --ink:#EFEBE3; --ink-2:#A9A296; --ink-3:#7C7568;
+  --accent:#7CB4D6; --accent-ink:#12212B; --accent-soft:#1E3340; --accent-line:#2F4E60;
+  --ok:#6FBE92; --ok-soft:#1C3227;
+  --warn:#DBA04A; --warn-soft:#382C18;
+  --crit:#E3766A; --crit-soft:#3B211D;
+  --owner:#C9B48C; --owner-soft:#2E281D;
+  --weekend:#1C1B18;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 2px 10px rgba(0,0,0,.25);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--sans); font-size:15px; line-height:1.7;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:1040px; margin:0 auto; padding:0 16px 80px}
+
+.masthead{padding:26px 0 16px; border-bottom:1px solid var(--line)}
+.eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.14em; color:var(--ink-3); text-transform:uppercase}
+.masthead h1{font-family:var(--serif); font-weight:700; font-size:26px; line-height:1.3; margin:4px 0 0; letter-spacing:.04em; text-wrap:balance}
+.masthead p{margin:6px 0 0; color:var(--ink-2); font-size:13px; line-height:1.6}
+.keydates{display:flex; flex-wrap:wrap; gap:8px 22px; margin-top:14px}
+.kd{display:flex; align-items:baseline; gap:8px}
+.kd b{font-family:var(--mono); font-size:20px; font-weight:600; font-variant-numeric:tabular-nums; letter-spacing:-.01em}
+.kd span{font-size:12.5px; color:var(--ink-2)}
+.kd.today b{color:var(--crit)}
+
+h2{font-family:var(--serif); font-size:18px; font-weight:700; letter-spacing:.04em; margin:30px 0 4px; text-wrap:balance}
+.sub{margin:0 0 12px; font-size:13px; color:var(--ink-2)}
+
+/* ---------- now: action list ---------- */
+.now{display:grid; gap:10px}
+.task{
+  display:grid; grid-template-columns:auto 1fr; gap:4px 14px; align-items:start;
+  background:var(--surface); border:1px solid var(--line); border-left:4px solid var(--line-strong);
+  border-radius:2px; padding:12px 14px; box-shadow:var(--shadow);
+}
+.task.hot{border-left-color:var(--crit)}
+.task.soon{border-left-color:var(--warn)}
+.task.wait{border-left-color:var(--ink-3); box-shadow:none; background:var(--surface-2)}
+.due{
+  grid-row:span 3; min-width:64px; text-align:center; font-family:var(--mono);
+  font-variant-numeric:tabular-nums; line-height:1.2; padding-top:2px;
+}
+.due b{display:block; font-size:18px; font-weight:600}
+.due small{display:block; font-size:10.5px; color:var(--ink-3); letter-spacing:.06em; margin-top:3px}
+.task.hot .due b{color:var(--crit)}
+.task.soon .due b{color:var(--warn)}
+.task h3{margin:0; font-size:15.5px; font-weight:700; line-height:1.5}
+.task p{margin:0; font-size:13.5px; color:var(--ink-2); line-height:1.65}
+.meta{display:flex; flex-wrap:wrap; gap:6px; margin-top:4px}
+.chip{
+  font-size:11.5px; line-height:1; padding:4px 7px; border-radius:2px;
+  border:1px solid var(--line-strong); color:var(--ink-2); background:var(--surface); white-space:nowrap;
+}
+.chip.src{border-color:var(--ok); color:var(--ok); background:var(--ok-soft)}
+.chip.inf{border-color:var(--warn); color:var(--warn); background:var(--warn-soft)}
+.chip.unk{border-color:var(--ink-3); color:var(--ink-2); background:var(--surface-2); border-style:dashed}
+.chip.who{border-color:var(--accent-line); color:var(--accent); background:var(--accent-soft)}
+
+/* ---------- gantt ---------- */
+.legend{display:flex; flex-wrap:wrap; gap:6px 16px; font-size:12px; color:var(--ink-2); margin:0 0 10px}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.sw{display:inline-block; width:22px; height:10px; border-radius:1px}
+.sw.us{background:var(--accent)}
+.sw.own{background:var(--owner)}
+.sw.tbd{background:repeating-linear-gradient(135deg, var(--owner-soft) 0 4px, transparent 4px 8px); border:1px dashed var(--owner)}
+.sw.wt{border:1.5px dotted var(--ink-3)}
+.sw.ms{width:10px; height:10px; background:var(--crit); transform:rotate(45deg)}
+
+.scroller{overflow-x:auto; border:1px solid var(--line); border-radius:2px; background:var(--surface); box-shadow:var(--shadow)}
+.gantt{--days:27; --label:216px; min-width:calc(var(--label) + var(--days) * 27px); position:relative}
+.grow{display:grid; grid-template-columns:var(--label) repeat(var(--days), minmax(27px,1fr)); position:relative; min-height:40px; border-top:1px solid var(--line)}
+.grow:first-child{border-top:0}
+.grow > .lab{
+  grid-column:1; grid-row:1; position:sticky; left:0; z-index:3; background:var(--surface);
+  border-right:1px solid var(--line); padding:7px 10px 7px 12px; font-size:12.5px; line-height:1.4;
+  display:flex; flex-direction:column; justify-content:center;
+}
+.lab b{font-weight:700; font-size:13px}
+.lab small{color:var(--ink-3); font-size:11px}
+.cell{grid-row:1; border-left:1px solid var(--line); opacity:.55}
+.cell.we{background:var(--weekend); opacity:1}
+.cell.hol{background:var(--weekend); opacity:1}
+.cell.today{background:var(--crit-soft); opacity:1}
+
+.head .lab{background:var(--surface-2); font-family:var(--mono); font-size:11px; letter-spacing:.1em; color:var(--ink-3)}
+.head{min-height:46px; background:var(--surface-2)}
+.dh{grid-row:1; text-align:center; font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:11px; line-height:1.25; padding:6px 0 5px; border-left:1px solid var(--line); color:var(--ink-2)}
+.dh b{display:block; font-size:12.5px; font-weight:600; color:var(--ink)}
+.dh.we b, .dh.hol b{color:var(--crit)}
+.dh.today{background:var(--crit); color:#fff}
+.dh.today b{color:#fff}
+.dh.mo b{font-size:11px}
+
+.group .lab{background:var(--sunk); font-family:var(--serif); font-size:13px; font-weight:700; letter-spacing:.06em}
+.group{min-height:30px; background:var(--sunk)}
+
+.bar{
+  grid-row:1; align-self:center; height:22px; margin:0 2px; border-radius:2px; position:relative; z-index:1;
+  font-size:11.5px; line-height:22px; padding:0 7px; white-space:nowrap; overflow:visible; font-weight:500;
+}
+.bar.us{background:var(--accent); color:var(--accent-ink)}
+.bar.us.soft{background:var(--accent-soft); color:var(--accent); border:1px solid var(--accent-line); line-height:20px}
+.bar.own{background:var(--owner); color:var(--paper)}
+.bar.tbd{background:repeating-linear-gradient(135deg, var(--owner-soft) 0 5px, transparent 5px 10px); border:1px dashed var(--owner); color:var(--owner); line-height:20px}
+.bar.wt{border:1.5px dotted var(--ink-3); color:var(--ink-2); line-height:19px}
+.bar.arrow::after{content:"→"; position:absolute; right:-14px; color:var(--accent); font-weight:700}
+.ms{
+  grid-row:1; align-self:center; justify-self:center; width:13px; height:13px; transform:rotate(45deg);
+  background:var(--crit); position:relative; z-index:2;
+}
+.ms.blue{background:var(--accent)}
+.mslab{
+  grid-row:1; align-self:center; z-index:2; font-size:11.5px; font-weight:700; white-space:nowrap;
+  padding-left:4px; color:var(--crit);
+}
+.mslab.blue{color:var(--accent)}
+.vline{position:absolute; top:0; bottom:0; width:0; border-left:2px solid var(--crit); z-index:0; pointer-events:none; opacity:.8}
+.vline.dash{border-left:2px dashed var(--crit); opacity:.55}
+
+.note{font-size:12px; color:var(--ink-3); margin:8px 0 0}
+
+/* ---------- two columns: risks & settled ---------- */
+.cols{display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:start}
+@media (max-width:760px){.cols{grid-template-columns:1fr}}
+.list{list-style:none; margin:0; padding:0; border-top:1px solid var(--line)}
+.list li{padding:10px 0; border-bottom:1px solid var(--line); font-size:13.5px; line-height:1.65; display:grid; gap:4px}
+.list li b{font-weight:700}
+.list li .meta{margin-top:0}
+
+/* ---------- paste block ---------- */
+.paste{background:var(--surface); border:1px solid var(--line); border-radius:2px; padding:12px 14px}
+.paste pre{margin:0; white-space:pre-wrap; font-family:var(--sans); font-size:13px; line-height:1.7; color:var(--ink); max-height:260px; overflow:auto}
+.copy{
+  margin-top:10px; font-family:var(--sans); font-size:13px; font-weight:700; cursor:pointer;
+  background:var(--ink); color:var(--paper); border:0; border-radius:2px; padding:7px 14px;
+}
+.copy:focus-visible, .scroller:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.copied{font-size:12px; color:var(--ok); margin-left:10px}
+
+footer{margin-top:36px; padding-top:12px; border-top:1px solid var(--line); font-size:12px; color:var(--ink-3)}
+@media (max-width:520px){
+  .masthead h1{font-size:22px}
+  .gantt{--label:148px}
+  .lab small{display:none}
+}
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <div class="eyebrow">社内共有 ・ 2026年9月28日(月) 時点</div>
+    <h1>木更津市太田 貸店舗 契約までの工程</h1>
+    <p>太田不動産さんとの協議結果をもとに整理。この内容で契約締結まで進める方針。</p>
+    <div class="keydates">
+      <div class="kd today"><b>9/28</b><span>今日</span></div>
+      <div class="kd"><b>9/30〜</b><span>売地(P)の回答</span></div>
+      <div class="kd"><b>10/7</b><span>契約日・書類返送・初期費用振込</span></div>
+      <div class="kd"><b>10/15</b><span>契約始期・鍵着・当社工事スタート</span></div>
+    </div>
+  </header>
+
+  <h2>いま当社がやること</h2>
+  <p class="sub">上ほど急ぎ。期限の色：赤＝今週中、琥珀＝契約日まで。</p>
+  <div class="now">
+    <div class="task hot">
+      <div class="due"><b>9/30</b><small>推奨期限</small></div>
+      <h3>増設トイレの位置と向きを、太田不動産 横田さんへ回答する</h3>
+      <p>本下水の業者から確認が来ている。内覧時は「物入」の位置という話だった。向き（便器の正面方向）まで伝える必要あり。本下水は10月に入って工事予定なので、これが決まらないと配管の段取りが止まる。</p>
+      <div class="meta"><span class="chip who">宛先：秋葉・御園一子・御園和也・山口</span><span class="chip src">横田さんメールより</span><span class="chip inf">期限は当方の推定</span></div>
+    </div>
+    <div class="task hot">
+      <div class="due"><b>早め</b><small>遅くとも10/7</small></div>
+      <h3>正面両開きドアの鍵を交換するか決めて回答する</h3>
+      <p>太田不動産さんに依頼すると交換費用 <b>17,600円（税込）</b>。正面シャッター鍵は現状のまま渡し、西側シャッター・ドアは新設なので交換不要。</p>
+      <div class="meta"><span class="chip who">決裁：社内で判断</span><span class="chip src">協議結果より</span><span class="chip inf">期限は当方の推定（鍵は10/15郵送のため）</span></div>
+    </div>
+    <div class="task soon">
+      <div class="due"><b>10/7</b><small>必着</small></div>
+      <h3>契約書類に押印して返送、初期費用を振込む</h3>
+      <p>書類は担当者が持参し、押印後に返送。初期費用は10/7中に振込。<b>費用の内訳はまだ未確定</b>（確定次第共有）。</p>
+      <div class="meta"><span class="chip src">協議結果より</span><span class="chip unk">書類の届く日・金額は未定</span></div>
+    </div>
+    <div class="task soon">
+      <div class="due"><b>10/15</b><small>着手</small></div>
+      <h3>当社（借主側）工事の業者手配を10/15着手で固める</h3>
+      <p>始期10/15は「当社工事は10/15がリミット」という打合せに合わせたもの。貸主側工事（屋根塗装など）が残っていても15日から入れる前提。現場で作業が重なる可能性がある。</p>
+      <div class="meta"><span class="chip src">協議結果より</span><span class="chip inf">重なりの調整は当方の推定</span></div>
+    </div>
+    <div class="task wait">
+      <div class="due"><b>9/30〜</b><small>回答待ち</small></div>
+      <h3>太田の売地を駐車場として借りられるか（地盤調査・確認申請の同意含む）</h3>
+      <p>売主さんが不在のため、回答は9/30以降。こちらからは待つだけ。回答によっては当社工程に影響する。</p>
+      <div class="meta"><span class="chip src">協議結果より</span><span class="chip unk">回答日は未定</span></div>
+    </div>
+  </div>
+
+  <h2>ガントチャート</h2>
+  <p class="sub">9/28〜10/24。貸主側の工事は日程未確定のため、「ここまでに入りそうな幅」を斜線で表示。</p>
+  <div class="legend">
+    <span><i class="sw us"></i>当社の作業</span>
+    <span><i class="sw own"></i>貸主側（日程ほぼ確定）</span>
+    <span><i class="sw tbd"></i>貸主側（日程未確定・この幅のどこか）</span>
+    <span><i class="sw wt"></i>回答待ち</span>
+    <span><i class="sw ms"></i>期日</span>
+  </div>
+  <div class="scroller" tabindex="0" aria-label="ガントチャート（横スクロール）">
+    <div class="gantt" id="gantt"></div>
+  </div>
+  <p class="note">土日と祝日（10/12 スポーツの日）は色付き。赤い縦線が今日、点線が10/7契約日と10/15契約始期。</p>
+
+  <div class="cols">
+    <section>
+      <h2>注意しておくこと</h2>
+      <ul class="list">
+        <li><b>貸主側工事が10/15までに終わらない可能性</b>台風で9/28の塗装開始が延期。屋根塗装は「始期後でも作業可」で打合せ中。当社の内装と同時期になる前提で、業者に伝えておく。<div class="meta"><span class="chip src">協議結果より</span><span class="chip inf">業者への事前連絡は当方の推定</span></div></li>
+        <li><b>フリーレントは無し</b>要望したが不可。貸主側工事が残っていても始期は10/15のまま。<div class="meta"><span class="chip src">協議結果より</span></div></li>
+        <li><b>引渡しの考え方</b>貸主側は「全工事完了で引渡し」としたいが、10/15に完了できるかは現時点で回答できないとのこと。<div class="meta"><span class="chip src">協議結果より</span></div></li>
+        <li><b>初期費用の額がまだ出ていない</b>10/7の振込に間に合うよう、内訳が届いたらすぐ経理に回す。<div class="meta"><span class="chip src">協議結果より</span><span class="chip inf">経理への回付は当方の推定</span></div></li>
+      </ul>
+    </section>
+    <section>
+      <h2>確認済み（対応不要）</h2>
+      <ul class="list">
+        <li><b>看板のスポット照明</b>明暗で自動点滅。スイッチは無い。<div class="meta"><span class="chip src">御園和也さんへの回答より</span></div></li>
+        <li><b>エアコン</b>撤去済み。<div class="meta"><span class="chip src">同上</span></div></li>
+        <li><b>動力の引込</b>残置してもらう。接続しなければ料金はかからない。<div class="meta"><span class="chip src">同上</span></div></li>
+        <li><b>鍵の受け取り</b>契約始期10/15に合わせて郵送される。<div class="meta"><span class="chip src">協議結果より</span></div></li>
+        <li><b>西側勝手口の交換</b>本日依頼済み。10/10頃に工事予定。<div class="meta"><span class="chip src">協議結果より</span></div></li>
+      </ul>
+    </section>
+  </div>
+
+  <h2>Chatwork 貼り付け用</h2>
+  <p class="sub">社内の連絡にそのまま貼れる要約。</p>
+  <div class="paste">
+    <pre id="pasteText">[info][title]木更津市太田 貸店舗　いまやること（9/28時点）[/title]
+■ 至急（今週中）
+・増設トイレの位置と向きを太田不動産 横田さんへ回答（本下水業者から確認あり／内覧時は「物入」の位置）
+・正面両開きドアの鍵交換の要否を決める（交換費用17,600円税込）
+
+■ 10/7（契約日）まで
+・契約書類に押印して返送
+・初期費用を10/7中に振込（内訳は確定次第共有）
+
+■ 10/15（契約始期）
+・鍵が郵送で届く
+・当社工事スタート（貸主側工事が一部残る可能性あり）
+
+■ 回答待ち
+・売地を駐車場として借用／地盤調査・確認申請への同意 → 9/30以降に回答
+
+■ 貸主側工事（日程調整中）
+・屋根塗装 5日程（台風で延期、始期後も作業可の方向）
+・本下水接続 3日程（10月に入ってから）
+・西側勝手口交換（10/10頃）
+
+※フリーレントは不可[/info]</pre>
+    <button class="copy" id="copyBtn" type="button">文面をコピー</button><span class="copied" id="copied" hidden>コピーしました</span>
+  </div>
+
+  <footer>出典：9/28 の協議結果まとめ、および太田不動産 横田さんからのメール（増設トイレの件）。緑のラベルは連絡文に書かれている内容、琥珀のラベルはこのページで補った推定、点線のラベルは未確定。</footer>
+</div>
+
+<script>
+(function(){
+  // 9/28 = day 0, 10/24 = day 26
+  const START = new Date(2026, 8, 28);
+  const DAYS = 27;
+  const TODAY = 0;
+  const HOLIDAYS = [14];            // 10/12 スポーツの日
+  const LINES = [{d:9, cls:"dash"}, {d:17, cls:"dash"}];
+  const WD = ["日","月","火","水","木","金","土"];
+
+  // s,e: day index (inclusive)
+  const ROWS = [
+    {group:"当社"},
+    {label:"増設トイレ位置・向き 回答", small:"→ 横田さん", bars:[{s:0,e:2,cls:"us",t:"9/30までに"}]},
+    {label:"正面ドア鍵交換 要否回答", small:"17,600円(税込)", bars:[{s:0,e:4,cls:"us",t:"早めに"},{s:5,e:9,cls:"us soft",t:"遅くとも契約日"}]},
+    {label:"契約書類 押印・返送", small:"持参→押印→返送", bars:[{s:3,e:9,cls:"us soft",t:"届き次第"}], ms:[{d:9,t:"返送"}]},
+    {label:"初期費用 振込", small:"内訳は未確定", ms:[{d:9,t:"10/7中"}]},
+    {label:"当社工事（借主側）", small:"10/15〜", bars:[{s:17,e:26,cls:"us arrow",t:"10/15 着手"}]},
+    {group:"貸主側（太田不動産 手配）"},
+    {label:"屋根塗装", small:"5日程・台風で延期", bars:[{s:3,e:26,cls:"tbd",t:"日程調整中（始期後も可）"}]},
+    {label:"本下水接続", small:"3日程", bars:[{s:3,e:16,cls:"tbd",t:"10月に入ってから"}]},
+    {label:"西側勝手口 交換", small:"本日依頼", bars:[{s:11,e:13,cls:"own",t:"10/10頃"}]},
+    {label:"鍵の郵送", small:"始期に合わせて", ms:[{d:17,t:"鍵着",blue:true}]},
+    {group:"回答待ち"},
+    {label:"売地を駐車場に借用", small:"地盤調査・確認申請の同意", bars:[{s:2,e:10,cls:"wt",t:"9/30以降に回答"}]},
+    {group:"期日"},
+    {label:"契約日 / 契約始期", small:"", ms:[{d:9,t:"契約日 10/7"},{d:17,t:"始期 10/15"}]}
+  ];
+
+  const g = document.getElementById("gantt");
+  g.style.setProperty("--days", DAYS);
+  const dayInfo = [];
+  for (let i=0;i<DAYS;i++){
+    const d = new Date(START); d.setDate(START.getDate()+i);
+    const w = d.getDay();
+    dayInfo.push({m:d.getMonth()+1, day:d.getDate(), w, we:(w===0||w===6), hol:HOLIDAYS.includes(i)});
+  }
+  const el = (tag, cls, html) => { const e=document.createElement(tag); if(cls) e.className=cls; if(html!=null) e.innerHTML=html; return e; };
+  const col = (e, s, eEnd) => { e.style.gridColumn = (s+2)+" / "+((eEnd==null?s:eEnd)+3); return e; };
+
+  function bgCells(row){
+    dayInfo.forEach((di,i)=>{
+      const c = el("div","cell"+(di.we?" we":"")+(di.hol?" hol":"")+(i===TODAY?" today":""));
+      row.appendChild(col(c,i));
+    });
+  }
+
+  // header
+  const head = el("div","grow head");
+  head.appendChild(el("div","lab","2026 / 日付"));
+  dayInfo.forEach((di,i)=>{
+    const first = i===0 || di.day===1;
+    const h = el("div","dh"+(di.we?" we":"")+(di.hol?" hol":"")+(i===TODAY?" today":"")+(first?" mo":""),
+      "<b>"+(first? di.m+"/"+di.day : di.day)+"</b>"+WD[di.w]);
+    head.appendChild(col(h,i));
+  });
+  g.appendChild(head);
+
+  ROWS.forEach(r=>{
+    if (r.group){
+      const row = el("div","grow group");
+      row.appendChild(el("div","lab",r.group));
+      g.appendChild(row); return;
+    }
+    const row = el("div","grow");
+    row.appendChild(el("div","lab","<b>"+r.label+"</b>"+(r.small?"<small>"+r.small+"</small>":"")));
+    bgCells(row);
+    (r.bars||[]).forEach(b=>{
+      const bar = col(el("div","bar "+b.cls, b.t), b.s, b.e);
+      row.appendChild(bar);
+    });
+    (r.ms||[]).forEach(m=>{
+      row.appendChild(col(el("div","ms"+(m.blue?" blue":"")), m.d));
+      const lab = el("div","mslab"+(m.blue?" blue":""), m.t);
+      lab.style.gridColumn = (m.d+3)+" / span 4";
+      row.appendChild(lab);
+    });
+    g.appendChild(row);
+  });
+
+  // vertical lines: placed after layout
+  function placeLines(){
+    g.querySelectorAll(".vline").forEach(v=>v.remove());
+    const hc = head.querySelectorAll(".dh");
+    const gl = g.getBoundingClientRect().left;
+    const add = (i, cls) => {
+      const r = hc[i].getBoundingClientRect();
+      const v = el("div","vline"+(cls?" "+cls:""));
+      v.style.left = (r.left - gl + r.width/2 - 1) + "px";
+      g.appendChild(v);
+    };
+    add(TODAY, "");
+    LINES.forEach(l=>add(l.d, l.cls));
+  }
+  placeLines();
+  window.addEventListener("resize", placeLines);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(placeLines);
+
+  // copy
+  const btn = document.getElementById("copyBtn"), ok = document.getElementById("copied"), pre = document.getElementById("pasteText");
+  btn.addEventListener("click", ()=>{
+    const done = ()=>{ ok.hidden=false; setTimeout(()=>ok.hidden=true, 2000); };
+    const fallback = ()=>{ const s=window.getSelection(), rg=document.createRange(); rg.selectNodeContents(pre); s.removeAllRanges(); s.addRange(rg); };
+    try {
+      navigator.clipboard.writeText(pre.textContent).then(done, fallback);
+    } catch(e){ fallback(); }
+  });
+})();
+</script>
