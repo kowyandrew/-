@@ -109,8 +109,8 @@ h2{font-family:var(--serif); font-size:18px; font-weight:700; letter-spacing:.04
 .sw.ms{width:10px; height:10px; background:var(--crit); transform:rotate(45deg)}
 
 .scroller{overflow-x:auto; border:1px solid var(--line); border-radius:2px; background:var(--surface); box-shadow:var(--shadow)}
-.gantt{--days:27; --label:216px; min-width:calc(var(--label) + var(--days) * 27px); position:relative}
-.grow{display:grid; grid-template-columns:var(--label) repeat(var(--days), minmax(27px,1fr)); position:relative; min-height:40px; border-top:1px solid var(--line)}
+.gantt{--days:57; --label:190px; --dw:15px; min-width:calc(var(--label) + var(--days) * var(--dw)); position:relative}
+.grow{display:grid; grid-template-columns:var(--label) repeat(var(--days), minmax(var(--dw),1fr)); position:relative; min-height:40px; border-top:1px solid var(--line)}
 .grow:first-child{border-top:0}
 .grow > .lab{
   grid-column:1; grid-row:1; position:sticky; left:0; z-index:3; background:var(--surface);
@@ -126,12 +126,12 @@ h2{font-family:var(--serif); font-size:18px; font-weight:700; letter-spacing:.04
 
 .head .lab{background:var(--surface-2); font-family:var(--mono); font-size:11px; letter-spacing:.1em; color:var(--ink-3)}
 .head{min-height:46px; background:var(--surface-2)}
-.dh{grid-row:1; text-align:center; font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:11px; line-height:1.25; padding:6px 0 5px; border-left:1px solid var(--line); color:var(--ink-2)}
-.dh b{display:block; font-size:12.5px; font-weight:600; color:var(--ink)}
+.dh{grid-row:1; text-align:center; font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:9.5px; line-height:1.25; padding:6px 0 5px; border-left:1px solid var(--line); color:var(--ink-2)}
+.dh b{display:block; font-size:10.5px; font-weight:600; color:var(--ink)}
 .dh.we b, .dh.hol b{color:var(--crit)}
 .dh.today{background:var(--crit); color:#fff}
 .dh.today b{color:#fff}
-.dh.mo b{font-size:11px}
+.dh.mo b{font-size:9px; letter-spacing:-.04em}
 
 .group .lab{background:var(--sunk); font-family:var(--serif); font-size:13px; font-weight:700; letter-spacing:.06em}
 .group{min-height:30px; background:var(--sunk)}
@@ -185,150 +185,225 @@ footer{margin-top:36px; padding-top:12px; border-top:1px solid var(--line); font
   .gantt{--label:148px}
   .lab small{display:none}
 }
+/* ---------- back-schedule ---------- */
+.back{list-style:none; margin:0; padding:0; display:grid; gap:0; border-left:2px solid var(--line-strong); margin-left:8px}
+.back li{position:relative; padding:0 0 16px 22px; display:grid; gap:2px}
+.back li::before{content:""; position:absolute; left:-7px; top:6px; width:12px; height:12px; border-radius:50%; background:var(--surface); border:2px solid var(--line-strong)}
+.back li.goal::before{background:var(--crit); border-color:var(--crit)}
+.back li.key::before{background:var(--accent); border-color:var(--accent)}
+.back li.gap::before{background:var(--warn); border-color:var(--warn)}
+.back .d{font-family:var(--mono); font-weight:600; font-size:15px; font-variant-numeric:tabular-nums}
+.back .d small{font-family:var(--sans); font-weight:500; font-size:12px; color:var(--ink-3); margin-left:8px}
+.back .t{font-size:14px; font-weight:700}
+.back .x{font-size:13px; color:var(--ink-2)}
+.back .meta{margin-top:2px}
+.chip.new{border-color:var(--crit); color:var(--crit); background:var(--crit-soft)}
+.bar.us.goal{background:var(--crit); color:#fff}
 </style>
 
 <div class="wrap">
   <header class="masthead">
-    <div class="eyebrow">社内共有 ・ 2026年9月28日(月) 時点</div>
-    <h1>木更津市太田 貸店舗 契約までの工程</h1>
-    <p>太田不動産さんとの協議結果をもとに整理。この内容で契約締結まで進める方針。</p>
+    <div class="eyebrow">社内共有 ・ 2026年9月29日(火) 時点</div>
+    <h1>木更津オフィス 11/21オープンまでの工程</h1>
+    <p>木更津市太田の貸店舗を当社の木更津拠点として改装する件。オープン日から逆算して、契約・改装・搬入の日程を1枚にまとめた。</p>
     <div class="keydates">
-      <div class="kd today"><b>9/28</b><span>今日</span></div>
-      <div class="kd"><b>9/30〜</b><span>売地(P)の回答</span></div>
-      <div class="kd"><b>10/7</b><span>契約日・書類返送・初期費用振込</span></div>
-      <div class="kd"><b>10/15</b><span>契約始期・鍵着・当社工事スタート</span></div>
+      <div class="kd today"><b>9/29</b><span>今日</span></div>
+      <div class="kd"><b>10/7</b><span>契約</span></div>
+      <div class="kd"><b>10/15</b><span>鍵・改装着工</span></div>
+      <div class="kd"><b>11/14</b><span>改装完了</span></div>
+      <div class="kd"><b>11/16</b><span>家具・備品搬入</span></div>
+      <div class="kd"><b>11/21</b><span>オープン（土）</span></div>
     </div>
   </header>
 
-  <h2>いま当社がやること</h2>
-  <p class="sub">上ほど急ぎ。期限の色：赤＝今週中、琥珀＝契約日まで。</p>
+  <h2>決めてほしいこと</h2>
+  <p class="sub">資料の間で食い違っている点。どちらかに揃えないと、現場と社内で日程がずれる。</p>
   <div class="now">
     <div class="task hot">
-      <div class="due"><b>9/30</b><small>推奨期限</small></div>
-      <h3>増設トイレの位置と向きを、太田不動産 横田さんへ回答する</h3>
-      <p>本下水の業者から確認が来ている。内覧時は「物入」の位置という話だった。向き（便器の正面方向）まで伝える必要あり。本下水は10月に入って工事予定なので、これが決まらないと配管の段取りが止まる。</p>
-      <div class="meta"><span class="chip who">宛先：秋葉・御園一子・御園和也・山口</span><span class="chip src">横田さんメールより</span><span class="chip inf">期限は当方の推定</span></div>
-    </div>
-    <div class="task hot">
-      <div class="due"><b>早め</b><small>遅くとも10/7</small></div>
-      <h3>正面両開きドアの鍵を交換するか決めて回答する</h3>
-      <p>太田不動産さんに依頼すると交換費用 <b>17,600円（税込）</b>。正面シャッター鍵は現状のまま渡し、西側シャッター・ドアは新設なので交換不要。</p>
-      <div class="meta"><span class="chip who">決裁：社内で判断</span><span class="chip src">協議結果より</span><span class="chip inf">期限は当方の推定（鍵は10/15郵送のため）</span></div>
+      <div class="due"><b>10/13</b><small>→ 10/15</small></div>
+      <h3>改装の着工日を10/15に直す</h3>
+      <p>9/25の定例と案件台帳では「10/13着工」。ただ、契約始期と鍵の受け取りは10/15なので、13日には入れない。完了11/14を動かさなければ、工期は2日減って<b>実質30日</b>になる。</p>
+      <div class="meta"><span class="chip src">9/25定例・案件台帳・太田不動産との協議</span><span class="chip inf">工期の計算は当方</span></div>
     </div>
     <div class="task soon">
-      <div class="due"><b>10/7</b><small>必着</small></div>
-      <h3>契約書類に押印して返送、初期費用を振込む</h3>
-      <p>書類は担当者が持参し、押印後に返送。初期費用は10/7中に振込。<b>費用の内訳はまだ未確定</b>（確定次第共有）。</p>
-      <div class="meta"><span class="chip src">協議結果より</span><span class="chip unk">書類の届く日・金額は未定</span></div>
-    </div>
-    <div class="task soon">
-      <div class="due"><b>10/15</b><small>着手</small></div>
-      <h3>当社（借主側）工事の業者手配を10/15着手で固める</h3>
-      <p>始期10/15は「当社工事は10/15がリミット」という打合せに合わせたもの。貸主側工事（屋根塗装など）が残っていても15日から入れる前提。現場で作業が重なる可能性がある。</p>
-      <div class="meta"><span class="chip src">協議結果より</span><span class="chip inf">重なりの調整は当方の推定</span></div>
-    </div>
-    <div class="task wait">
-      <div class="due"><b>9/30〜</b><small>回答待ち</small></div>
-      <h3>太田の売地を駐車場として借りられるか（地盤調査・確認申請の同意含む）</h3>
-      <p>売主さんが不在のため、回答は9/30以降。こちらからは待つだけ。回答によっては当社工程に影響する。</p>
-      <div class="meta"><span class="chip src">協議結果より</span><span class="chip unk">回答日は未定</span></div>
+      <div class="due"><b>10/7</b><small>何時？</small></div>
+      <h3>契約の時刻を確認する（10時か16時か）</h3>
+      <p>太田不動産のメール（9/18）は「10時・太田不動産にて」。社内の決定事項ログ（9/24）は「16時」。書類を郵送や持参でやりとりする流れになったので、来社が要るかどうかも含めて確認したい。</p>
+      <div class="meta"><span class="chip src">9/18メール・9/24決定事項ログ</span><span class="chip unk">どちらが正しいかは未確認</span></div>
     </div>
   </div>
 
+  <h2>11/21から逆算した日程</h2>
+  <p class="sub">下から上に読むと、オープンまでの順番になる。青は確定、赤はオープン、琥珀はこのページで仮に置いた期限。</p>
+  <ol class="back">
+    <li class="goal">
+      <span class="d">11/21（土）<small>オープン</small></span>
+      <span class="t">木更津オフィス オープン</span>
+      <span class="x">茂原・千葉に続く三つ目の商圏。9/18の全体会議では「社内で最終確認中」の扱い。</span>
+      <div class="meta"><span class="chip src">9/18全体会議スライド</span></div>
+    </li>
+    <li class="key">
+      <span class="d">11/16（月）〜11/20（金）<small>搬入・開店準備</small></span>
+      <span class="t">家具・備品の搬入、開店前の飾り付け</span>
+      <span class="x">風船などの「賑やかし」の準備は14日以降に前倒しで進める。</span>
+      <div class="meta"><span class="chip who">酒井（集客準備）</span><span class="chip src">9/25定例</span></div>
+    </li>
+    <li class="key">
+      <span class="d">11/14（土）<small>改装完了</small></span>
+      <span class="t">内外装の改装が完了</span>
+      <span class="x">搬入（11/16）の前に、ネット環境（ポケットWi-Fiか回線）と代表電話の転送も整えておく。</span>
+      <div class="meta"><span class="chip who">山口・酒井</span><span class="chip src">9/25定例</span><span class="chip inf">ネット・電話を11/14までとしたのは当方</span></div>
+    </li>
+    <li class="gap">
+      <span class="d">10月末ごろ<small>仮置き</small></span>
+      <span class="t">チラシ・ギフト・風船の計画を決める</span>
+      <span class="x">定例では期限が「未定」。チラシは11/21の1〜2週前に配るとすると、印刷の入稿は10月末が目安。</span>
+      <div class="meta"><span class="chip who">酒井</span><span class="chip src">9/25定例（期限未定）</span><span class="chip inf">10月末は当方の逆算</span></div>
+    </li>
+    <li class="key">
+      <span class="d">10/15（木）〜11/14（土）<small>改装工事</small></span>
+      <span class="t">改装工事（内外装・駐車場コンクリート打設・室外機の撤去と移設）</span>
+      <span class="x">同じ時期に貸主側の屋根塗装と本下水接続が入る可能性がある。増設トイレは本下水がつながってからの作業になる。</span>
+      <div class="meta"><span class="chip who">山口（工程管理）</span><span class="chip src">9/25定例・協議結果</span><span class="chip inf">トイレの順番は当方の推定</span></div>
+    </li>
+    <li class="key">
+      <span class="d">10/15（木）<small>契約始期</small></span>
+      <span class="t">鍵が郵送で届く・改装着工</span>
+      <div class="meta"><span class="chip src">協議結果</span><span class="chip new">台帳の10/13から変更が必要</span></div>
+    </li>
+    <li class="gap">
+      <span class="d">10/14（水）まで<small>仮置き</small></span>
+      <span class="t">改装の工事計画を確定する</span>
+      <span class="x">レイアウト、インフラ（浄化槽の廃止・下水本管への接続）、駐車場の打設、室外機の撤去。着工の前日までに固めておかないと、10/15から動けない。</span>
+      <div class="meta"><span class="chip who">山口</span><span class="chip src">9/25定例</span><span class="chip inf">10/14は当方の逆算</span></div>
+    </li>
+    <li class="key">
+      <span class="d">10/7（水）<small>契約</small></span>
+      <span class="t">契約書に押印して返送、初期費用を振込</span>
+      <span class="x">契約書と初期費用の明細は太田不動産に依頼済み。担当者が確認してから共有する。</span>
+      <div class="meta"><span class="chip who">専務（台帳上の担当）</span><span class="chip src">協議結果・9/29の投稿</span></div>
+    </li>
+    <li class="gap">
+      <span class="d">9/30（水）以降<small>回答待ち</small></span>
+      <span class="t">裏の売地を借りられるか（駐車場・地盤調査・確認申請の同意）</span>
+      <span class="x">売主さんが不在のため9/30以降に回答。裏の平屋2棟（見学会用と売建）の計画にかかわる話で、11/21のオープンそのものには直接影響しない見込み。</span>
+      <div class="meta"><span class="chip src">協議結果・9/18スライド</span><span class="chip inf">オープンへの影響は当方の推定</span></div>
+    </li>
+  </ol>
+
   <h2>ガントチャート</h2>
-  <p class="sub">9/28〜10/24。貸主側の工事は日程未確定のため、「ここまでに入りそうな幅」を斜線で表示。</p>
+  <p class="sub">9/28〜11/23。貸主側の工事は日程が決まっていないため、入りそうな期間を斜線で表示。</p>
   <div class="legend">
     <span><i class="sw us"></i>当社の作業</span>
     <span><i class="sw own"></i>貸主側（日程ほぼ確定）</span>
-    <span><i class="sw tbd"></i>貸主側（日程未確定・この幅のどこか）</span>
+    <span><i class="sw tbd"></i>日程未確定（この期間のどこか）</span>
     <span><i class="sw wt"></i>回答待ち</span>
     <span><i class="sw ms"></i>期日</span>
   </div>
   <div class="scroller" tabindex="0" aria-label="ガントチャート（横スクロール）">
     <div class="gantt" id="gantt"></div>
   </div>
-  <p class="note">土日と祝日（10/12 スポーツの日）は色付き。赤い縦線が今日、点線が10/7契約日と10/15契約始期。</p>
+  <p class="note">土日と祝日（10/12 スポーツの日、11/3 文化の日、11/23 勤労感謝の日）は色付き。赤い実線が今日、点線は10/7契約・10/15始期・11/21オープン。</p>
 
   <div class="cols">
     <section>
       <h2>注意しておくこと</h2>
       <ul class="list">
-        <li><b>貸主側工事が10/15までに終わらない可能性</b>台風で9/28の塗装開始が延期。屋根塗装は「始期後でも作業可」で打合せ中。当社の内装と同時期になる前提で、業者に伝えておく。<div class="meta"><span class="chip src">協議結果より</span><span class="chip inf">業者への事前連絡は当方の推定</span></div></li>
-        <li><b>フリーレントは無し</b>要望したが不可。貸主側工事が残っていても始期は10/15のまま。<div class="meta"><span class="chip src">協議結果より</span></div></li>
-        <li><b>引渡しの考え方</b>貸主側は「全工事完了で引渡し」としたいが、10/15に完了できるかは現時点で回答できないとのこと。<div class="meta"><span class="chip src">協議結果より</span></div></li>
-        <li><b>初期費用の額がまだ出ていない</b>10/7の振込に間に合うよう、内訳が届いたらすぐ経理に回す。<div class="meta"><span class="chip src">協議結果より</span><span class="chip inf">経理への回付は当方の推定</span></div></li>
+        <li><b>改装と貸主側工事が重なる</b>台風で塗装の開始が延び、屋根塗装は「始期後でも作業可」で調整中。本下水の接続も10月中。改装業者には同時期に別の業者が入ると先に伝えておく。<div class="meta"><span class="chip src">協議結果</span><span class="chip inf">業者への連絡は当方の推定</span></div></li>
+        <li><b>工期に余裕がない</b>10/15〜11/14の30日で、内外装・駐車場の打設・室外機の移設まで終える。9/18の全体会議でも「工期は実質1か月」との説明。<div class="meta"><span class="chip src">9/18スライドの発表者メモ</span></div></li>
+        <li><b>フリーレントは無し</b>要望したが不可。10/15から家賃がかかる。<div class="meta"><span class="chip src">協議結果</span><span class="chip inf">家賃の発生日は当方の推定</span></div></li>
+        <li><b>日程が決まっていない項目</b>看板、スタッフの配置、チラシの配布日は、どの資料にも日付や担当がない。<div class="meta"><span class="chip unk">未定</span></div></li>
       </ul>
     </section>
     <section>
-      <h2>確認済み（対応不要）</h2>
+      <h2>済んだこと</h2>
       <ul class="list">
-        <li><b>看板のスポット照明</b>明暗で自動点滅。スイッチは無い。<div class="meta"><span class="chip src">御園和也さんへの回答より</span></div></li>
-        <li><b>エアコン</b>撤去済み。<div class="meta"><span class="chip src">同上</span></div></li>
-        <li><b>動力の引込</b>残置してもらう。接続しなければ料金はかからない。<div class="meta"><span class="chip src">同上</span></div></li>
-        <li><b>鍵の受け取り</b>契約始期10/15に合わせて郵送される。<div class="meta"><span class="chip src">協議結果より</span></div></li>
-        <li><b>西側勝手口の交換</b>本日依頼済み。10/10頃に工事予定。<div class="meta"><span class="chip src">協議結果より</span></div></li>
+        <li><b>撤去・改修の内容を横田さんに説明</b>これで契約の条件が出揃った。<div class="meta"><span class="chip src">9/29の投稿</span></div></li>
+        <li><b>契約書と初期費用の明細を依頼</b>担当者が確認してから共有する。<div class="meta"><span class="chip src">9/29の投稿</span></div></li>
+        <li><b>鍵とトイレの件</b>正面ドアの鍵は交換せず、今のまま。増設トイレは既存と同じ向き・大きさで、既存トイレに向かって右側の真横。<div class="meta"><span class="chip inf">横田さんへ回答済みかは要確認</span></div></li>
+        <li><b>看板の照明・エアコン・動力</b>照明は明暗で自動点滅。エアコンは撤去済み。動力の引込は残してもらう。<div class="meta"><span class="chip src">御園和也さんへの回答</span></div></li>
+        <li><b>西側勝手口の交換</b>依頼済み。10/10ごろ工事の予定。<div class="meta"><span class="chip src">協議結果</span></div></li>
       </ul>
     </section>
   </div>
 
   <h2>Chatwork 貼り付け用</h2>
-  <p class="sub">社内の連絡にそのまま貼れる要約。</p>
+  <p class="sub">新しく立ち上げたスレッドの最初の投稿用。</p>
   <div class="paste">
-    <pre id="pasteText">[info][title]木更津市太田 貸店舗　いまやること（9/28時点）[/title]
-■ 至急（今週中）
-・増設トイレの位置と向きを太田不動産 横田さんへ回答（本下水業者から確認あり／内覧時は「物入」の位置）
-・正面両開きドアの鍵交換の要否を決める（交換費用17,600円税込）
+    <pre id="pasteText">[toall]
+お疲れ様です。
+木更津オフィス（木更津市太田の貸店舗）の件は、今後このスレッドにまとめます。
+11/21（土）のオープンから逆算して、9/29時点の状況を下記に整理しました。
 
-■ 10/7（契約日）まで
-・契約書類に押印して返送
-・初期費用を10/7中に振込（内訳は確定次第共有）
+[info][title]① 日程（11/21オープンからの逆算）[/title]
+10/7（水）　契約（押印・返送、初期費用の振込）
+10/15（木）　鍵の受け取り・改装着工
+10/15〜11/14　改装工事（内外装・駐車場の打設・室外機の撤去と移設）
+11/14（土）　改装完了（ネット環境・代表電話もここまでに）
+11/16（月）〜　家具・備品の搬入、開店準備
+11/21（土）　オープン[/info]
 
-■ 10/15（契約始期）
-・鍵が郵送で届く
-・当社工事スタート（貸主側工事が一部残る可能性あり）
+[info][title]② 変更点：改装の着工日[/title]
+9/25の定例では「10/13着工」としていましたが、契約始期と鍵の受け取りが10/15のため、着工は10/15に変更になります。
+完了の11/14は変えずに進めるので、工期は実質30日です。
+※貸主側の屋根塗装・本下水接続が、改装の時期に重なる可能性があります。[/info]
 
-■ 回答待ち
-・売地を駐車場として借用／地盤調査・確認申請への同意 → 9/30以降に回答
+[info][title]③ 現在の状況（9/29時点）[/title]
+■ 済んだこと
+・撤去・改修の内容を太田不動産 横田さんに説明済み（契約の条件が出揃った）
+・契約書と初期費用の明細を依頼済み（担当者が確認してから共有します）
 
-■ 貸主側工事（日程調整中）
-・屋根塗装 5日程（台風で延期、始期後も作業可の方向）
-・本下水接続 3日程（10月に入ってから）
-・西側勝手口交換（10/10頃）
+■ いま待っていること
+・裏の売地を借りられるか（駐車場・地盤調査・確認申請の同意）→ 9/30以降に回答
+・貸主側工事の日程（屋根塗装・本下水接続・西側勝手口）→ 調整中
 
-※フリーレントは不可[/info]</pre>
+■ 確認中
+・10/7の契約の時刻（10時か16時か）[/info]
+
+[info][title]④ 日程が変わるときの連絡方法[/title]
+日程が変わるときは、必ずこのスレッドに下記の形で投稿します。
+「【日程変更】項目名　変更前 → 変更後　理由」
+例）【日程変更】改装着工　10/13 → 10/15　鍵の受け取りが10/15のため
+
+このスレッドで【日程変更】の投稿がない限り、上記①の日程のままです。[/info]
+
+よろしくお願いいたします。</pre>
     <button class="copy" id="copyBtn" type="button">文面をコピー</button><span class="copied" id="copied" hidden>コピーしました</span>
   </div>
 
-  <footer>出典：9/28 の協議結果まとめ、および太田不動産 横田さんからのメール（増設トイレの件）。緑のラベルは連絡文に書かれている内容、琥珀のラベルはこのページで補った推定、点線のラベルは未確定。</footer>
+  <footer>出典：9/25 部門横断定例（Plaudの議事録）、9/18 全体会議スライド、案件台帳（建売/MH/その他ボードの元データ）、9/28 太田不動産との協議結果、9/29 のChatwork投稿。緑のラベルは資料に書かれている内容、琥珀のラベルはこのページで補った推定、点線のラベルは未確定。</footer>
 </div>
 
 <script>
 (function(){
-  // 9/28 = day 0, 10/24 = day 26
+  // 9/28 = day 0 ／ 10月d日 = d+2 ／ 11月d日 = d+33
   const START = new Date(2026, 8, 28);
-  const DAYS = 27;
-  const TODAY = 0;
-  const HOLIDAYS = [14];            // 10/12 スポーツの日
-  const LINES = [{d:9, cls:"dash"}, {d:17, cls:"dash"}];
+  const DAYS = 57;                  // 9/28〜11/23
+  const TODAY = 1;                  // 9/29
+  const HOLIDAYS = [14, 36, 56];    // 10/12 スポーツの日, 11/3 文化の日, 11/23 勤労感謝の日
+  const LINES = [9, 17, 54];        // 10/7, 10/15, 11/21
   const WD = ["日","月","火","水","木","金","土"];
 
   // s,e: day index (inclusive)
   const ROWS = [
     {group:"当社"},
-    {label:"増設トイレ位置・向き 回答", small:"→ 横田さん", bars:[{s:0,e:2,cls:"us",t:"9/30までに"}]},
-    {label:"正面ドア鍵交換 要否回答", small:"17,600円(税込)", bars:[{s:0,e:4,cls:"us",t:"早めに"},{s:5,e:9,cls:"us soft",t:"遅くとも契約日"}]},
-    {label:"契約書類 押印・返送", small:"持参→押印→返送", bars:[{s:3,e:9,cls:"us soft",t:"届き次第"}], ms:[{d:9,t:"返送"}]},
-    {label:"初期費用 振込", small:"内訳は未確定", ms:[{d:9,t:"10/7中"}]},
-    {label:"当社工事（借主側）", small:"10/15〜", bars:[{s:17,e:26,cls:"us arrow",t:"10/15 着手"}]},
+    {label:"工事計画の確定", small:"山口・レイアウト/インフラ", bars:[{s:1,e:16,cls:"us soft",t:"10/14までに（仮）"}]},
+    {label:"契約・初期費用", small:"押印・返送・振込", bars:[{s:3,e:9,cls:"us soft",t:"書類が届き次第"}], ms:[{d:9,t:"10/7"}]},
+    {label:"改装工事（内外装）", small:"山口・酒井", bars:[{s:17,e:47,cls:"us",t:"10/15 着工 → 11/14 完了（30日）"}]},
+    {label:"駐車場打設・室外機移設", small:"改装に含む", bars:[{s:17,e:47,cls:"tbd",t:"改装期間のどこか"}]},
+    {label:"チラシ・ギフト・風船", small:"酒井・計画は期限未定", bars:[{s:17,e:33,cls:"us soft",t:"計画・入稿（仮）"},{s:47,e:53,cls:"us",t:"飾り付け"}]},
+    {label:"ネット環境・代表電話", small:"現地常駐者用", bars:[{s:34,e:47,cls:"tbd",t:"11/14までに（仮）"}]},
+    {label:"家具・備品の搬入", small:"開店準備", bars:[{s:49,e:53,cls:"us",t:"11/16〜"}]},
+    {label:"オープン", small:"11/21（土）", ms:[{d:54,t:"OPEN"}]},
     {group:"貸主側（太田不動産 手配）"},
-    {label:"屋根塗装", small:"5日程・台風で延期", bars:[{s:3,e:26,cls:"tbd",t:"日程調整中（始期後も可）"}]},
-    {label:"本下水接続", small:"3日程", bars:[{s:3,e:16,cls:"tbd",t:"10月に入ってから"}]},
-    {label:"西側勝手口 交換", small:"本日依頼", bars:[{s:11,e:13,cls:"own",t:"10/10頃"}]},
-    {label:"鍵の郵送", small:"始期に合わせて", ms:[{d:17,t:"鍵着",blue:true}]},
+    {label:"屋根塗装", small:"5日程・台風で延期", bars:[{s:3,e:30,cls:"tbd",t:"日程調整中（始期後も可）"}]},
+    {label:"本下水接続", small:"3日程", bars:[{s:3,e:33,cls:"tbd",t:"10月中"}]},
+    {label:"西側勝手口の交換", small:"依頼済み", bars:[{s:11,e:13,cls:"own",t:"10/10頃"}]},
+    {label:"鍵の郵送", small:"始期に合わせて", ms:[{d:17,t:"鍵",blue:true}]},
     {group:"回答待ち"},
-    {label:"売地を駐車場に借用", small:"地盤調査・確認申請の同意", bars:[{s:2,e:10,cls:"wt",t:"9/30以降に回答"}]},
+    {label:"裏の売地の借用", small:"駐車場・地盤調査・確認申請", bars:[{s:2,e:12,cls:"wt",t:"9/30以降に回答"}]},
     {group:"期日"},
-    {label:"契約日 / 契約始期", small:"", ms:[{d:9,t:"契約日 10/7"},{d:17,t:"始期 10/15"}]}
+    {label:"契約 / 始期 / 完了 / OPEN", small:"", ms:[{d:9,t:"契約"},{d:17,t:"始期"},{d:47,t:"完了",blue:true},{d:54,t:"OPEN"}]}
   ];
 
   const g = document.getElementById("gantt");
@@ -349,7 +424,6 @@ footer{margin-top:36px; padding-top:12px; border-top:1px solid var(--line); font
     });
   }
 
-  // header
   const head = el("div","grow head");
   head.appendChild(el("div","lab","2026 / 日付"));
   dayInfo.forEach((di,i)=>{
@@ -369,20 +443,16 @@ footer{margin-top:36px; padding-top:12px; border-top:1px solid var(--line); font
     const row = el("div","grow");
     row.appendChild(el("div","lab","<b>"+r.label+"</b>"+(r.small?"<small>"+r.small+"</small>":"")));
     bgCells(row);
-    (r.bars||[]).forEach(b=>{
-      const bar = col(el("div","bar "+b.cls, b.t), b.s, b.e);
-      row.appendChild(bar);
-    });
+    (r.bars||[]).forEach(b=>row.appendChild(col(el("div","bar "+b.cls, b.t), b.s, b.e)));
     (r.ms||[]).forEach(m=>{
       row.appendChild(col(el("div","ms"+(m.blue?" blue":"")), m.d));
       const lab = el("div","mslab"+(m.blue?" blue":""), m.t);
-      lab.style.gridColumn = (m.d+3)+" / span 4";
+      lab.style.gridColumn = (m.d+3)+" / span 3";
       row.appendChild(lab);
     });
     g.appendChild(row);
   });
 
-  // vertical lines: placed after layout
   function placeLines(){
     g.querySelectorAll(".vline").forEach(v=>v.remove());
     const hc = head.querySelectorAll(".dh");
@@ -394,20 +464,17 @@ footer{margin-top:36px; padding-top:12px; border-top:1px solid var(--line); font
       g.appendChild(v);
     };
     add(TODAY, "");
-    LINES.forEach(l=>add(l.d, l.cls));
+    LINES.forEach(d=>add(d, "dash"));
   }
   placeLines();
   window.addEventListener("resize", placeLines);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(placeLines);
 
-  // copy
   const btn = document.getElementById("copyBtn"), ok = document.getElementById("copied"), pre = document.getElementById("pasteText");
   btn.addEventListener("click", ()=>{
     const done = ()=>{ ok.hidden=false; setTimeout(()=>ok.hidden=true, 2000); };
     const fallback = ()=>{ const s=window.getSelection(), rg=document.createRange(); rg.selectNodeContents(pre); s.removeAllRanges(); s.addRange(rg); };
-    try {
-      navigator.clipboard.writeText(pre.textContent).then(done, fallback);
-    } catch(e){ fallback(); }
+    try { navigator.clipboard.writeText(pre.textContent).then(done, fallback); } catch(e){ fallback(); }
   });
 })();
 </script>
