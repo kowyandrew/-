@@ -70,8 +70,6 @@ body{
 .who .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex:none}
 .who .nm{font-weight:700}
 .who .lbl{color:var(--ink-3); font-size:11px; letter-spacing:.08em}
-a.who{text-decoration:none}
-a.who .lbl{color:var(--ink)}
 .spacer{flex:1 1 auto}
 
 .filters{display:flex; gap:4px; overflow-x:auto; padding:10px 0 9px; scrollbar-width:none}
@@ -357,7 +355,6 @@ input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-vis
         <span class="nm" id="whoName">未設定</span>
       </button>
       <button class="who" id="rosterBtn" type="button"><span class="lbl">名簿</span></button>
-      <a class="who" id="financeLink" href="http://127.0.0.1:8765/" target="_blank" rel="noopener"><span class="lbl">財務データ ↗</span></a>
       <span class="spacer"></span>
       <span id="conn" style="font-family:var(--mono);font-size:11px;color:var(--ink-3)"></span>
     </div>
